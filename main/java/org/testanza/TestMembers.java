@@ -10,8 +10,8 @@ public class TestMembers {
   public static Tester<Member> hasModifier(final int modifier) {
     return new Tester<Member>() {
       public Test test(final Member member) {
-        return new AnnotatedTestCase(formatTestThat(member, "hasModifier",
-            Modifier.toString(modifier).toUpperCase())) {
+        return new AnnotatedTestCase(
+            formatTestThat(member, "hasModifier", formatModifier(modifier))) {
           @org.junit.Test
           public void has_modifier() {
             assertTrue((member.getModifiers() & modifier) != 0);
@@ -28,5 +28,9 @@ public class TestMembers {
   private static String join(Object... objects) {
     String string = Arrays.asList(objects).toString();
     return string.substring(1, string.length() - 1);
+  }
+
+  private static String formatModifier(final int modifier) {
+    return Modifier.toString(modifier).toUpperCase();
   }
 }
