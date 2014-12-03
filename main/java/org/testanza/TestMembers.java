@@ -5,15 +5,14 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
 import junit.framework.Test;
+import junit.framework.TestCase;
 
 public class TestMembers {
   public static Tester<Member> hasModifier(final int modifier) {
     return new Tester<Member>() {
       public Test test(final Member member) {
-        return new AnnotatedTestCase(
-            formatTestThat(member, "hasModifier", formatModifier(modifier))) {
-          @org.junit.Test
-          public void has_modifier() {
+        return new TestCase(formatTestThat(member, "hasModifier", formatModifier(modifier))) {
+          protected void runTest() {
             assertTrue((member.getModifiers() & modifier) != 0);
           }
         };
