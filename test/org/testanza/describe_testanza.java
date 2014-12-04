@@ -1,15 +1,11 @@
 package org.testanza;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
 public class describe_testanza {
   public static void main(String[] args) throws Throwable {
-    describe_TestMembers_has_modifier.succeeds_if_method_has_modifier();
-    describe_TestMembers_has_modifier.fails_if_method_has_no_modifier();
-    describe_TestMembers_has_modifier.failure_prints_message();
-    describe_TestMembers_has_modifier.test_name_contains_modifier();
-    describe_TestMembers_has_modifier.test_name_contains_member_type_and_siple_name();
-    describe_TestMembers_has_modifier.test_name_differs_even_if_members_have_same_simple_name();
-    describe_TestMembers_has_modifier.test_name_is_same_for_equal_member();
-
+    runTestsIn(describe_TestMembers_has_modifier.class);
     System.out.println("successful");
   }
 
@@ -17,5 +13,25 @@ public class describe_testanza {
     if (!condition) {
       throw new AssertionError();
     }
+  }
+
+  private static void runTestsIn(Class<?> type) throws Throwable {
+    for (Method method : type.getDeclaredMethods()) {
+      if (isPublic(method) && isStatic(method) && hasNoParameters(method)) {
+        method.invoke(null);
+      }
+    }
+  }
+
+  private static boolean isPublic(Method method) {
+    return Modifier.isPublic(method.getModifiers());
+  }
+
+  private static boolean isStatic(Method method) {
+    return Modifier.isStatic(method.getModifiers());
+  }
+
+  private static boolean hasNoParameters(Method method) {
+    return method.getParameterTypes().length == 0;
   }
 }

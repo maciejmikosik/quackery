@@ -70,7 +70,7 @@ public class describe_TestMembers_has_modifier {
     verify(name.contains("final"));
   }
 
-  public static void test_name_contains_member_type_and_siple_name() throws Throwable {
+  public static void test_name_contains_member_type_and_simple_name() throws Throwable {
     @SuppressWarnings("unused")
     class TestClass {
       TestClass() {}
