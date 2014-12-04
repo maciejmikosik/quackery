@@ -1,6 +1,5 @@
 package org.testanza.testers;
 
-import static java.lang.System.identityHashCode;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Constructor;
@@ -15,7 +14,7 @@ public class TestersForMembers {
     return new BodyTester<Member>() {
       protected String name(Member member) {
         return type(member) + " " + simpleName(member) + " has modifier "
-            + Modifier.toString(modifier) + " #" + identityHashCode(member);
+            + Modifier.toString(modifier);
       }
 
       protected void body(Member member) throws Throwable {
