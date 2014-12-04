@@ -1,4 +1,4 @@
-package org.testanza;
+package org.testanza.testers;
 
 import static java.lang.System.identityHashCode;
 
@@ -9,7 +9,9 @@ import java.lang.reflect.Modifier;
 import junit.framework.Test;
 import junit.framework.TestCase;
 
-public class TestMembers {
+import org.testanza.Tester;
+
+public class TestersForMembers {
   public static Tester<Member> hasModifier(final int modifier) {
     return new Tester<Member>() {
       public Test test(final Member member) {

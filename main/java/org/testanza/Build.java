@@ -1,6 +1,8 @@
 package org.testanza;
 
+import org.testanza.testers.TestersForMembers;
+
 class Build {
   Class<?> testBuilder = TestBuilder.class;
-  Class<?> testMembers = TestMembers.class;
+  Class<?> testMembers = TestersForMembers.class;
 }

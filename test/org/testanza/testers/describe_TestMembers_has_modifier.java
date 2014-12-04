@@ -1,7 +1,7 @@
-package org.testanza;
+package org.testanza.testers;
 
-import static org.testanza.TestMembers.hasModifier;
 import static org.testanza.describe_testanza.verify;
+import static org.testanza.testers.TestersForMembers.hasModifier;
 
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
