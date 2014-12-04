@@ -15,7 +15,7 @@ public class TestBuilder {
     suite.addTest(tester.test(item));
   }
 
-  public <T> void testThatAll(Iterable<T> items, Tester<T> tester) {
+  public <T> void testThatAll(Iterable<? extends T> items, Tester<T> tester) {
     for (T item : items) {
       suite.addTest(tester.test(item));
     }
