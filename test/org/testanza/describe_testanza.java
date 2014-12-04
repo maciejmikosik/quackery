@@ -3,11 +3,11 @@ package org.testanza;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import org.testanza.testers.describe_TestMembers_has_modifier;
+import org.testanza.testers.describe_TestMembers_hasModifier;
 
 public class describe_testanza {
   public static void main(String[] args) throws Throwable {
-    runTestsIn(describe_TestMembers_has_modifier.class);
+    runTestsIn(describe_TestMembers_hasModifier.class);
     runTestsIn(describe_BodyTest.class);
     runTestsIn(describe_TestBuilder.class);
     System.out.println("successful");

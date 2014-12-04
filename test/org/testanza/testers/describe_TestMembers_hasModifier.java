@@ -12,7 +12,7 @@ import junit.framework.TestCase;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 
-public class describe_TestMembers_has_modifier {
+public class describe_TestMembers_hasModifier {
   private static Member member, otherMember;
   private static Test test, otherTest;
   private static Result result;
