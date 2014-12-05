@@ -8,8 +8,8 @@ import org.testanza.testers.describe_TestMembers_hasModifier;
 public class describe_testanza {
   public static void main(String[] args) throws Throwable {
     runTestsIn(describe_TestMembers_hasModifier.class);
-    runTestsIn(describe_BodyTest.class);
     runTestsIn(describe_TestBuilder.class);
+    runTestsIn(describe_name_collisions.class);
     System.out.println("successful");
   }
 
