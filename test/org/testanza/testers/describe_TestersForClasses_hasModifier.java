@@ -1,7 +1,7 @@
 package org.testanza.testers;
 
 import static org.testanza.describe_testanza.verify;
-import static org.testanza.testers.TestersForMembers.hasModifier;
+import static org.testanza.testers.TestersForClasses.hasModifier;
 
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
@@ -12,7 +12,7 @@ import junit.framework.TestCase;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 
-public class describe_TestersForMembers_hasModifier {
+public class describe_TestersForClasses_hasModifier {
   private static Member member;
   private static Test test;
   private static Result result;

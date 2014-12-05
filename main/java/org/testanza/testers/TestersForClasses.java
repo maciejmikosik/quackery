@@ -9,7 +9,7 @@ import java.lang.reflect.Modifier;
 import org.testanza.BodyTester;
 import org.testanza.Tester;
 
-public class TestersForMembers {
+public class TestersForClasses {
   public static Tester<Member> hasModifier(final int modifier) {
     return new BodyTester<Member>() {
       protected String name(Member member) {
