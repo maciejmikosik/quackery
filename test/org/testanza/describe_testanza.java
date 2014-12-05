@@ -7,12 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.testanza.testers.describe_TestersForClasses_hasModifier;
+import org.testanza.testers.describe_TestersForClasses_hasNoModifier;
 
 public class describe_testanza {
   private static List<Throwable> failures = new ArrayList<Throwable>();
 
   public static void main(String[] args) throws Throwable {
     runTestsIn(describe_TestersForClasses_hasModifier.class);
+    runTestsIn(describe_TestersForClasses_hasNoModifier.class);
     runTestsIn(describe_TestBuilder.class);
     runTestsIn(describe_name_collisions.class);
     System.out.println(failures.size() + " failures");

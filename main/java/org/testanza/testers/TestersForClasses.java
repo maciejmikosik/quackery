@@ -33,6 +33,26 @@ public class TestersForClasses {
     };
   }
 
+  public static Tester<AnnotatedElement> hasNoModifier(final int modifier) {
+    return new BodyTester<AnnotatedElement>() {
+      protected String name(AnnotatedElement element) {
+        return kind(element) + " " + simpleName(element) + " has no modifier "
+            + Modifier.toString(modifier);
+      }
+
+      protected void body(AnnotatedElement element) throws Throwable {
+        if (hasModifier(modifier, element)) {
+          fail("" //
+              + "\n" //
+              + "  expected that\n" //
+              + "    " + fullName(element) + "\n" //
+              + "  has no modifier\n" //
+              + "    " + Modifier.toString(modifier) + "\n");
+        }
+      }
+    };
+  }
+
   private static boolean hasModifier(int modifier, AnnotatedElement element) {
     return (modifiers(element) & modifier) != 0;
   }
