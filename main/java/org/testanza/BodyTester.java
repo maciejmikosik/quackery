@@ -1,20 +1,19 @@
 package org.testanza;
 
-import static java.lang.System.identityHashCode;
 import junit.framework.Test;
 import junit.framework.TestCase;
 
 public abstract class BodyTester<T> implements Tester<T> {
+  private static final Namer namer = new Namer();
+
   public Test test(final T item) {
-    return new TestCase(uniqueName(item)) {
+    TestCase test = new TestCase(name(item)) {
       protected void runTest() throws Throwable {
         body(item);
       }
     };
-  }
-
-  private String uniqueName(final T item) {
-    return name(item) + " #" + identityHashCode(item);
+    namer.makeNameUnique(test);
+    return test;
   }
 
   protected abstract String name(T item);

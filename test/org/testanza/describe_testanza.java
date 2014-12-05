@@ -13,8 +13,8 @@ public class describe_testanza {
 
   public static void main(String[] args) throws Throwable {
     runTestsIn(describe_TestMembers_hasModifier.class);
-    runTestsIn(describe_BodyTest.class);
     runTestsIn(describe_TestBuilder.class);
+    runTestsIn(describe_name_collisions.class);
     System.out.println(failures.size() + " failures");
     for (Throwable failure : failures) {
       System.out.println();
