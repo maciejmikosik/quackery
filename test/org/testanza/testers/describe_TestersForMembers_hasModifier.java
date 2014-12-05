@@ -12,9 +12,9 @@ import junit.framework.TestCase;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 
-public class describe_TestMembers_hasModifier {
-  private static Member member, otherMember;
-  private static Test test, otherTest;
+public class describe_TestersForMembers_hasModifier {
+  private static Member member;
+  private static Test test;
   private static Result result;
   private static String name, message;
 
@@ -93,37 +93,5 @@ public class describe_TestMembers_hasModifier {
     test = hasModifier(Modifier.FINAL).test(member);
     name = ((TestCase) test).getName();
     verify(name.contains("constructor TestClass"));
-  }
-
-  public static void test_name_differs_even_if_members_have_same_simple_name() throws Throwable {
-    @SuppressWarnings("unused")
-    class TestClass {
-      void foo() {}
-
-      void foo(Object o) {}
-    }
-    member = TestClass.class.getDeclaredMethod("foo");
-    otherMember = TestClass.class.getDeclaredMethod("foo", Object.class);
-    test = hasModifier(Modifier.FINAL).test(member);
-    otherTest = hasModifier(Modifier.FINAL).test(otherMember);
-    verify(!((TestCase) test).getName().equals(((TestCase) otherTest).getName()));
-  }
-
-  public static void test_name_is_same_for_equal_member() throws Throwable {
-    // TODO ignored
-    if (true) {
-      return;
-    }
-    @SuppressWarnings("unused")
-    class TestClass {
-      void foo() {}
-
-      void foo(Object o) {}
-    }
-    member = TestClass.class.getDeclaredMethod("foo");
-    otherMember = TestClass.class.getDeclaredMethod("foo");
-    test = hasModifier(Modifier.FINAL).test(member);
-    otherTest = hasModifier(Modifier.FINAL).test(otherMember);
-    verify(((TestCase) test).getName().equals(((TestCase) otherTest).getName()));
   }
 }
