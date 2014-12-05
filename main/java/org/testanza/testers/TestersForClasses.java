@@ -2,6 +2,7 @@ package org.testanza.testers;
 
 import static org.junit.Assert.fail;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
@@ -10,19 +11,19 @@ import org.testanza.BodyTester;
 import org.testanza.Tester;
 
 public class TestersForClasses {
-  public static Tester<Member> hasModifier(final int modifier) {
-    return new BodyTester<Member>() {
-      protected String name(Member member) {
-        return type(member) + " " + simpleName(member) + " has modifier "
+  public static Tester<AnnotatedElement> hasModifier(final int modifier) {
+    return new BodyTester<AnnotatedElement>() {
+      protected String name(AnnotatedElement element) {
+        return kind(element) + " " + simpleName(element) + " has modifier "
             + Modifier.toString(modifier);
       }
 
-      protected void body(Member member) throws Throwable {
-        if (!hasModifier(modifier, member)) {
+      protected void body(AnnotatedElement element) throws Throwable {
+        if (!hasModifier(modifier, element)) {
           fail("" //
               + "\n" //
               + "  expected that\n" //
-              + "    " + type(member) + " " + member.toString() + "\n" //
+              + "    " + fullName(element) + "\n" //
               + "  has modifier\n" //
               + "    " + Modifier.toString(modifier) + "\n" //
           );
@@ -32,17 +33,41 @@ public class TestersForClasses {
     };
   }
 
-  private static boolean hasModifier(int modifier, final Member member) {
-    return (member.getModifiers() & modifier) != 0;
+  private static boolean hasModifier(int modifier, AnnotatedElement element) {
+    return (modifiers(element) & modifier) != 0;
   }
 
-  private static String type(Member member) {
-    return member.getClass().getSimpleName().toLowerCase();
+  private static int modifiers(AnnotatedElement element) {
+    if (element instanceof Class<?>) {
+      return ((Class<?>) element).getModifiers();
+    } else if (element instanceof Member) {
+      return ((Member) element).getModifiers();
+    } else {
+      throw new RuntimeException("unknown element " + element);
+    }
   }
 
-  private static String simpleName(Member member) {
-    return member instanceof Constructor
-        ? member.getDeclaringClass().getSimpleName()
-        : member.getName();
+  private static String kind(AnnotatedElement element) {
+    return element.getClass().getSimpleName().toLowerCase();
+  }
+
+  private static String simpleName(AnnotatedElement element) {
+    if (element instanceof Class<?>) {
+      return ((Class<?>) element).getSimpleName();
+    } else if (element instanceof Constructor) {
+      return ((Constructor<?>) element).getDeclaringClass().getSimpleName();
+    } else if (element instanceof Member) {
+      return ((Member) element).getName();
+    } else {
+      throw new RuntimeException("unknown element " + element);
+    }
+  }
+
+  private static String fullName(AnnotatedElement element) {
+    if (element instanceof Class<?>) {
+      return element.toString();
+    } else {
+      return kind(element) + " " + element.toString();
+    }
   }
 }
