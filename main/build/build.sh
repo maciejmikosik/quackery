@@ -15,7 +15,7 @@ mkdir \
   --parents \
   ./sink/building
 javac \
-  -classpath "./jar/junit-4.11.jar" \
+  -classpath "./jar/junit-4.11.jar:./jar/hamcrest-core-1.3.jar" \
   -sourcepath "./java" \
   -source 1.7 \
   -target 1.7 \
