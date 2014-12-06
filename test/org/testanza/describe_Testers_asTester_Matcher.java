@@ -1,9 +1,10 @@
 package org.testanza;
 
 import static org.testanza.Testers.asTester;
+import static org.testanza.Testilities.name;
+import static org.testanza.Testilities.newObject;
 import static org.testanza.describe_testanza.verify;
 import junit.framework.Test;
-import junit.framework.TestCase;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -99,18 +100,6 @@ public class describe_Testers_asTester_Matcher {
     };
     tester = asTester(matcher);
     test = tester.test(item);
-    verify((item + " is " + matcher).equals(nameOf(test)));
-  }
-
-  private static Object newObject(final String name) {
-    return new Object() {
-      public String toString() {
-        return name;
-      }
-    };
-  }
-
-  private static String nameOf(Test testCase) {
-    return ((TestCase) testCase).getName();
+    verify((item + " is " + matcher).equals(name(test)));
   }
 }

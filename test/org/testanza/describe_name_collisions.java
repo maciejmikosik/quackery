@@ -1,8 +1,9 @@
 package org.testanza;
 
+import static org.testanza.Testilities.name;
+import static org.testanza.Testilities.newObject;
 import static org.testanza.describe_testanza.verify;
 import junit.framework.Test;
-import junit.framework.TestCase;
 
 public class describe_name_collisions {
   private static String testName = "testName";
@@ -19,7 +20,7 @@ public class describe_name_collisions {
       }
     };
     test = tester.test(item);
-    verify(nameOf(test).equals(testName));
+    verify(name(test).equals(testName));
   }
 
   public static void fixes_colliding_name() {
@@ -31,19 +32,7 @@ public class describe_name_collisions {
     };
     test = tester.test(item);
     otherTest = tester.test(otherItem);
-    verify(!nameOf(test).equals(nameOf(otherTest)));
-  }
-
-  private static String nameOf(Test testCase) {
-    return ((TestCase) testCase).getName();
-  }
-
-  private static Object newObject(final String name) {
-    return new Object() {
-      public String toString() {
-        return name;
-      }
-    };
+    verify(!name(test).equals(name(otherTest)));
   }
 
   private static abstract class NoBodyTester<T> extends BodyTester<T> {

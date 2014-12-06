@@ -1,5 +1,6 @@
 package org.testanza.testers;
 
+import static org.testanza.Testilities.name;
 import static org.testanza.describe_testanza.verify;
 import static org.testanza.testers.TestersForClasses.hasModifier;
 
@@ -7,7 +8,6 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Modifier;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
@@ -16,7 +16,7 @@ public class describe_TestersForClasses_hasModifier {
   private static AnnotatedElement item;
   private static Test test;
   private static Result result;
-  private static String name, message;
+  private static String message;
 
   public static void succeeds_if_method_has_modifier() throws Throwable {
     @SuppressWarnings("unused")
@@ -86,8 +86,7 @@ public class describe_TestersForClasses_hasModifier {
     }
     item = TestClass.class.getDeclaredMethod("testMethod");
     test = hasModifier(Modifier.FINAL).test(item);
-    name = ((TestCase) test).getName();
-    verify(name.contains("final"));
+    verify(name(test).contains("final"));
   }
 
   public static void test_name_contains_member_type_and_simple_name() throws Throwable {
@@ -101,22 +100,18 @@ public class describe_TestersForClasses_hasModifier {
     }
     item = TestClass.class.getDeclaredMethod("foo");
     test = hasModifier(Modifier.FINAL).test(item);
-    name = ((TestCase) test).getName();
-    verify(name.contains("method foo"));
+    verify(name(test).contains("method foo"));
 
     item = TestClass.class.getDeclaredField("foo");
     test = hasModifier(Modifier.FINAL).test(item);
-    name = ((TestCase) test).getName();
-    verify(name.contains("field foo"));
+    verify(name(test).contains("field foo"));
 
     item = TestClass.class.getDeclaredConstructor();
     test = hasModifier(Modifier.FINAL).test(item);
-    name = ((TestCase) test).getName();
-    verify(name.contains("constructor TestClass"));
+    verify(name(test).contains("constructor TestClass"));
 
     item = TestClass.class;
     test = hasModifier(Modifier.FINAL).test(item);
-    name = ((TestCase) test).getName();
-    verify(name.contains("class TestClass"));
+    verify(name(test).contains("class TestClass"));
   }
 }
