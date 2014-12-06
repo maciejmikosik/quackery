@@ -16,6 +16,7 @@ public class describe_testanza {
     runTestsIn(describe_TestersForClasses_hasModifier.class);
     runTestsIn(describe_TestersForClasses_hasNoModifier.class);
     runTestsIn(describe_TestBuilder.class);
+    runTestsIn(describe_Testers_asTester_Matcher.class);
     runTestsIn(describe_name_collisions.class);
     System.out.println(failures.size() + " failures");
     for (Throwable failure : failures) {
