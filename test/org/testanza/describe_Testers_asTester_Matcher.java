@@ -3,7 +3,7 @@ package org.testanza;
 import static org.testanza.Testers.asTester;
 import static org.testanza.Testilities.name;
 import static org.testanza.Testilities.newObject;
-import static org.testanza.describe_testanza.verify;
+import static org.testanza.Testilities.verifyEquals;
 import junit.framework.Test;
 
 import org.hamcrest.Description;
@@ -34,7 +34,7 @@ public class describe_Testers_asTester_Matcher {
     tester = asTester(matcher);
     test = tester.test(item);
     result = new JUnitCore().run(test);
-    verify(result.getFailureCount() == 0);
+    verifyEquals(result.getFailureCount(), 0);
   }
 
   public static void fails_if_matcher_not_matches() {
@@ -52,7 +52,7 @@ public class describe_Testers_asTester_Matcher {
     tester = asTester(matcher);
     test = tester.test(item);
     result = new JUnitCore().run(test);
-    verify(result.getFailureCount() == 1);
+    verifyEquals(result.getFailureCount(), 1);
   }
 
   public static void failure_prints_message() {
@@ -76,15 +76,14 @@ public class describe_Testers_asTester_Matcher {
     tester = asTester(matcher);
     test = tester.test(item);
     result = new JUnitCore().run(test);
-    verify(result.getFailureCount() == 1);
-    verify(result.getFailures().get(0).getMessage().equals("" //
+    verifyEquals(result.getFailures().get(0).getMessage(), "" //
         + "  expected that\n" //
         + "    " + item + "\n" //
         + "  matches\n" //
         + "    " + matcher + "\n" //
         + "  but\n" //
         + "    mismatch for " + item + "\n" //
-    ));
+    );
   }
 
   public static void test_name_contains_matcher_and_item() {
@@ -100,6 +99,6 @@ public class describe_Testers_asTester_Matcher {
     };
     tester = asTester(matcher);
     test = tester.test(item);
-    verify((item + " is " + matcher).equals(name(test)));
+    verifyEquals(name(test), item + " is " + matcher);
   }
 }

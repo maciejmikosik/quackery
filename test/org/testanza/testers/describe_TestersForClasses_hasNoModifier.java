@@ -1,7 +1,8 @@
 package org.testanza.testers;
 
 import static org.testanza.Testilities.name;
-import static org.testanza.describe_testanza.verify;
+import static org.testanza.Testilities.verify;
+import static org.testanza.Testilities.verifyEquals;
 import static org.testanza.testers.TestersForClasses.hasNoModifier;
 
 import java.lang.reflect.AnnotatedElement;
@@ -16,7 +17,6 @@ public class describe_TestersForClasses_hasNoModifier {
   private static AnnotatedElement item;
   private static Test test;
   private static Result result;
-  private static String message;
 
   public static void succeeds_if_method_has_no_modifier() throws Throwable {
     @SuppressWarnings("unused")
@@ -26,7 +26,7 @@ public class describe_TestersForClasses_hasNoModifier {
     item = TestClass.class.getDeclaredMethod("testMethod");
     test = hasNoModifier(Modifier.FINAL).test(item);
     result = new JUnitCore().run(test);
-    verify(0 == result.getFailureCount());
+    verifyEquals(result.getFailureCount(), 0);
   }
 
   public static void fails_if_method_has_modifier() throws Throwable {
@@ -37,7 +37,7 @@ public class describe_TestersForClasses_hasNoModifier {
     item = TestClass.class.getDeclaredMethod("testMethod");
     test = hasNoModifier(Modifier.FINAL).test(item);
     result = new JUnitCore().run(test);
-    verify(1 == result.getFailureCount());
+    verifyEquals(result.getFailureCount(), 1);
   }
 
   public static void succeeds_if_class_has_no_modifier() throws Throwable {
@@ -47,7 +47,7 @@ public class describe_TestersForClasses_hasNoModifier {
     }
     test = hasNoModifier(Modifier.FINAL).test(TestClass.class);
     result = new JUnitCore().run(test);
-    verify(0 == result.getFailureCount());
+    verifyEquals(result.getFailureCount(), 0);
   }
 
   public static void fails_if_class_has_modifier() throws Throwable {
@@ -57,7 +57,7 @@ public class describe_TestersForClasses_hasNoModifier {
     }
     test = hasNoModifier(Modifier.FINAL).test(TestClass.class);
     result = new JUnitCore().run(test);
-    verify(1 == result.getFailureCount());
+    verifyEquals(result.getFailureCount(), 1);
   }
 
   public static void failure_prints_message() throws Throwable {
@@ -69,14 +69,13 @@ public class describe_TestersForClasses_hasNoModifier {
     test = hasNoModifier(Modifier.FINAL).test(item);
     result = new JUnitCore().run(test);
 
-    message = result.getFailures().get(0).getMessage();
-    verify(message.contains("" //
+    verifyEquals(result.getFailures().get(0).getMessage(), "" //
         + "\n" //
         + "  expected that\n" //
         + "    method " + item.toString() + "\n" //
         + "  has no modifier\n" //
         + "    final\n" //
-    ));
+    );
   }
 
   public static void test_name_contains_modifier() throws Throwable {

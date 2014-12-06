@@ -2,7 +2,8 @@ package org.testanza;
 
 import static org.testanza.Testilities.name;
 import static org.testanza.Testilities.newObject;
-import static org.testanza.describe_testanza.verify;
+import static org.testanza.Testilities.verifyEquals;
+import static org.testanza.Testilities.verifyNotEquals;
 import junit.framework.Test;
 
 public class describe_name_collisions {
@@ -20,7 +21,7 @@ public class describe_name_collisions {
       }
     };
     test = tester.test(item);
-    verify(name(test).equals(testName));
+    verifyEquals(name(test), testName);
   }
 
   public static void fixes_colliding_name() {
@@ -32,7 +33,7 @@ public class describe_name_collisions {
     };
     test = tester.test(item);
     otherTest = tester.test(otherItem);
-    verify(!name(test).equals(name(otherTest)));
+    verifyNotEquals(name(test), name(otherTest));
   }
 
   private static abstract class NoBodyTester<T> extends BodyTester<T> {

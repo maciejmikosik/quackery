@@ -25,12 +25,6 @@ public class describe_testanza {
     }
   }
 
-  public static void verify(boolean condition) {
-    if (!condition) {
-      throw new AssertionError();
-    }
-  }
-
   private static void runTestsIn(Class<?> type) throws Throwable {
     for (Method method : type.getDeclaredMethods()) {
       if (isPublic(method) && isStatic(method) && hasNoParameters(method)) {
