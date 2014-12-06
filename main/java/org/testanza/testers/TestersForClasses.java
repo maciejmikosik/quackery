@@ -1,7 +1,5 @@
 package org.testanza.testers;
 
-import static org.junit.Assert.fail;
-
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
@@ -20,7 +18,7 @@ public class TestersForClasses {
 
       protected void body(AnnotatedElement element) throws Throwable {
         if (!hasModifier(modifier, element)) {
-          fail("" //
+          throw new AssertionError("" //
               + "\n" //
               + "  expected that\n" //
               + "    " + fullName(element) + "\n" //
@@ -28,7 +26,6 @@ public class TestersForClasses {
               + "    " + Modifier.toString(modifier) + "\n" //
           );
         }
-
       }
     };
   }
@@ -42,12 +39,13 @@ public class TestersForClasses {
 
       protected void body(AnnotatedElement element) throws Throwable {
         if (hasModifier(modifier, element)) {
-          fail("" //
+          throw new AssertionError("" //
               + "\n" //
               + "  expected that\n" //
               + "    " + fullName(element) + "\n" //
               + "  has no modifier\n" //
-              + "    " + Modifier.toString(modifier) + "\n");
+              + "    " + Modifier.toString(modifier) + "\n" //
+          );
         }
       }
     };

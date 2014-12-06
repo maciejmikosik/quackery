@@ -1,7 +1,5 @@
 package org.testanza;
 
-import static org.junit.Assert.fail;
-
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
 
@@ -14,7 +12,7 @@ public class Testers {
 
       protected void body(T item) throws Throwable {
         if (!matcher.matches(item)) {
-          fail("" //
+          throw new AssertionError("" //
               + "  expected that\n" //
               + "    " + item + "\n" //
               + "  matches\n" //
