@@ -14,11 +14,11 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 
 public class describe_TestersForClasses_hasModifier {
-  private static AnnotatedElement item;
-  private static Test test;
-  private static Result result;
+  private AnnotatedElement item;
+  private Test test;
+  private Result result;
 
-  public static void succeeds_if_method_has_modifier() throws Throwable {
+  public void succeeds_if_method_has_modifier() throws Throwable {
     @SuppressWarnings("unused")
     class TestClass {
       final void testMethod() {}
@@ -29,7 +29,7 @@ public class describe_TestersForClasses_hasModifier {
     verifyEquals(result.getFailureCount(), 0);
   }
 
-  public static void fails_if_method_has_no_modifier() throws Throwable {
+  public void fails_if_method_has_no_modifier() throws Throwable {
     @SuppressWarnings("unused")
     class TestClass {
       void testMethod() {}
@@ -40,7 +40,7 @@ public class describe_TestersForClasses_hasModifier {
     verifyEquals(result.getFailureCount(), 1);
   }
 
-  public static void succeeds_if_class_has_modifier() throws Throwable {
+  public void succeeds_if_class_has_modifier() throws Throwable {
     @SuppressWarnings("unused")
     final class TestClass {
       final void testMethod() {}
@@ -50,7 +50,7 @@ public class describe_TestersForClasses_hasModifier {
     verifyEquals(result.getFailureCount(), 0);
   }
 
-  public static void fails_if_class_has_no_modifier() throws Throwable {
+  public void fails_if_class_has_no_modifier() throws Throwable {
     @SuppressWarnings("unused")
     class TestClass {
       void testMethod() {}
@@ -60,7 +60,7 @@ public class describe_TestersForClasses_hasModifier {
     verifyEquals(result.getFailureCount(), 1);
   }
 
-  public static void failure_prints_message() throws Throwable {
+  public void failure_prints_message() throws Throwable {
     @SuppressWarnings("unused")
     class TestClass {
       void foo() {}
@@ -78,7 +78,7 @@ public class describe_TestersForClasses_hasModifier {
     );
   }
 
-  public static void test_name_contains_modifier() throws Throwable {
+  public void test_name_contains_modifier() throws Throwable {
     @SuppressWarnings("unused")
     class TestClass {
       void testMethod() {}
@@ -88,7 +88,7 @@ public class describe_TestersForClasses_hasModifier {
     verify(name(test).contains("final"));
   }
 
-  public static void test_name_contains_member_type_and_simple_name() throws Throwable {
+  public void test_name_contains_member_type_and_simple_name() throws Throwable {
     @SuppressWarnings("unused")
     class TestClass {
       TestClass() {}
@@ -105,7 +105,7 @@ public class describe_TestersForClasses_hasModifier {
     test = hasModifier(Modifier.FINAL).test(item);
     verify(name(test).contains("field foo"));
 
-    item = TestClass.class.getDeclaredConstructor();
+    item = TestClass.class.getDeclaredConstructors()[0];
     test = hasModifier(Modifier.FINAL).test(item);
     verify(name(test).contains("constructor TestClass"));
 

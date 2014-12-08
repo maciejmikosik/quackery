@@ -11,9 +11,9 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
 public class describe_TestBuilder {
-  private static TestBuilder builder;
+  private TestBuilder builder;
 
-  public static void accepts_covariant_list() {
+  public void accepts_covariant_list() {
     List<String> items = Arrays.asList();
     Tester<Object> tester = new Tester<Object>() {
       public Test test(Object item) {

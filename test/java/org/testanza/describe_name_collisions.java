@@ -7,13 +7,13 @@ import static org.testanza.Testilities.verifyNotEquals;
 import junit.framework.Test;
 
 public class describe_name_collisions {
-  private static String testName = "testName";
-  private static Object item = newObject("item");
-  private static Object otherItem = newObject("otherItem");
-  private static Tester<Object> tester;
-  private static Test test, otherTest;
+  private String testName = "testName";
+  private final Object item = newObject("item");
+  private final Object otherItem = newObject("otherItem");
+  private Tester<Object> tester;
+  private Test test, otherTest;
 
-  public static void uses_original_name_if_no_collision() {
+  public void uses_original_name_if_no_collision() {
     testName = "uses_original_name_if_no_collision";
     tester = new NoBodyTester<Object>() {
       protected String name(Object i) {
@@ -24,7 +24,7 @@ public class describe_name_collisions {
     verifyEquals(name(test), testName);
   }
 
-  public static void fixes_colliding_name() {
+  public void fixes_colliding_name() {
     testName = "fixes_colliding_name";
     tester = new NoBodyTester<Object>() {
       protected String name(Object i) {

@@ -13,13 +13,13 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 
 public class describe_Testers_asTester_Matcher {
-  private static Object item;
-  private static Matcher<Object> matcher;
-  private static Tester<Object> tester;
-  private static Test test;
-  private static Result result;
+  private Object item;
+  private Matcher<Object> matcher;
+  private Tester<Object> tester;
+  private Test test;
+  private Result result;
 
-  public static void succeeds_if_matcher_matches() {
+  public void succeeds_if_matcher_matches() {
     item = newObject("item");
     matcher = new TypeSafeMatcher<Object>() {
       public void describeTo(Description description) {}
@@ -37,7 +37,7 @@ public class describe_Testers_asTester_Matcher {
     verifyEquals(result.getFailureCount(), 0);
   }
 
-  public static void fails_if_matcher_not_matches() {
+  public void fails_if_matcher_not_matches() {
     item = newObject("item");
     matcher = new TypeSafeMatcher<Object>() {
       public void describeTo(Description description) {}
@@ -55,7 +55,7 @@ public class describe_Testers_asTester_Matcher {
     verifyEquals(result.getFailureCount(), 1);
   }
 
-  public static void failure_prints_message() {
+  public void failure_prints_message() {
     item = newObject("item");
     matcher = new TypeSafeMatcher<Object>() {
       public void describeTo(Description description) {
@@ -86,7 +86,7 @@ public class describe_Testers_asTester_Matcher {
     );
   }
 
-  public static void test_name_contains_matcher_and_item() {
+  public void test_name_contains_matcher_and_item() {
     item = newObject("item");
     matcher = new TypeSafeMatcher<Object>() {
       public void describeTo(Description description) {

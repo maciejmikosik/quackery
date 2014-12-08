@@ -37,10 +37,10 @@ public class describe_testanza {
   private static void runTestsIn(Class<?> type) throws Throwable {
     int count = 0;
     for (Method method : type.getDeclaredMethods()) {
-      if (isPublic(method) && isStatic(method) && hasNoParameters(method)) {
+      if (isPublic(method) && !isStatic(method) && hasNoParameters(method)) {
         count++;
         try {
-          method.invoke(null);
+          method.invoke(type.newInstance());
         } catch (InvocationTargetException e) {
           failures.add(e.getTargetException());
         }
