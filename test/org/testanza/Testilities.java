@@ -20,10 +20,11 @@ public class Testilities {
   public static void verifyEquals(Object actual, Object expected) {
     if (!Objects.deepEquals(actual, expected)) {
       throw new AssertionError("" //
-          + "  expected that" //
-          + "    " + actual //
-          + "  is equal to" //
-          + "    " + actual //
+          + "\n" //
+          + "  expected that\n" //
+          + "    " + actual + "\n" //
+          + "  is equal to\n" //
+          + "    " + expected + "\n" //
       );
     }
   }
@@ -31,10 +32,11 @@ public class Testilities {
   public static void verifyNotEquals(Object actual, Object expected) {
     if (Objects.deepEquals(actual, expected)) {
       throw new AssertionError("" //
-          + "  expected that" //
-          + "    " + actual //
-          + "  is not equal to" //
-          + "    " + actual //
+          + "\n" //
+          + "  expected that\n" //
+          + "    " + actual + "\n" //
+          + "  is not equal to\n" //
+          + "    " + expected + "\n" //
       );
     }
   }
