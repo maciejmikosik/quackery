@@ -11,6 +11,7 @@ import org.testanza.testers.describe_TestersForClasses_hasNoModifier;
 
 public class describe_testanza {
   private static List<Throwable> failures = new ArrayList<Throwable>();
+  private static List<String> statistics = new ArrayList<String>();
 
   public static void main(String[] args) throws Throwable {
     runTestsIn(describe_TestersForClasses_hasModifier.class);
@@ -18,16 +19,26 @@ public class describe_testanza {
     runTestsIn(describe_TestBuilder.class);
     runTestsIn(describe_Testers_asTester_Matcher.class);
     runTestsIn(describe_name_collisions.class);
-    System.out.println(failures.size() + " failures");
-    for (Throwable failure : failures) {
-      System.out.println();
-      failure.printStackTrace(System.out);
+
+    if (failures.size() == 0) {
+      System.out.println("no failures");
+      for (String stat : statistics) {
+        System.out.println(stat);
+      }
+    } else {
+      System.out.println(failures.size() + " failures");
+      for (Throwable failure : failures) {
+        System.out.println();
+        failure.printStackTrace(System.out);
+      }
     }
   }
 
   private static void runTestsIn(Class<?> type) throws Throwable {
+    int count = 0;
     for (Method method : type.getDeclaredMethods()) {
       if (isPublic(method) && isStatic(method) && hasNoParameters(method)) {
+        count++;
         try {
           method.invoke(null);
         } catch (InvocationTargetException e) {
@@ -35,6 +46,7 @@ public class describe_testanza {
         }
       }
     }
+    statistics.add(type.getSimpleName() + " : " + count);
   }
 
   private static boolean isPublic(Method method) {
