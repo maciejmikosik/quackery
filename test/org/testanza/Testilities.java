@@ -13,6 +13,10 @@ public class Testilities {
     }
   }
 
+  public static void verifyFail() {
+    throw new AssertionError();
+  }
+
   public static void verifyEquals(Object actual, Object expected) {
     if (!Objects.deepEquals(actual, expected)) {
       throw new AssertionError("" //
