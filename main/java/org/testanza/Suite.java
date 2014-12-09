@@ -15,10 +15,10 @@ public class Suite implements Test {
     this.tests = tests;
   }
 
-  public static Suite newSuite(String name, List<Test> tests) {
+  public static Suite newSuite(String name, List<? extends Test> tests) {
     check(name != null);
     check(tests != null);
-    return verify(new Suite(name, immutable(tests)));
+    return verify(new Suite(name, immutable((List<Test>) tests)));
   }
 
   private static Suite verify(Suite suite) {

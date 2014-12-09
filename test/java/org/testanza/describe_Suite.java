@@ -7,6 +7,7 @@ import static org.testanza.Testilities.verify;
 import static org.testanza.Testilities.verifyEquals;
 import static org.testanza.Testilities.verifyFail;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class describe_Suite {
@@ -23,6 +24,10 @@ public class describe_Suite {
     test = newSuite(name, tests);
     verifyEquals(test.name, name);
     verifyEquals(test.tests, tests);
+  }
+
+  public void tests_list_is_covariant() {
+    newSuite(name, Arrays.<Case> asList());
   }
 
   public void name_cannot_be_null() {

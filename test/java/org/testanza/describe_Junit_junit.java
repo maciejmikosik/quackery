@@ -71,7 +71,7 @@ public class describe_Junit_junit {
   }
 
   public void copies_hierarchy() throws Throwable {
-    test = newSuite("", asList((Test) newCase(name, new Closure() {
+    test = newSuite("", asList(newCase(name, new Closure() {
       public void invoke() throws Throwable {
         invoked = true;
       }
