@@ -21,7 +21,6 @@ public class describe_testanza {
     runTestsIn(describe_TestersForClasses_hasNoModifier.class);
     runTestsIn(describe_TestBuilder.class);
     runTestsIn(describe_Testers_asTester_Matcher.class);
-    runTestsIn(describe_name_collisions.class);
 
     if (failures.size() == 0) {
       System.out.println("no failures");
