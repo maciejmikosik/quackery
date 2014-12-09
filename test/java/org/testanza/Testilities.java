@@ -49,6 +49,16 @@ public class Testilities {
     };
   }
 
+  public static Closure newClosure(final String name) {
+    return new Closure() {
+      public void invoke() {}
+
+      public String toString() {
+        return name;
+      }
+    };
+  }
+
   public static String name(Test test) {
     return test instanceof TestCase
         ? ((TestCase) test).getName()
