@@ -7,6 +7,7 @@ import static org.testanza.Suite.newSuite;
 import static org.testanza.Testilities.newClosure;
 import static org.testanza.Testilities.verifyEquals;
 import static org.testanza.Testilities.verifyFail;
+import static org.testanza.Testilities.verifyNotEquals;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -20,11 +21,11 @@ import junit.framework.TestSuite;
 
 public class describe_Junit_junit {
   private final RuntimeException exception = new RuntimeException("exception");
-  private final String name = "name";
+  private final String name = "name " + hashCode();
   private final Closure body = newClosure("body");
   private boolean invoked;
   private Test test;
-  private junit.framework.Test junitTest;
+  private junit.framework.Test junitTest, otherJunitTest;
   private List<junit.framework.Test> junitTests;
 
   public void copies_case_name() {
@@ -85,6 +86,22 @@ public class describe_Junit_junit {
 
     run(junitTests.get(0));
     verifyEquals(invoked, true);
+  }
+
+  public void renames_colliding_names() {
+    test = newSuite("suite", asList(newCase(name, body), newCase(name, body)));
+
+    junitTest = junit(test);
+
+    junitTests = enumerate(junitTest);
+    verifyNotEquals(name(junitTests.get(0)), name(junitTests.get(1)));
+  }
+
+  public void renames_colliding_names_from_different_conversions() {
+    junitTest = junit(newCase(name, body));
+    otherJunitTest = junit(newCase(name, body));
+
+    verifyNotEquals(name(junitTest), name(otherJunitTest));
   }
 
   private static String name(junit.framework.Test junitTest) {

@@ -1,5 +1,9 @@
 package org.testanza;
 
+import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
@@ -19,10 +23,29 @@ public class Junit {
   }
 
   private static TestCase junit(final Case cas) {
-    return new TestCase(cas.name) {
+    return makeNameUnique(new TestCase(cas.name) {
       protected void runTest() throws Throwable {
         cas.body.invoke();
       }
-    };
+    });
   }
+
+  private static synchronized TestCase makeNameUnique(TestCase test) {
+    String name = test.getName();
+    String newName = name;
+    if (names.containsKey(name) && !test.equals(names.get(name).get())) {
+      for (int i = 1;; i++) {
+        newName = name + " #" + i;
+        if (!names.containsKey(newName)) {
+          break;
+        }
+      }
+
+    }
+    names.put(newName, new WeakReference<TestCase>(test));
+    test.setName(newName);
+    return test;
+  }
+
+  private static final Map<String, WeakReference<TestCase>> names = new WeakHashMap<String, WeakReference<TestCase>>();
 }
