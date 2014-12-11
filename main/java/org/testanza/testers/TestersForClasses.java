@@ -6,6 +6,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 
 import org.testanza.BodyTester;
+import org.testanza.TestanzaAssertionError;
 import org.testanza.Tester;
 
 public class TestersForClasses {
@@ -18,7 +19,7 @@ public class TestersForClasses {
 
       protected void body(AnnotatedElement element) throws Throwable {
         if (!hasModifier(modifier, element)) {
-          throw new AssertionError("" //
+          throw new TestanzaAssertionError("" //
               + "\n" //
               + "  expected that\n" //
               + "    " + fullName(element) + "\n" //
@@ -39,7 +40,7 @@ public class TestersForClasses {
 
       protected void body(AnnotatedElement element) throws Throwable {
         if (hasModifier(modifier, element)) {
-          throw new AssertionError("" //
+          throw new TestanzaAssertionError("" //
               + "\n" //
               + "  expected that\n" //
               + "    " + fullName(element) + "\n" //

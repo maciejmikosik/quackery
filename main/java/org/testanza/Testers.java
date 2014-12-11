@@ -12,7 +12,7 @@ public class Testers {
 
       protected void body(T item) throws Throwable {
         if (!matcher.matches(item)) {
-          throw new AssertionError("" //
+          throw new TestanzaAssertionError("" //
               + "  expected that\n" //
               + "    " + item + "\n" //
               + "  matches\n" //
