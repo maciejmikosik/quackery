@@ -2,10 +2,6 @@ package org.testanza;
 
 import java.util.Objects;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 public class Testilities {
   public static void verify(boolean condition) {
     if (!condition) {
@@ -60,10 +56,10 @@ public class Testilities {
   }
 
   public static String name(Test test) {
-    return test instanceof TestCase
-        ? ((TestCase) test).getName()
-        : test instanceof TestSuite
-            ? ((TestSuite) test).getName()
+    return test instanceof Case
+        ? ((Case) test).name
+        : test instanceof Suite
+            ? ((Suite) test).name
             : unknown(String.class);
   }
 

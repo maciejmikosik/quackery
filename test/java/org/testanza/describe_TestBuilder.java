@@ -3,9 +3,6 @@ package org.testanza;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -17,7 +14,7 @@ public class describe_TestBuilder {
     List<String> items = Arrays.asList();
     Tester<Object> tester = new Tester<Object>() {
       public Test test(Object item) {
-        return new TestCase() {};
+        return new Test() {};
       }
     };
     Matcher<Object> matcher = new TypeSafeMatcher<Object>() {
