@@ -110,12 +110,12 @@ public class describe_SuiteTester {
     final Tester<Foo> fooTester = null;
     final Matcher<Foo> fooMatcher = null;
 
-    new SuiteTester<Foo>() {
-      protected String name(Foo item) {
+    new SuiteTester<Object>() {
+      protected String name(Object item) {
         return "";
       }
 
-      protected void tests(Foo item) throws Throwable {
+      protected void tests(Object item) throws Throwable {
         testThat(foo, fooTester);
         testThat(bar, fooTester);
         testThatAll(asList(foo), fooTester);

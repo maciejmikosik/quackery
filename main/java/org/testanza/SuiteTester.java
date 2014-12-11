@@ -34,31 +34,31 @@ public abstract class SuiteTester<T> implements Tester<T> {
 
   protected abstract void tests(T item) throws Throwable;
 
-  protected void testThat(T item, Tester<T> tester) {
+  protected <E> void testThat(E item, Tester<E> tester) {
     tests.add(tester.test(item));
   }
 
-  protected void testThatAll(List<? extends T> items, Tester<T> tester) {
-    for (T item : items) {
+  protected <E> void testThatAll(List<? extends E> items, Tester<E> tester) {
+    for (E item : items) {
       testThat(item, tester);
     }
   }
 
-  protected void testThatAll(T[] items, Tester<T> tester) {
-    for (T item : items) {
+  protected <E> void testThatAll(E[] items, Tester<E> tester) {
+    for (E item : items) {
       testThat(item, tester);
     }
   }
 
-  protected void testThat(T item, Matcher<T> matcher) {
+  protected <E> void testThat(E item, Matcher<E> matcher) {
     tests.add(asTester(matcher).test(item));
   }
 
-  protected void testThatAll(List<? extends T> items, Matcher<T> matcher) {
+  protected <E> void testThatAll(List<? extends E> items, Matcher<E> matcher) {
     testThatAll(items, asTester(matcher));
   }
 
-  protected void testThatAll(T[] items, Matcher<T> matcher) {
+  protected <E> void testThatAll(E[] items, Matcher<E> matcher) {
     testThatAll(items, asTester(matcher));
   }
 }
