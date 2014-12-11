@@ -1,19 +1,15 @@
-package org.testanza.testers;
+package org.testanza;
 
+import static org.testanza.Testers.hasModifier;
 import static org.testanza.Testilities.name;
 import static org.testanza.Testilities.verify;
 import static org.testanza.Testilities.verifyEquals;
 import static org.testanza.Testilities.verifyFail;
-import static org.testanza.testers.TestersForClasses.hasModifier;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Modifier;
 
-import org.testanza.Case;
-import org.testanza.Test;
-import org.testanza.TestanzaAssertionError;
-
-public class describe_TestersForClasses_hasModifier {
+public class describe_Testers_hasModifier {
   private AnnotatedElement item;
   private Test test;
 
