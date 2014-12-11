@@ -6,4 +6,8 @@ public class TestanzaAssertionError extends AssertionError {
   public TestanzaAssertionError(String message) {
     super(message);
   }
+
+  public TestanzaAssertionError(String message, Throwable cause) {
+    super(message, cause);
+  }
 }
