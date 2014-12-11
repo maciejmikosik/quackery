@@ -102,6 +102,23 @@ public class describe_SuiteTester {
     verifyEquals(suite.tests.size(), 1);
   }
 
+  public void tester_instance_is_reusable() {
+    tester = new SuiteTester<Object>() {
+      protected String name(Object item) {
+        return "";
+      }
+
+      protected void tests(Object item) throws Throwable {
+        testThat(object, testerA);
+        testThat(object, testerA);
+      }
+    };
+    suite = (Suite) tester.test(object);
+    verifyEquals(suite.tests.size(), 2);
+    suite = (Suite) tester.test(object);
+    verifyEquals(suite.tests.size(), 2);
+  }
+
   public void lists_and_arrays_are_covariant() {
     class Foo {}
     class Bar extends Foo {}

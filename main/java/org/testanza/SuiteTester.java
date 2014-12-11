@@ -10,11 +10,13 @@ import java.util.List;
 import org.hamcrest.Matcher;
 
 public abstract class SuiteTester<T> implements Tester<T> {
-  private final List<Test> tests = new ArrayList<Test>();
+  private List<Test> tests;
 
   public Test test(final T item) {
+    tests = new ArrayList<Test>();
     try {
       tests(item);
+      return newSuite(name(item), tests);
     } catch (final Throwable e) {
       return newCase(name(item), new Closure() {
         public void invoke() throws Throwable {
@@ -26,8 +28,9 @@ public abstract class SuiteTester<T> implements Tester<T> {
           , e);
         }
       });
+    } finally {
+      tests = null;
     }
-    return newSuite(name(item), tests);
   }
 
   protected abstract String name(T item);
