@@ -5,7 +5,7 @@ import org.hamcrest.StringDescription;
 
 public class Testers {
   public static <T> Tester<T> asTester(final Matcher<T> matcher) {
-    return new BodyTester<T>() {
+    return new CaseTester<T>() {
       protected String name(T item) {
         return item + " is " + matcher.toString();
       }

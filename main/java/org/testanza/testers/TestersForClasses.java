@@ -5,13 +5,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 
-import org.testanza.BodyTester;
+import org.testanza.CaseTester;
 import org.testanza.TestanzaAssertionError;
 import org.testanza.Tester;
 
 public class TestersForClasses {
   public static Tester<AnnotatedElement> hasModifier(final int modifier) {
-    return new BodyTester<AnnotatedElement>() {
+    return new CaseTester<AnnotatedElement>() {
       protected String name(AnnotatedElement element) {
         return kind(element) + " " + simpleName(element) + " has modifier "
             + Modifier.toString(modifier);
@@ -32,7 +32,7 @@ public class TestersForClasses {
   }
 
   public static Tester<AnnotatedElement> hasNoModifier(final int modifier) {
-    return new BodyTester<AnnotatedElement>() {
+    return new CaseTester<AnnotatedElement>() {
       protected String name(AnnotatedElement element) {
         return kind(element) + " " + simpleName(element) + " has no modifier "
             + Modifier.toString(modifier);
