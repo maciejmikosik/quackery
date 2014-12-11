@@ -1,9 +1,13 @@
 package org.testanza;
 
+import static java.util.Arrays.asList;
+import static java.util.Objects.deepEquals;
+
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
+import java.util.List;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
@@ -78,6 +82,34 @@ public class Testers {
     };
   }
 
+  public static Tester<Class<?>> hasConstructor(final int modifier, final Class<?>... parameters) {
+    return new CaseTester<Class<?>>() {
+      protected String name(Class<?> type) {
+        return "class " + type.getSimpleName() + " has " + Modifier.toString(modifier)
+            + " constructor with " + parameters.length + " parameters "
+            + printParameters(parameters);
+      }
+
+      protected void body(Class<?> type) throws Throwable {
+        for (Constructor<?> constructor : type.getDeclaredConstructors()) {
+          if (hasModifier(modifier, constructor)
+              && deepEquals(constructor.getParameterTypes(), parameters)) {
+            return;
+          }
+        }
+
+        throw new TestanzaAssertionError("" //
+            + "  expected that\n" //
+            + "    " + type + "\n" //
+            + "  has constructor with modifier\n" //
+            + "    " + Modifier.toString(modifier) + "\n" //
+            + "  and " + parameters.length + " parameters\n" //
+            + printLines("    ", asList(parameters)) //
+        );
+      }
+    };
+  }
+
   private static boolean hasModifier(int modifier, AnnotatedElement element) {
     return (modifiers(element) & modifier) != 0;
   }
@@ -114,5 +146,24 @@ public class Testers {
     } else {
       return kind(element) + " " + element.toString();
     }
+  }
+
+  private static String printLines(String prefix, List<?> objects) {
+    StringBuilder builder = new StringBuilder();
+    for (Object object : objects) {
+      builder.append(prefix).append(String.valueOf(object)).append("\n");
+    }
+    return builder.toString();
+  }
+
+  private static String printParameters(Class<?>[] parameters) {
+    StringBuilder builder = new StringBuilder();
+    for (Class<?> parameter : parameters) {
+      builder.append(parameter.getSimpleName()).append(", ");
+    }
+    if (parameters.length > 0) {
+      builder.delete(builder.length() - 2, builder.length());
+    }
+    return builder.toString();
   }
 }
