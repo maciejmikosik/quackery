@@ -17,8 +17,10 @@ public abstract class SuiteTester<T> implements Tester<T> {
     } catch (Throwable e) {
       throw new TestanzaException("failed to created suite", e);
     }
-    return newSuite("", tests);
+    return newSuite(name(item), tests);
   }
+
+  protected abstract String name(T item);
 
   protected abstract void tests(T item) throws Throwable;
 
