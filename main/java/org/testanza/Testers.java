@@ -2,6 +2,7 @@ package org.testanza;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.deepEquals;
+import static org.testanza.Case.newCase;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
@@ -14,22 +15,24 @@ import org.hamcrest.StringDescription;
 
 public class Testers {
   public static <T> Tester<T> asTester(final Matcher<T> matcher) {
-    return new CaseTester<T>() {
-      protected String name(T item) {
-        return item + " is " + matcher.toString();
-      }
-
-      protected void body(T item) throws Throwable {
-        if (!matcher.matches(item)) {
-          throw new TestanzaAssertionError("" //
-              + "  expected that\n" //
-              + "    " + item + "\n" //
-              + "  matches\n" //
-              + "    " + matcher + "\n" //
-              + "  but\n" //
-              + "    " + diagnose(item, matcher) + "\n" //
-          );
-        }
+    return new Tester<T>() {
+      public Test test(final T item) {
+        String name = item + " is " + matcher.toString();
+        Closure body = new Closure() {
+          public void invoke() throws Throwable {
+            if (!matcher.matches(item)) {
+              throw new TestanzaAssertionError("" //
+                  + "  expected that\n" //
+                  + "    " + item + "\n" //
+                  + "  matches\n" //
+                  + "    " + matcher + "\n" //
+                  + "  but\n" //
+                  + "    " + diagnose(item, matcher) + "\n" //
+              );
+            }
+          }
+        };
+        return newCase(name, body);
       }
     };
   }
@@ -41,71 +44,76 @@ public class Testers {
   }
 
   public static Tester<AnnotatedElement> hasModifier(final int modifier) {
-    return new CaseTester<AnnotatedElement>() {
-      protected String name(AnnotatedElement element) {
-        return kind(element) + " " + simpleName(element) + " has modifier "
+    return new Tester<AnnotatedElement>() {
+      public Test test(final AnnotatedElement element) {
+        String name = kind(element) + " " + simpleName(element) + " has modifier "
             + Modifier.toString(modifier);
-      }
-
-      protected void body(AnnotatedElement element) throws Throwable {
-        if (!hasModifier(modifier, element)) {
-          throw new TestanzaAssertionError("" //
-              + "\n" //
-              + "  expected that\n" //
-              + "    " + fullName(element) + "\n" //
-              + "  has modifier\n" //
-              + "    " + Modifier.toString(modifier) + "\n" //
-          );
-        }
+        Closure body = new Closure() {
+          public void invoke() throws Throwable {
+            if (!hasModifier(modifier, element)) {
+              throw new TestanzaAssertionError("" //
+                  + "\n" //
+                  + "  expected that\n" //
+                  + "    " + fullName(element) + "\n" //
+                  + "  has modifier\n" //
+                  + "    " + Modifier.toString(modifier) + "\n" //
+              );
+            }
+          }
+        };
+        return newCase(name, body);
       }
     };
   }
 
   public static Tester<AnnotatedElement> hasNoModifier(final int modifier) {
-    return new CaseTester<AnnotatedElement>() {
-      protected String name(AnnotatedElement element) {
-        return kind(element) + " " + simpleName(element) + " has no modifier "
+    return new Tester<AnnotatedElement>() {
+      public Test test(final AnnotatedElement element) {
+        String name = kind(element) + " " + simpleName(element) + " has no modifier "
             + Modifier.toString(modifier);
-      }
-
-      protected void body(AnnotatedElement element) throws Throwable {
-        if (hasModifier(modifier, element)) {
-          throw new TestanzaAssertionError("" //
-              + "\n" //
-              + "  expected that\n" //
-              + "    " + fullName(element) + "\n" //
-              + "  has no modifier\n" //
-              + "    " + Modifier.toString(modifier) + "\n" //
-          );
-        }
+        Closure body = new Closure() {
+          public void invoke() throws Throwable {
+            if (hasModifier(modifier, element)) {
+              throw new TestanzaAssertionError("" //
+                  + "\n" //
+                  + "  expected that\n" //
+                  + "    " + fullName(element) + "\n" //
+                  + "  has no modifier\n" //
+                  + "    " + Modifier.toString(modifier) + "\n" //
+              );
+            }
+          }
+        };
+        return newCase(name, body);
       }
     };
   }
 
   public static Tester<Class<?>> hasConstructor(final int modifier, final Class<?>... parameters) {
-    return new CaseTester<Class<?>>() {
-      protected String name(Class<?> type) {
-        return "class " + type.getSimpleName() + " has " + Modifier.toString(modifier)
+    return new Tester<Class<?>>() {
+      public Test test(final Class<?> type) {
+        String name = "class " + type.getSimpleName() + " has " + Modifier.toString(modifier)
             + " constructor with " + parameters.length + " parameters "
             + printParameters(parameters);
-      }
-
-      protected void body(Class<?> type) throws Throwable {
-        for (Constructor<?> constructor : type.getDeclaredConstructors()) {
-          if (hasModifier(modifier, constructor)
-              && deepEquals(constructor.getParameterTypes(), parameters)) {
-            return;
+        Closure body = new Closure() {
+          public void invoke() throws Throwable {
+            for (Constructor<?> constructor : type.getDeclaredConstructors()) {
+              if (hasModifier(modifier, constructor)
+                  && deepEquals(constructor.getParameterTypes(), parameters)) {
+                return;
+              }
+            }
+            throw new TestanzaAssertionError("" //
+                + "  expected that\n" //
+                + "    " + type + "\n" //
+                + "  has constructor with modifier\n" //
+                + "    " + Modifier.toString(modifier) + "\n" //
+                + "  and " + parameters.length + " parameters\n" //
+                + printLines("    ", asList(parameters)) //
+            );
           }
-        }
-
-        throw new TestanzaAssertionError("" //
-            + "  expected that\n" //
-            + "    " + type + "\n" //
-            + "  has constructor with modifier\n" //
-            + "    " + Modifier.toString(modifier) + "\n" //
-            + "  and " + parameters.length + " parameters\n" //
-            + printLines("    ", asList(parameters)) //
-        );
+        };
+        return newCase(name, body);
       }
     };
   }
