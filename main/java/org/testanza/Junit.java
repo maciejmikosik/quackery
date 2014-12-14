@@ -8,10 +8,10 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 public class Junit {
-  public static junit.framework.Test junit(Test expectation) {
-    return expectation instanceof Case
-        ? junit((Case) expectation)
-        : junit((Suite) expectation);
+  public static junit.framework.Test junit(Test test) {
+    return test instanceof Case
+        ? junit((Case) test)
+        : junit((Suite) test);
   }
 
   private static TestSuite junit(Suite suite) {
