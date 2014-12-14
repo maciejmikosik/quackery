@@ -81,6 +81,7 @@ public class describe_Testers_asTester_Matcher {
       verifyFail();
     } catch (TestanzaAssertionError e) {
       verifyEquals(e.getMessage(), "" //
+          + "\n" //
           + "  expected that\n" //
           + "    " + item + "\n" //
           + "  matches\n" //

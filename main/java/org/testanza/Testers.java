@@ -22,6 +22,7 @@ public class Testers {
           public void invoke() {
             if (!matcher.matches(item)) {
               throw new TestanzaAssertionError("" //
+                  + "\n" //
                   + "  expected that\n" //
                   + "    " + item + "\n" //
                   + "  matches\n" //
@@ -104,6 +105,7 @@ public class Testers {
               }
             }
             throw new TestanzaAssertionError("" //
+                + "\n" //
                 + "  expected that\n" //
                 + "    " + type + "\n" //
                 + "  has constructor with modifier\n" //

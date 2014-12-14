@@ -54,6 +54,7 @@ public class describe_Testers_hasConstructor {
       verifyFail();
     } catch (TestanzaAssertionError e) {
       verify(e.getMessage().contains("" //
+          + "\n" //
           + "  expected that\n" //
           + "    " + Testable.class + "\n" //
           + "  has constructor with modifier\n" //
