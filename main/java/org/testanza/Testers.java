@@ -19,7 +19,7 @@ public class Testers {
       public Test test(final T item) {
         String name = item + " is " + matcher.toString();
         Closure body = new Closure() {
-          public void invoke() throws Throwable {
+          public void invoke() {
             if (!matcher.matches(item)) {
               throw new TestanzaAssertionError("" //
                   + "  expected that\n" //
@@ -49,7 +49,7 @@ public class Testers {
         String name = kind(element) + " " + simpleName(element) + " has modifier "
             + Modifier.toString(modifier);
         Closure body = new Closure() {
-          public void invoke() throws Throwable {
+          public void invoke() {
             if (!hasModifier(modifier, element)) {
               throw new TestanzaAssertionError("" //
                   + "\n" //
@@ -72,7 +72,7 @@ public class Testers {
         String name = kind(element) + " " + simpleName(element) + " has no modifier "
             + Modifier.toString(modifier);
         Closure body = new Closure() {
-          public void invoke() throws Throwable {
+          public void invoke() {
             if (hasModifier(modifier, element)) {
               throw new TestanzaAssertionError("" //
                   + "\n" //
@@ -96,7 +96,7 @@ public class Testers {
             + " constructor with " + parameters.length + " parameters "
             + printParameters(parameters);
         Closure body = new Closure() {
-          public void invoke() throws Throwable {
+          public void invoke() {
             for (Constructor<?> constructor : type.getDeclaredConstructors()) {
               if (hasModifier(modifier, constructor)
                   && deepEquals(constructor.getParameterTypes(), parameters)) {
