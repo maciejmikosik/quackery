@@ -3,6 +3,7 @@ package org.testanza;
 import static java.util.Arrays.asList;
 import static java.util.Objects.deepEquals;
 import static org.testanza.Case.newCase;
+import static org.testanza.TestanzaException.check;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
@@ -15,6 +16,7 @@ import org.hamcrest.StringDescription;
 
 public class Testers {
   public static <T> Tester<T> asTester(final Matcher<T> matcher) {
+    check(matcher != null);
     return new Tester<T>() {
       public Test test(final T item) {
         String name = item + " is " + matcher.toString();
@@ -91,6 +93,8 @@ public class Testers {
   }
 
   public static Tester<Class<?>> hasConstructor(final int modifier, final Class<?>... parameters) {
+    check(parameters != null);
+    check(!asList(parameters).contains(null));
     return new Tester<Class<?>>() {
       public Test test(final Class<?> type) {
         String name = "class " + type.getSimpleName() + " has " + Modifier.toString(modifier)

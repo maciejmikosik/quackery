@@ -72,4 +72,18 @@ public class describe_Testers_hasConstructor {
     verifyEquals(((Case) test).name,
         "class Testable has private constructor with 2 parameters String, String");
   }
+
+  public void parameters_array_cannot_be_null() {
+    try {
+      hasConstructor(PRIVATE, (Class[]) null);
+      verifyFail();
+    } catch (TestanzaException e) {}
+  }
+
+  public void parameter_cannot_be_null() {
+    try {
+      hasConstructor(PRIVATE, String.class, null, String.class);
+      verifyFail();
+    } catch (TestanzaException e) {}
+  }
 }

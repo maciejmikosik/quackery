@@ -107,4 +107,11 @@ public class describe_Testers_asTester_Matcher {
     test = tester.test(item);
     verifyEquals(name(test), item + " is " + matcher);
   }
+
+  public void matcher_cannot_be_null() {
+    try {
+      asTester(null);
+      verifyFail();
+    } catch (TestanzaException e) {}
+  }
 }
