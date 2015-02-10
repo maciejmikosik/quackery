@@ -3,6 +3,7 @@ package org.testanza;
 import static org.testanza.Testers.asTester;
 import static org.testanza.Testilities.name;
 import static org.testanza.Testilities.newObject;
+import static org.testanza.Testilities.run;
 import static org.testanza.Testilities.verifyEquals;
 import static org.testanza.Testilities.verifyFail;
 
@@ -31,7 +32,7 @@ public class describe_Testers_asTester_Matcher {
     tester = asTester(matcher);
     test = tester.test(item);
 
-    ((Case) test).body.invoke();
+    run(test);
   }
 
   public void fails_if_matcher_not_matches() throws Throwable {
@@ -50,7 +51,7 @@ public class describe_Testers_asTester_Matcher {
     test = tester.test(item);
 
     try {
-      ((Case) test).body.invoke();
+      run(test);
       verifyFail();
     } catch (TestanzaAssertionError e) {}
   }
@@ -77,7 +78,7 @@ public class describe_Testers_asTester_Matcher {
     test = tester.test(item);
 
     try {
-      ((Case) test).body.invoke();
+      run(test);
       verifyFail();
     } catch (TestanzaAssertionError e) {
       verifyEquals(e.getMessage(), "" //

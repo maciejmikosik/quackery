@@ -85,6 +85,14 @@ public class Testilities {
             : unknown(String.class);
   }
 
+  public static void run(Test test) throws Throwable {
+    if (test instanceof Case) {
+      ((Case) test).body.invoke();
+    } else {
+      unknown(test.getClass());
+    }
+  }
+
   private static <T> T unknown(Class<T> type) {
     throw new RuntimeException("" + type);
   }

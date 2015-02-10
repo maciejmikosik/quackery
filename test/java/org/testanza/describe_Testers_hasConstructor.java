@@ -3,6 +3,7 @@ package org.testanza;
 import static java.lang.reflect.Modifier.PRIVATE;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static org.testanza.Testers.hasConstructor;
+import static org.testanza.Testilities.run;
 import static org.testanza.Testilities.verify;
 import static org.testanza.Testilities.verifyEquals;
 import static org.testanza.Testilities.verifyFail;
@@ -22,7 +23,7 @@ public class describe_Testers_hasConstructor {
     tester = hasConstructor(PUBLIC, String.class);
     test = tester.test(Testable.class);
 
-    ((Case) test).body.invoke();
+    run(test);
   }
 
   public void fails_if_class_has_constructor_with_different_access() throws Throwable {
@@ -30,7 +31,7 @@ public class describe_Testers_hasConstructor {
     test = tester.test(Testable.class);
 
     try {
-      ((Case) test).body.invoke();
+      run(test);
       verifyFail();
     } catch (TestanzaAssertionError e) {}
   }
@@ -40,7 +41,7 @@ public class describe_Testers_hasConstructor {
     test = tester.test(Testable.class);
 
     try {
-      ((Case) test).body.invoke();
+      run(test);
       verifyFail();
     } catch (TestanzaAssertionError e) {}
   }
@@ -50,7 +51,7 @@ public class describe_Testers_hasConstructor {
     test = tester.test(Testable.class);
 
     try {
-      ((Case) test).body.invoke();
+      run(test);
       verifyFail();
     } catch (TestanzaAssertionError e) {
       verify(e.getMessage().contains("" //

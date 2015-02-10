@@ -2,6 +2,7 @@ package org.testanza;
 
 import static org.testanza.Testers.hasModifier;
 import static org.testanza.Testilities.name;
+import static org.testanza.Testilities.run;
 import static org.testanza.Testilities.verify;
 import static org.testanza.Testilities.verifyEquals;
 import static org.testanza.Testilities.verifyFail;
@@ -21,7 +22,7 @@ public class describe_Testers_hasModifier {
     item = TestClass.class.getDeclaredMethod("testMethod");
     test = hasModifier(Modifier.FINAL).test(item);
 
-    ((Case) test).body.invoke();
+    run(test);
   }
 
   public void fails_if_method_has_no_modifier() throws Throwable {
@@ -33,7 +34,7 @@ public class describe_Testers_hasModifier {
     test = hasModifier(Modifier.FINAL).test(item);
 
     try {
-      ((Case) test).body.invoke();
+      run(test);
       verifyFail();
     } catch (TestanzaAssertionError e) {}
   }
@@ -45,7 +46,7 @@ public class describe_Testers_hasModifier {
     }
     test = hasModifier(Modifier.FINAL).test(TestClass.class);
 
-    ((Case) test).body.invoke();
+    run(test);
   }
 
   public void fails_if_class_has_no_modifier() throws Throwable {
@@ -56,7 +57,7 @@ public class describe_Testers_hasModifier {
     test = hasModifier(Modifier.FINAL).test(TestClass.class);
 
     try {
-      ((Case) test).body.invoke();
+      run(test);
       verifyFail();
     } catch (TestanzaAssertionError e) {}
   }
@@ -70,7 +71,7 @@ public class describe_Testers_hasModifier {
     test = hasModifier(Modifier.FINAL).test(item);
 
     try {
-      ((Case) test).body.invoke();
+      run(test);
       verifyFail();
     } catch (TestanzaAssertionError e) {
       verifyEquals(e.getMessage(), "" //
