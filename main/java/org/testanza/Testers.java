@@ -2,7 +2,6 @@ package org.testanza;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.deepEquals;
-import static org.testanza.Case.newCase;
 import static org.testanza.TestanzaException.check;
 
 import java.lang.reflect.AnnotatedElement;
@@ -19,9 +18,8 @@ public class Testers {
     check(matcher != null);
     return new Tester<T>() {
       public Test test(final T item) {
-        String name = item + " is " + matcher.toString();
-        Closure body = new Closure() {
-          public void invoke() {
+        return new Case(item + " is " + matcher.toString()) {
+          public void run() {
             if (!matcher.matches(item)) {
               throw new TestanzaAssertionError("" //
                   + "\n" //
@@ -35,7 +33,6 @@ public class Testers {
             }
           }
         };
-        return newCase(name, body);
       }
     };
   }
@@ -49,10 +46,9 @@ public class Testers {
   public static Tester<AnnotatedElement> hasModifier(final int modifier) {
     return new Tester<AnnotatedElement>() {
       public Test test(final AnnotatedElement element) {
-        String name = kind(element) + " " + simpleName(element) + " has modifier "
-            + Modifier.toString(modifier);
-        Closure body = new Closure() {
-          public void invoke() {
+        return new Case(kind(element) + " " + simpleName(element) + " has modifier "
+            + Modifier.toString(modifier)) {
+          public void run() {
             if (!hasModifier(modifier, element)) {
               throw new TestanzaAssertionError("" //
                   + "\n" //
@@ -64,7 +60,6 @@ public class Testers {
             }
           }
         };
-        return newCase(name, body);
       }
     };
   }
@@ -72,10 +67,9 @@ public class Testers {
   public static Tester<AnnotatedElement> hasNoModifier(final int modifier) {
     return new Tester<AnnotatedElement>() {
       public Test test(final AnnotatedElement element) {
-        String name = kind(element) + " " + simpleName(element) + " has no modifier "
-            + Modifier.toString(modifier);
-        Closure body = new Closure() {
-          public void invoke() {
+        return new Case(kind(element) + " " + simpleName(element) + " has no modifier "
+            + Modifier.toString(modifier)) {
+          public void run() {
             if (hasModifier(modifier, element)) {
               throw new TestanzaAssertionError("" //
                   + "\n" //
@@ -87,7 +81,6 @@ public class Testers {
             }
           }
         };
-        return newCase(name, body);
       }
     };
   }
@@ -97,11 +90,10 @@ public class Testers {
     check(!asList(parameters).contains(null));
     return new Tester<Class<?>>() {
       public Test test(final Class<?> type) {
-        String name = "class " + type.getSimpleName() + " has " + Modifier.toString(modifier)
+        return new Case("class " + type.getSimpleName() + " has " + Modifier.toString(modifier)
             + " constructor with " + parameters.length + " parameters "
-            + printParameters(parameters);
-        Closure body = new Closure() {
-          public void invoke() {
+            + printParameters(parameters)) {
+          public void run() {
             for (Constructor<?> constructor : type.getDeclaredConstructors()) {
               if (hasModifier(modifier, constructor)
                   && deepEquals(constructor.getParameterTypes(), parameters)) {
@@ -119,7 +111,6 @@ public class Testers {
             );
           }
         };
-        return newCase(name, body);
       }
     };
   }

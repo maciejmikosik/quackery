@@ -1,10 +1,8 @@
 package org.testanza;
 
 import static java.util.Arrays.asList;
-import static org.testanza.Case.newCase;
 import static org.testanza.Junit.junit;
 import static org.testanza.Suite.newSuite;
-import static org.testanza.Testilities.newClosure;
 import static org.testanza.Testilities.verifyEquals;
 import static org.testanza.Testilities.verifyFail;
 import static org.testanza.Testilities.verifyNotEquals;
@@ -22,24 +20,26 @@ import junit.framework.TestSuite;
 public class describe_Junit_junit {
   private final RuntimeException exception = new RuntimeException("exception");
   private final String name = "name " + hashCode();
-  private final Closure body = newClosure("body");
   private boolean invoked;
   private Test test;
   private junit.framework.Test junitTest, otherJunitTest;
   private List<junit.framework.Test> junitTests;
+  private Case caseA, caseB;
 
   public void copies_case_name() {
-    test = newCase(name, body);
+    test = new Case(name) {
+      public void run() {}
+    };
     junitTest = junit(test);
     verifyEquals(name(junitTest), name);
   }
 
   public void running_test_invokes_case_body() throws Throwable {
-    test = newCase(name, new Closure() {
-      public void invoke() {
+    test = new Case(name) {
+      public void run() {
         invoked = true;
       }
-    });
+    };
     junitTest = junit(test);
 
     run(junitTest);
@@ -48,11 +48,11 @@ public class describe_Junit_junit {
   }
 
   public void running_test_throws_exception_from_case_body() throws Throwable {
-    test = newCase(name, new Closure() {
-      public void invoke() throws Throwable {
+    test = new Case(name) {
+      public void run() {
         throw exception;
       }
-    });
+    };
     junitTest = junit(test);
 
     try {
@@ -72,11 +72,12 @@ public class describe_Junit_junit {
   }
 
   public void copies_hierarchy() throws Throwable {
-    test = newSuite("", asList(newCase(name, new Closure() {
-      public void invoke() throws Throwable {
+    caseA = new Case(name) {
+      public void run() {
         invoked = true;
       }
-    })));
+    };
+    test = newSuite("", asList(caseA));
 
     junitTest = junit(test);
 
@@ -89,7 +90,13 @@ public class describe_Junit_junit {
   }
 
   public void renames_colliding_names() {
-    test = newSuite("suite", asList(newCase(name, body), newCase(name, body)));
+    caseA = new Case(name) {
+      public void run() {}
+    };
+    caseB = new Case(name) {
+      public void run() {}
+    };
+    test = newSuite("suite", asList(caseA, caseB));
 
     junitTest = junit(test);
 
@@ -98,8 +105,14 @@ public class describe_Junit_junit {
   }
 
   public void renames_colliding_names_from_different_conversions() {
-    junitTest = junit(newCase(name, body));
-    otherJunitTest = junit(newCase(name, body));
+    caseA = new Case(name) {
+      public void run() {}
+    };
+    caseB = new Case(name) {
+      public void run() {}
+    };
+    junitTest = junit(caseA);
+    otherJunitTest = junit(caseB);
 
     verifyNotEquals(name(junitTest), name(otherJunitTest));
   }

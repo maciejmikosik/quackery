@@ -49,16 +49,6 @@ public class Testilities {
     };
   }
 
-  public static Closure newClosure(final String name) {
-    return new Closure() {
-      public void invoke() {}
-
-      public String toString() {
-        return name;
-      }
-    };
-  }
-
   public static <T> Tester<T> newTester(final Test test) {
     return new Tester<T>() {
       public Test test(T item) {
@@ -87,7 +77,7 @@ public class Testilities {
 
   public static void run(Test test) throws Throwable {
     if (test instanceof Case) {
-      ((Case) test).body.invoke();
+      ((Case) test).run();
     } else {
       unknown(test.getClass());
     }
