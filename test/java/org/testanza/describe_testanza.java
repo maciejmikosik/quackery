@@ -17,6 +17,7 @@ public class describe_testanza {
     runTestsIn(describe_Testers_hasModifier.class);
     runTestsIn(describe_Testers_hasNoModifier.class);
     runTestsIn(describe_Testers_hasConstructor.class);
+    runTestsIn(describe_Testers_isAssignableTo_Class.class);
     runTestsIn(describe_Helpers_asTester_Matcher.class);
 
     if (failures.size() == 0) {

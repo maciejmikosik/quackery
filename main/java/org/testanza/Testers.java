@@ -86,6 +86,26 @@ public class Testers {
     };
   }
 
+  public static Tester<Class<?>> isAssignableTo(final Class<?> type) {
+    return new Tester<Class<?>>() {
+      public Test test(final Class<?> item) {
+        return new Case(simpleName(item) + " is assignable to " + simpleName(type)) {
+          public void run() {
+            if (!type.isAssignableFrom(item)) {
+              throw new TestanzaAssertionError("" //
+                  + "\n" //
+                  + "  expected that\n" //
+                  + "    " + item + "\n" //
+                  + "  is assignable to\n" //
+                  + "    " + type + "\n" //
+              );
+            }
+          }
+        };
+      }
+    };
+  }
+
   private static boolean hasModifier(int modifier, AnnotatedElement element) {
     return (modifiers(element) & modifier) != 0;
   }
