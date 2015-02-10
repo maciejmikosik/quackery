@@ -1,6 +1,5 @@
 package org.testanza;
 
-import static java.util.Arrays.asList;
 import static org.testanza.Junit.junit;
 import static org.testanza.Suite.newSuite;
 import static org.testanza.Testilities.verifyEquals;
@@ -10,7 +9,6 @@ import static org.testanza.Testilities.verifyNotEquals;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -64,7 +62,7 @@ public class describe_Junit_junit {
   }
 
   public void copies_suite_name() {
-    test = newSuite(name, Arrays.<Test> asList());
+    test = newSuite(name);
 
     junitTest = junit(test);
 
@@ -77,7 +75,7 @@ public class describe_Junit_junit {
         invoked = true;
       }
     };
-    test = newSuite("", asList(caseA));
+    test = newSuite("").test(caseA);
 
     junitTest = junit(test);
 
@@ -96,7 +94,7 @@ public class describe_Junit_junit {
     caseB = new Case(name) {
       public void run() {}
     };
-    test = newSuite("suite", asList(caseA, caseB));
+    test = newSuite("suite").test(caseA).test(caseB);
 
     junitTest = junit(test);
 

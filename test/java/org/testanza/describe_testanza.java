@@ -13,7 +13,6 @@ public class describe_testanza {
   public static void main(String[] args) throws Throwable {
     runTestsIn(describe_Case.class);
     runTestsIn(describe_Suite.class);
-    runTestsIn(describe_TestBuilder.class);
     runTestsIn(describe_Junit_junit.class);
     runTestsIn(describe_Testers_hasModifier.class);
     runTestsIn(describe_Testers_hasNoModifier.class);

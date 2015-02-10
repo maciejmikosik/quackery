@@ -1,10 +1,15 @@
 package org.testanza;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static org.testanza.TestanzaException.check;
+import static org.testanza.Testers.asTester;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import org.hamcrest.Matcher;
 
 public class Suite implements Test {
   public final String name;
@@ -15,18 +20,76 @@ public class Suite implements Test {
     this.tests = tests;
   }
 
-  public static Suite newSuite(String name, List<? extends Test> tests) {
+  private static Suite newSuite(String name, List<Test> tests) {
     check(name != null);
     check(tests != null);
-    return verify(new Suite(name, immutable((List<Test>) tests)));
-  }
-
-  private static Suite verify(Suite suite) {
+    Suite suite = new Suite(name, unmodifiableList(new ArrayList<Test>(tests)));
     check(!suite.tests.contains(null));
     return suite;
   }
 
-  private static <E> List<E> immutable(List<E> list) {
-    return unmodifiableList(new ArrayList<E>(list));
+  public static Suite newSuite(String name) {
+    check(name != null);
+    return newSuite(name, Arrays.<Test> asList());
+  }
+
+  public Suite test(Test extraTest) {
+    check(extraTest != null);
+    ArrayList<Test> allTests = new ArrayList<>();
+    allTests.addAll(tests);
+    allTests.add(extraTest);
+    return newSuite(name, allTests);
+  }
+
+  public Suite testAll(Iterable<? extends Test> extraTests) {
+    check(extraTests != null);
+    ArrayList<Test> allTests = new ArrayList<>();
+    allTests.addAll(tests);
+    for (Test extraTest : extraTests) {
+      check(extraTest != null);
+      allTests.add(extraTest);
+    }
+    return newSuite(name, allTests);
+  }
+
+  public Suite testAll(Test[] extraTests) {
+    check(extraTests != null);
+    return testAll(asList(extraTests));
+  }
+
+  public <T> Suite testThat(T item, Tester<T> tester) {
+    check(tester != null);
+    return test(tester.test(item));
+  }
+
+  public <T> Suite testThatAll(Iterable<? extends T> items, Tester<T> tester) {
+    check(items != null);
+    check(tester != null);
+    List<Test> extraTests = new ArrayList<>();
+    for (T item : items) {
+      extraTests.add(tester.test(item));
+    }
+    return testAll(extraTests);
+  }
+
+  public <T> Suite testThatAll(T[] items, Tester<T> tester) {
+    check(items != null);
+    return testThatAll(asList(items), tester);
+  }
+
+  public <T> Suite testThat(T item, Matcher<T> matcher) {
+    return testThat(item, asTester(matcher));
+  }
+
+  public <T> Suite testThatAll(Iterable<? extends T> items, Matcher<T> matcher) {
+    return testThatAll(items, asTester(matcher));
+  }
+
+  public <T> Suite testThatAll(T[] items, Matcher<T> matcher) {
+    return testThatAll(items, asTester(matcher));
+  }
+
+  public String toString() {
+    return name;
   }
 }
