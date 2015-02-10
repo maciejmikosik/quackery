@@ -10,39 +10,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-import org.hamcrest.Matcher;
-import org.hamcrest.StringDescription;
-
 public class Testers {
-  public static <T> Tester<T> asTester(final Matcher<T> matcher) {
-    check(matcher != null);
-    return new Tester<T>() {
-      public Test test(final T item) {
-        return new Case(item + " is " + matcher.toString()) {
-          public void run() {
-            if (!matcher.matches(item)) {
-              throw new TestanzaAssertionError("" //
-                  + "\n" //
-                  + "  expected that\n" //
-                  + "    " + item + "\n" //
-                  + "  matches\n" //
-                  + "    " + matcher + "\n" //
-                  + "  but\n" //
-                  + "    " + diagnose(item, matcher) + "\n" //
-              );
-            }
-          }
-        };
-      }
-    };
-  }
-
-  private static <T> String diagnose(T item, Matcher<T> matcher) {
-    StringDescription description = new StringDescription();
-    matcher.describeMismatch(item, description);
-    return description.toString();
-  }
-
   public static Tester<AnnotatedElement> hasModifier(final int modifier) {
     return new Tester<AnnotatedElement>() {
       public Test test(final AnnotatedElement element) {

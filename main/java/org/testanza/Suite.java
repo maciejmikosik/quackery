@@ -2,8 +2,8 @@ package org.testanza;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
+import static org.testanza.Helpers.asTester;
 import static org.testanza.TestanzaException.check;
-import static org.testanza.Testers.asTester;
 
 import java.util.ArrayList;
 import java.util.Arrays;

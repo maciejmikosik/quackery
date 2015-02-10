@@ -1,6 +1,6 @@
 package org.testanza;
 
-import static org.testanza.Testers.asTester;
+import static org.testanza.Helpers.asTester;
 import static org.testanza.Testilities.name;
 import static org.testanza.Testilities.newObject;
 import static org.testanza.Testilities.run;
@@ -11,7 +11,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-public class describe_Testers_asTester_Matcher {
+public class describe_Helpers_asTester_Matcher {
   private Object item;
   private Matcher<Object> matcher;
   private Tester<Object> tester;
