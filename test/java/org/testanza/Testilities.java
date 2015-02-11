@@ -78,6 +78,10 @@ public class Testilities {
   public static void run(Test test) throws Throwable {
     if (test instanceof Case) {
       ((Case) test).run();
+    } else if (test instanceof Suite) {
+      for (Test subtest : ((Suite) test).tests) {
+        run(subtest);
+      }
     } else {
       unknown(test.getClass());
     }
