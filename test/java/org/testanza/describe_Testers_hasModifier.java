@@ -1,11 +1,11 @@
 package org.testanza;
 
 import static org.testanza.Testers.hasModifier;
-import static org.testanza.Testilities.name;
-import static org.testanza.Testilities.run;
 import static org.testanza.testing.Assertions.assertEquals;
 import static org.testanza.testing.Assertions.assertTrue;
 import static org.testanza.testing.Assertions.fail;
+import static org.testanza.testing.Tests.name;
+import static org.testanza.testing.Tests.run;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Modifier;

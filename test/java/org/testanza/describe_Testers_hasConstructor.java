@@ -3,10 +3,10 @@ package org.testanza;
 import static java.lang.reflect.Modifier.PRIVATE;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static org.testanza.Testers.hasConstructor;
-import static org.testanza.Testilities.run;
 import static org.testanza.testing.Assertions.assertEquals;
 import static org.testanza.testing.Assertions.assertTrue;
 import static org.testanza.testing.Assertions.fail;
+import static org.testanza.testing.Tests.run;
 
 import java.lang.reflect.Modifier;
 

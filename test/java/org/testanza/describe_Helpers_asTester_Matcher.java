@@ -1,11 +1,11 @@
 package org.testanza;
 
 import static org.testanza.Helpers.asTester;
-import static org.testanza.Testilities.name;
 import static org.testanza.Testilities.newObject;
-import static org.testanza.Testilities.run;
 import static org.testanza.testing.Assertions.assertEquals;
 import static org.testanza.testing.Assertions.fail;
+import static org.testanza.testing.Tests.name;
+import static org.testanza.testing.Tests.run;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;

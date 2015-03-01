@@ -1,10 +1,10 @@
 package org.testanza;
 
 import static org.testanza.Testers.isAssignableTo;
-import static org.testanza.Testilities.name;
-import static org.testanza.Testilities.run;
 import static org.testanza.testing.Assertions.assertTrue;
 import static org.testanza.testing.Assertions.fail;
+import static org.testanza.testing.Tests.name;
+import static org.testanza.testing.Tests.run;
 
 public class describe_Testers_isAssignableTo_Class {
   private Test test;
