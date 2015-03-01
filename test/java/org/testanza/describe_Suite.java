@@ -3,11 +3,11 @@ package org.testanza;
 import static java.util.Arrays.asList;
 import static java.util.Objects.hash;
 import static org.testanza.Suite.newSuite;
-import static org.testanza.Testilities.newMatcher;
-import static org.testanza.Testilities.newObject;
 import static org.testanza.testing.Assertions.assertEquals;
 import static org.testanza.testing.Assertions.assertTrue;
 import static org.testanza.testing.Assertions.fail;
+import static org.testanza.testing.Mocks.mockMatcher;
+import static org.testanza.testing.Mocks.mockObject;
 
 import org.hamcrest.Matcher;
 
@@ -19,15 +19,15 @@ public class describe_Suite {
       testC = new Test() {}, //
       testD = new Test() {};
   private final Object //
-      itemA = newObject("itemA"), //
-      itemB = newObject("itemB"), //
-      itemC = newObject("itemC"), //
-      itemD = newObject("itemD");
+      itemA = mockObject("itemA"), //
+      itemB = mockObject("itemB"), //
+      itemC = mockObject("itemC"), //
+      itemD = mockObject("itemD");
   private final Tester<Object> //
       testerA = new MockTester<Object>("testerA"), //
       testerB = new MockTester<Object>("testerB"), //
       testerC = new MockTester<Object>("testerC");
-  private final Matcher<Object> matcher = newMatcher(itemA);
+  private final Matcher<Object> matcher = mockMatcher(itemA);
   private Suite suite;
 
   public void implements_test_interface() {

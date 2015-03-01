@@ -1,11 +1,11 @@
-package org.testanza;
+package org.testanza.testing;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-public class Testilities {
-  public static Object newObject(final String name) {
+public class Mocks {
+  public static Object mockObject(final String name) {
     return new Object() {
       public String toString() {
         return name;
@@ -13,7 +13,7 @@ public class Testilities {
     };
   }
 
-  public static <T> Matcher<T> newMatcher(final Object object) {
+  public static <T> Matcher<T> mockMatcher(final Object object) {
     return new TypeSafeMatcher<T>() {
       public void describeTo(Description description) {}
 

@@ -1,9 +1,9 @@
 package org.testanza;
 
 import static org.testanza.Helpers.asTester;
-import static org.testanza.Testilities.newObject;
 import static org.testanza.testing.Assertions.assertEquals;
 import static org.testanza.testing.Assertions.fail;
+import static org.testanza.testing.Mocks.mockObject;
 import static org.testanza.testing.Tests.name;
 import static org.testanza.testing.Tests.run;
 
@@ -18,7 +18,7 @@ public class describe_Helpers_asTester_Matcher {
   private Test test;
 
   public void succeeds_if_matcher_matches() throws Throwable {
-    item = newObject("item");
+    item = mockObject("item");
     matcher = new TypeSafeMatcher<Object>() {
       public void describeTo(Description description) {}
 
@@ -36,7 +36,7 @@ public class describe_Helpers_asTester_Matcher {
   }
 
   public void fails_if_matcher_not_matches() throws Throwable {
-    item = newObject("item");
+    item = mockObject("item");
     matcher = new TypeSafeMatcher<Object>() {
       public void describeTo(Description description) {}
 
@@ -57,7 +57,7 @@ public class describe_Helpers_asTester_Matcher {
   }
 
   public void failure_prints_message() throws Throwable {
-    item = newObject("item");
+    item = mockObject("item");
     matcher = new TypeSafeMatcher<Object>() {
       public void describeTo(Description description) {
         description.appendText("failure_prints_message");
@@ -93,7 +93,7 @@ public class describe_Helpers_asTester_Matcher {
   }
 
   public void test_name_contains_matcher_and_item() {
-    item = newObject("item");
+    item = mockObject("item");
     matcher = new TypeSafeMatcher<Object>() {
       public void describeTo(Description description) {
         description.appendText("test_name_contains_matcher_and_item");
