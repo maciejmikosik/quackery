@@ -5,9 +5,9 @@ import static java.util.Objects.hash;
 import static org.testanza.Suite.newSuite;
 import static org.testanza.Testilities.newMatcher;
 import static org.testanza.Testilities.newObject;
-import static org.testanza.Testilities.verify;
-import static org.testanza.Testilities.verifyEquals;
-import static org.testanza.Testilities.verifyFail;
+import static org.testanza.testing.Assertions.assertEquals;
+import static org.testanza.testing.Assertions.assertTrue;
+import static org.testanza.testing.Assertions.fail;
 
 import org.hamcrest.Matcher;
 
@@ -31,17 +31,17 @@ public class describe_Suite {
   private Suite suite;
 
   public void implements_test_interface() {
-    verify(Test.class.isAssignableFrom(Suite.class));
+    assertTrue(Test.class.isAssignableFrom(Suite.class));
   }
 
   public void creates_empty_suite() {
     suite = newSuite(name);
-    verifyEquals(suite.tests, asList());
+    assertEquals(suite.tests, asList());
   }
 
   public void assigns_name() {
     suite = newSuite(name);
-    verifyEquals(name, suite.name);
+    assertEquals(name, suite.name);
   }
 
   public void tests_test() {
@@ -49,21 +49,21 @@ public class describe_Suite {
         .test(testA) //
         .test(testB) //
         .test(testC);
-    verifyEquals(suite.tests, asList(testA, testB, testC));
+    assertEquals(suite.tests, asList(testA, testB, testC));
   }
 
   public void tests_all_tests_in_iterable() {
     suite = newSuite(name) //
         .testAll(asList(testA, testB)) //
         .testAll(asList(testC, testD));
-    verifyEquals(suite.tests, asList(testA, testB, testC, testD));
+    assertEquals(suite.tests, asList(testA, testB, testC, testD));
   }
 
   public void tests_all_tests_in_array() {
     suite = newSuite(name) //
         .testAll(new Test[] { testA, testB }) //
         .testAll(new Test[] { testC, testD });
-    verifyEquals(suite.tests, asList(testA, testB, testC, testD));
+    assertEquals(suite.tests, asList(testA, testB, testC, testD));
   }
 
   public void tests_that_item() {
@@ -71,7 +71,7 @@ public class describe_Suite {
         .testThat(itemA, testerA) //
         .testThat(itemB, testerB) //
         .testThat(itemC, testerC);
-    verifyEquals(suite.tests, asList( //
+    assertEquals(suite.tests, asList( //
         new MockTest(itemA, testerA), //
         new MockTest(itemB, testerB), //
         new MockTest(itemC, testerC)));
@@ -81,7 +81,7 @@ public class describe_Suite {
     suite = newSuite(name) //
         .testThatAll(asList(itemA, itemB), testerA) //
         .testThatAll(asList(itemC, itemD), testerB);
-    verifyEquals(suite.tests, asList( //
+    assertEquals(suite.tests, asList( //
         new MockTest(itemA, testerA), //
         new MockTest(itemB, testerA), //
         new MockTest(itemC, testerB), //
@@ -92,7 +92,7 @@ public class describe_Suite {
     suite = newSuite(name) //
         .testThatAll(new Object[] { itemA, itemB }, testerA) //
         .testThatAll(new Object[] { itemC, itemD }, testerB);
-    verifyEquals(suite.tests, asList( //
+    assertEquals(suite.tests, asList( //
         new MockTest(itemA, testerA), //
         new MockTest(itemB, testerA), //
         new MockTest(itemC, testerB), //
@@ -119,14 +119,14 @@ public class describe_Suite {
 
   public void to_string_returns_name() {
     suite = newSuite(name);
-    verifyEquals(name, suite.toString());
+    assertEquals(name, suite.toString());
   }
 
   public void name_cannot_be_null() {
     name = null;
     try {
       newSuite(name);
-      verifyFail();
+      fail();
     } catch (TestanzaException e) {}
   }
 
@@ -134,23 +134,23 @@ public class describe_Suite {
     suite = newSuite(name);
     try {
       suite.test(null);
-      verifyFail();
+      fail();
     } catch (TestanzaException e) {}
     try {
       suite.testAll((Iterable<Test>) null);
-      verifyFail();
+      fail();
     } catch (TestanzaException e) {}
     try {
       suite.testAll(asList(testA, null, testB));
-      verifyFail();
+      fail();
     } catch (TestanzaException e) {}
     try {
       suite.testAll((Test[]) null);
-      verifyFail();
+      fail();
     } catch (TestanzaException e) {}
     try {
       suite.testAll(new Test[] { testA, null, testB });
-      verifyFail();
+      fail();
     } catch (TestanzaException e) {}
   }
 
@@ -158,19 +158,19 @@ public class describe_Suite {
     suite = newSuite(name);
     try {
       suite.testThatAll((Iterable<Object>) null, testerA);
-      verifyFail();
+      fail();
     } catch (TestanzaException e) {}
     try {
       suite.testThatAll((Iterable<Object>) null, matcher);
-      verifyFail();
+      fail();
     } catch (TestanzaException e) {}
     try {
       suite.testThatAll((Object[]) null, testerA);
-      verifyFail();
+      fail();
     } catch (TestanzaException e) {}
     try {
       suite.testThatAll((Object[]) null, matcher);
-      verifyFail();
+      fail();
     } catch (TestanzaException e) {}
   }
 
@@ -178,15 +178,15 @@ public class describe_Suite {
     suite = newSuite(name);
     try {
       suite.testThat(itemA, (Tester<Object>) null);
-      verifyFail();
+      fail();
     } catch (TestanzaException e) {}
     try {
       suite.testThatAll(asList(), (Tester<Object>) null);
-      verifyFail();
+      fail();
     } catch (TestanzaException e) {}
     try {
       suite.testThatAll(new Object[0], (Tester<Object>) null);
-      verifyFail();
+      fail();
     } catch (TestanzaException e) {}
   }
 
@@ -194,15 +194,15 @@ public class describe_Suite {
     suite = newSuite(name);
     try {
       suite.testThat(itemA, (Matcher<Object>) null);
-      verifyFail();
+      fail();
     } catch (TestanzaException e) {}
     try {
       suite.testThatAll(asList(), (Matcher<Object>) null);
-      verifyFail();
+      fail();
     } catch (TestanzaException e) {}
     try {
       suite.testThatAll(new Object[0], (Matcher<Object>) null);
-      verifyFail();
+      fail();
     } catch (TestanzaException e) {}
   }
 

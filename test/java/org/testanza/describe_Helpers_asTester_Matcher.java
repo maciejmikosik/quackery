@@ -4,8 +4,8 @@ import static org.testanza.Helpers.asTester;
 import static org.testanza.Testilities.name;
 import static org.testanza.Testilities.newObject;
 import static org.testanza.Testilities.run;
-import static org.testanza.Testilities.verifyEquals;
-import static org.testanza.Testilities.verifyFail;
+import static org.testanza.testing.Assertions.assertEquals;
+import static org.testanza.testing.Assertions.fail;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -52,7 +52,7 @@ public class describe_Helpers_asTester_Matcher {
 
     try {
       run(test);
-      verifyFail();
+      fail();
     } catch (TestanzaAssertionError e) {}
   }
 
@@ -79,17 +79,16 @@ public class describe_Helpers_asTester_Matcher {
 
     try {
       run(test);
-      verifyFail();
+      fail();
     } catch (TestanzaAssertionError e) {
-      verifyEquals(e.getMessage(), "" //
+      assertEquals(e.getMessage(), "" //
           + "\n" //
           + "  expected that\n" //
           + "    " + item + "\n" //
           + "  matches\n" //
           + "    " + matcher + "\n" //
           + "  but\n" //
-          + "    mismatch for " + item + "\n" //
-      );
+          + "    mismatch for " + item + "\n");
     }
   }
 
@@ -106,13 +105,13 @@ public class describe_Helpers_asTester_Matcher {
     };
     tester = asTester(matcher);
     test = tester.test(item);
-    verifyEquals(name(test), item + " is " + matcher);
+    assertEquals(name(test), item + " is " + matcher);
   }
 
   public void matcher_cannot_be_null() {
     try {
       asTester(null);
-      verifyFail();
+      fail();
     } catch (TestanzaException e) {}
   }
 }

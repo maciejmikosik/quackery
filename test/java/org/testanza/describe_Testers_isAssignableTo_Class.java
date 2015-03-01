@@ -3,8 +3,8 @@ package org.testanza;
 import static org.testanza.Testers.isAssignableTo;
 import static org.testanza.Testilities.name;
 import static org.testanza.Testilities.run;
-import static org.testanza.Testilities.verify;
-import static org.testanza.Testilities.verifyFail;
+import static org.testanza.testing.Assertions.assertTrue;
+import static org.testanza.testing.Assertions.fail;
 
 public class describe_Testers_isAssignableTo_Class {
   private Test test;
@@ -23,24 +23,24 @@ public class describe_Testers_isAssignableTo_Class {
     test = isAssignableTo(Type.class).test(SuperType.class);
     try {
       run(test);
-      verifyFail();
+      fail();
     } catch (TestanzaAssertionError e) {}
   }
 
   public void name_contains_simple_names_of_types() {
     test = isAssignableTo(Type.class).test(SubType.class);
-    verify(name(test).contains(Type.class.getSimpleName()));
-    verify(name(test).contains(SubType.class.getSimpleName()));
+    assertTrue(name(test).contains(Type.class.getSimpleName()));
+    assertTrue(name(test).contains(SubType.class.getSimpleName()));
   }
 
   public void failure_prints_full_names_of_types() throws Throwable {
     test = isAssignableTo(Type.class).test(SuperType.class);
     try {
       run(test);
-      verifyFail();
+      fail();
     } catch (TestanzaAssertionError e) {
-      verify(e.getMessage().contains(Type.class.getName()));
-      verify(e.getMessage().contains(SuperType.class.getSimpleName()));
+      assertTrue(e.getMessage().contains(Type.class.getName()));
+      assertTrue(e.getMessage().contains(SuperType.class.getSimpleName()));
     }
   }
 

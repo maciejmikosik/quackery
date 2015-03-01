@@ -1,46 +1,10 @@
 package org.testanza;
 
-import java.util.Objects;
-
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
 public class Testilities {
-  public static void verify(boolean condition) {
-    if (!condition) {
-      throw new AssertionError();
-    }
-  }
-
-  public static void verifyFail() {
-    throw new AssertionError();
-  }
-
-  public static void verifyEquals(Object actual, Object expected) {
-    if (!Objects.deepEquals(actual, expected)) {
-      throw new AssertionError("" //
-          + "\n" //
-          + "  expected that\n" //
-          + "    " + actual + "\n" //
-          + "  is equal to\n" //
-          + "    " + expected + "\n" //
-      );
-    }
-  }
-
-  public static void verifyNotEquals(Object actual, Object expected) {
-    if (Objects.deepEquals(actual, expected)) {
-      throw new AssertionError("" //
-          + "\n" //
-          + "  expected that\n" //
-          + "    " + actual + "\n" //
-          + "  is not equal to\n" //
-          + "    " + expected + "\n" //
-      );
-    }
-  }
-
   public static Object newObject(final String name) {
     return new Object() {
       public String toString() {
