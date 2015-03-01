@@ -1,11 +1,11 @@
 package org.testanza;
 
 import static org.testanza.Helpers.asTester;
-import static org.testanza.Testilities.name;
-import static org.testanza.Testilities.newObject;
-import static org.testanza.Testilities.run;
-import static org.testanza.Testilities.verifyEquals;
-import static org.testanza.Testilities.verifyFail;
+import static org.testanza.testing.Assertions.assertEquals;
+import static org.testanza.testing.Assertions.fail;
+import static org.testanza.testing.Mocks.mockObject;
+import static org.testanza.testing.Tests.name;
+import static org.testanza.testing.Tests.run;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -18,7 +18,7 @@ public class describe_Helpers_asTester_Matcher {
   private Test test;
 
   public void succeeds_if_matcher_matches() throws Throwable {
-    item = newObject("item");
+    item = mockObject("item");
     matcher = new TypeSafeMatcher<Object>() {
       public void describeTo(Description description) {}
 
@@ -36,7 +36,7 @@ public class describe_Helpers_asTester_Matcher {
   }
 
   public void fails_if_matcher_not_matches() throws Throwable {
-    item = newObject("item");
+    item = mockObject("item");
     matcher = new TypeSafeMatcher<Object>() {
       public void describeTo(Description description) {}
 
@@ -52,12 +52,12 @@ public class describe_Helpers_asTester_Matcher {
 
     try {
       run(test);
-      verifyFail();
+      fail();
     } catch (TestanzaAssertionError e) {}
   }
 
   public void failure_prints_message() throws Throwable {
-    item = newObject("item");
+    item = mockObject("item");
     matcher = new TypeSafeMatcher<Object>() {
       public void describeTo(Description description) {
         description.appendText("failure_prints_message");
@@ -79,22 +79,21 @@ public class describe_Helpers_asTester_Matcher {
 
     try {
       run(test);
-      verifyFail();
+      fail();
     } catch (TestanzaAssertionError e) {
-      verifyEquals(e.getMessage(), "" //
+      assertEquals(e.getMessage(), "" //
           + "\n" //
           + "  expected that\n" //
           + "    " + item + "\n" //
           + "  matches\n" //
           + "    " + matcher + "\n" //
           + "  but\n" //
-          + "    mismatch for " + item + "\n" //
-      );
+          + "    mismatch for " + item + "\n");
     }
   }
 
   public void test_name_contains_matcher_and_item() {
-    item = newObject("item");
+    item = mockObject("item");
     matcher = new TypeSafeMatcher<Object>() {
       public void describeTo(Description description) {
         description.appendText("test_name_contains_matcher_and_item");
@@ -106,13 +105,13 @@ public class describe_Helpers_asTester_Matcher {
     };
     tester = asTester(matcher);
     test = tester.test(item);
-    verifyEquals(name(test), item + " is " + matcher);
+    assertEquals(name(test), item + " is " + matcher);
   }
 
   public void matcher_cannot_be_null() {
     try {
       asTester(null);
-      verifyFail();
+      fail();
     } catch (TestanzaException e) {}
   }
 }

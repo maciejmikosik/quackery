@@ -3,10 +3,10 @@ package org.testanza;
 import static java.lang.reflect.Modifier.PRIVATE;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static org.testanza.Testers.hasConstructor;
-import static org.testanza.Testilities.run;
-import static org.testanza.Testilities.verify;
-import static org.testanza.Testilities.verifyEquals;
-import static org.testanza.Testilities.verifyFail;
+import static org.testanza.testing.Assertions.assertEquals;
+import static org.testanza.testing.Assertions.assertTrue;
+import static org.testanza.testing.Assertions.fail;
+import static org.testanza.testing.Tests.run;
 
 import java.lang.reflect.Modifier;
 
@@ -32,7 +32,7 @@ public class describe_Testers_hasConstructor {
 
     try {
       run(test);
-      verifyFail();
+      fail();
     } catch (TestanzaAssertionError e) {}
   }
 
@@ -42,7 +42,7 @@ public class describe_Testers_hasConstructor {
 
     try {
       run(test);
-      verifyFail();
+      fail();
     } catch (TestanzaAssertionError e) {}
   }
 
@@ -52,9 +52,9 @@ public class describe_Testers_hasConstructor {
 
     try {
       run(test);
-      verifyFail();
+      fail();
     } catch (TestanzaAssertionError e) {
-      verify(e.getMessage().contains("" //
+      assertTrue(e.getMessage().contains("" //
           + "\n" //
           + "  expected that\n" //
           + "    " + Testable.class + "\n" //
@@ -70,21 +70,21 @@ public class describe_Testers_hasConstructor {
   public void name_contains_type_modifier_and_parameters() {
     tester = hasConstructor(PRIVATE, String.class, String.class);
     test = tester.test(Testable.class);
-    verifyEquals(((Case) test).name,
+    assertEquals(((Case) test).name,
         "class Testable has private constructor with 2 parameters String, String");
   }
 
   public void parameters_array_cannot_be_null() {
     try {
       hasConstructor(PRIVATE, (Class[]) null);
-      verifyFail();
+      fail();
     } catch (TestanzaException e) {}
   }
 
   public void parameter_cannot_be_null() {
     try {
       hasConstructor(PRIVATE, String.class, null, String.class);
-      verifyFail();
+      fail();
     } catch (TestanzaException e) {}
   }
 }

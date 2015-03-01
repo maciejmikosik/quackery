@@ -1,11 +1,11 @@
 package org.testanza;
 
 import static org.testanza.Testers.hasNoModifier;
-import static org.testanza.Testilities.name;
-import static org.testanza.Testilities.run;
-import static org.testanza.Testilities.verify;
-import static org.testanza.Testilities.verifyEquals;
-import static org.testanza.Testilities.verifyFail;
+import static org.testanza.testing.Assertions.assertEquals;
+import static org.testanza.testing.Assertions.assertTrue;
+import static org.testanza.testing.Assertions.fail;
+import static org.testanza.testing.Tests.name;
+import static org.testanza.testing.Tests.run;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Modifier;
@@ -35,7 +35,7 @@ public class describe_Testers_hasNoModifier {
 
     try {
       run(test);
-      verifyFail();
+      fail();
     } catch (TestanzaAssertionError e) {}
   }
 
@@ -58,7 +58,7 @@ public class describe_Testers_hasNoModifier {
 
     try {
       run(test);
-      verifyFail();
+      fail();
     } catch (TestanzaAssertionError e) {}
   }
 
@@ -72,15 +72,14 @@ public class describe_Testers_hasNoModifier {
 
     try {
       run(test);
-      verifyFail();
+      fail();
     } catch (TestanzaAssertionError e) {
-      verifyEquals(e.getMessage(), "" //
+      assertEquals(e.getMessage(), "" //
           + "\n" //
           + "  expected that\n" //
           + "    method " + item.toString() + "\n" //
           + "  has no modifier\n" //
-          + "    final\n" //
-      );
+          + "    final\n");
     }
   }
 
@@ -91,7 +90,7 @@ public class describe_Testers_hasNoModifier {
     }
     item = TestClass.class.getDeclaredMethod("testMethod");
     test = hasNoModifier(Modifier.FINAL).test(item);
-    verify(name(test).contains("final"));
+    assertTrue(name(test).contains("final"));
   }
 
   public void test_name_contains_member_type_and_simple_name() throws Throwable {
@@ -105,18 +104,18 @@ public class describe_Testers_hasNoModifier {
     }
     item = TestClass.class.getDeclaredMethod("foo");
     test = hasNoModifier(Modifier.FINAL).test(item);
-    verify(name(test).contains("method foo"));
+    assertTrue(name(test).contains("method foo"));
 
     item = TestClass.class.getDeclaredField("foo");
     test = hasNoModifier(Modifier.FINAL).test(item);
-    verify(name(test).contains("field foo"));
+    assertTrue(name(test).contains("field foo"));
 
     item = TestClass.class.getDeclaredConstructors()[0];
     test = hasNoModifier(Modifier.FINAL).test(item);
-    verify(name(test).contains("constructor TestClass"));
+    assertTrue(name(test).contains("constructor TestClass"));
 
     item = TestClass.class;
     test = hasNoModifier(Modifier.FINAL).test(item);
-    verify(name(test).contains("class TestClass"));
+    assertTrue(name(test).contains("class TestClass"));
   }
 }

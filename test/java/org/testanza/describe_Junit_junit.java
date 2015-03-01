@@ -2,9 +2,9 @@ package org.testanza;
 
 import static org.testanza.Junit.junit;
 import static org.testanza.Suite.newSuite;
-import static org.testanza.Testilities.verifyEquals;
-import static org.testanza.Testilities.verifyFail;
-import static org.testanza.Testilities.verifyNotEquals;
+import static org.testanza.testing.Assertions.assertEquals;
+import static org.testanza.testing.Assertions.assertNotEquals;
+import static org.testanza.testing.Assertions.fail;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -29,7 +29,7 @@ public class describe_Junit_junit {
       public void run() {}
     };
     junitTest = junit(test);
-    verifyEquals(name(junitTest), name);
+    assertEquals(name(junitTest), name);
   }
 
   public void running_test_invokes_case_body() throws Throwable {
@@ -42,7 +42,7 @@ public class describe_Junit_junit {
 
     run(junitTest);
 
-    verifyEquals(invoked, true);
+    assertEquals(invoked, true);
   }
 
   public void running_test_throws_exception_from_case_body() throws Throwable {
@@ -55,9 +55,9 @@ public class describe_Junit_junit {
 
     try {
       run(junitTest);
-      verifyFail();
+      fail();
     } catch (RuntimeException e) {
-      verifyEquals(e, exception);
+      assertEquals(e, exception);
     }
   }
 
@@ -66,7 +66,7 @@ public class describe_Junit_junit {
 
     junitTest = junit(test);
 
-    verifyEquals(((TestSuite) junitTest).getName(), name);
+    assertEquals(((TestSuite) junitTest).getName(), name);
   }
 
   public void copies_hierarchy() throws Throwable {
@@ -80,11 +80,11 @@ public class describe_Junit_junit {
     junitTest = junit(test);
 
     junitTests = enumerate(junitTest);
-    verifyEquals(junitTests.size(), 1);
-    verifyEquals(name(junitTests.get(0)), name);
+    assertEquals(junitTests.size(), 1);
+    assertEquals(name(junitTests.get(0)), name);
 
     run(junitTests.get(0));
-    verifyEquals(invoked, true);
+    assertEquals(invoked, true);
   }
 
   public void renames_colliding_names() {
@@ -99,7 +99,7 @@ public class describe_Junit_junit {
     junitTest = junit(test);
 
     junitTests = enumerate(junitTest);
-    verifyNotEquals(name(junitTests.get(0)), name(junitTests.get(1)));
+    assertNotEquals(name(junitTests.get(0)), name(junitTests.get(1)));
   }
 
   public void renames_colliding_names_from_different_conversions() {
@@ -112,7 +112,7 @@ public class describe_Junit_junit {
     junitTest = junit(caseA);
     otherJunitTest = junit(caseB);
 
-    verifyNotEquals(name(junitTest), name(otherJunitTest));
+    assertNotEquals(name(junitTest), name(otherJunitTest));
   }
 
   private static String name(junit.framework.Test junitTest) {
