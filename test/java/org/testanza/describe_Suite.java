@@ -6,10 +6,7 @@ import static org.testanza.Suite.newSuite;
 import static org.testanza.testing.Assertions.assertEquals;
 import static org.testanza.testing.Assertions.assertTrue;
 import static org.testanza.testing.Assertions.fail;
-import static org.testanza.testing.Mocks.mockMatcher;
 import static org.testanza.testing.Mocks.mockObject;
-
-import org.hamcrest.Matcher;
 
 public class describe_Suite {
   private String name = "name";
@@ -27,7 +24,6 @@ public class describe_Suite {
       testerA = new MockTester<Object>("testerA"), //
       testerB = new MockTester<Object>("testerB"), //
       testerC = new MockTester<Object>("testerC");
-  private final Matcher<Object> matcher = mockMatcher(itemA);
   private Suite suite;
 
   public void implements_test_interface() {
@@ -104,15 +100,13 @@ public class describe_Suite {
     class Bar extends Foo {}
     final Bar bar = null;
     final Tester<Foo> fooTester = null;
-    final Matcher<Foo> fooMatcher = null;
 
     // don't run, just compile
     new Runnable() {
       public void run() {
         newSuite(name) //
             .testAll(asList(new Case[0])) //
-            .testThatAll(asList(bar), fooTester) //
-            .testThatAll(asList(bar), fooMatcher); //
+            .testThatAll(asList(bar), fooTester); //
       }
     };
   }
@@ -161,15 +155,7 @@ public class describe_Suite {
       fail();
     } catch (TestanzaException e) {}
     try {
-      suite.testThatAll((Iterable<Object>) null, matcher);
-      fail();
-    } catch (TestanzaException e) {}
-    try {
       suite.testThatAll((Object[]) null, testerA);
-      fail();
-    } catch (TestanzaException e) {}
-    try {
-      suite.testThatAll((Object[]) null, matcher);
       fail();
     } catch (TestanzaException e) {}
   }
@@ -186,22 +172,6 @@ public class describe_Suite {
     } catch (TestanzaException e) {}
     try {
       suite.testThatAll(new Object[0], (Tester<Object>) null);
-      fail();
-    } catch (TestanzaException e) {}
-  }
-
-  public void matcher_cannot_be_null() {
-    suite = newSuite(name);
-    try {
-      suite.testThat(itemA, (Matcher<Object>) null);
-      fail();
-    } catch (TestanzaException e) {}
-    try {
-      suite.testThatAll(asList(), (Matcher<Object>) null);
-      fail();
-    } catch (TestanzaException e) {}
-    try {
-      suite.testThatAll(new Object[0], (Matcher<Object>) null);
       fail();
     } catch (TestanzaException e) {}
   }

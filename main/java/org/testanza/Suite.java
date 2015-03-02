@@ -2,14 +2,11 @@ package org.testanza;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
-import static org.testanza.Helpers.asTester;
 import static org.testanza.TestanzaException.check;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.hamcrest.Matcher;
 
 public class Suite implements Test {
   public final String name;
@@ -75,18 +72,6 @@ public class Suite implements Test {
   public <T> Suite testThatAll(T[] items, Tester<T> tester) {
     check(items != null);
     return testThatAll(asList(items), tester);
-  }
-
-  public <T> Suite testThat(T item, Matcher<T> matcher) {
-    return testThat(item, asTester(matcher));
-  }
-
-  public <T> Suite testThatAll(Iterable<? extends T> items, Matcher<T> matcher) {
-    return testThatAll(items, asTester(matcher));
-  }
-
-  public <T> Suite testThatAll(T[] items, Matcher<T> matcher) {
-    return testThatAll(items, asTester(matcher));
   }
 
   public String toString() {
