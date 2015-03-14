@@ -1,13 +1,16 @@
 package org.testanza.testing.bug.collect;
 
+import static java.util.Arrays.asList;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
 public class MutableList<E> implements List<E> {
-  private final List<E> delegate;
+  protected List<E> delegate;
 
   public MutableList() {
     delegate = new ArrayList<>();
@@ -119,5 +122,131 @@ public class MutableList<E> implements List<E> {
 
   public String toString() {
     return delegate.toString();
+  }
+
+  public static class DefaultConstructorIsMissing<E> extends MutableList<E> {
+    public DefaultConstructorIsMissing(Collection<E> collection) {
+      super(collection);
+    }
+  }
+
+  public static class DefaultConstructorIsHidden<E> extends MutableList<E> {
+    DefaultConstructorIsHidden() {}
+
+    public DefaultConstructorIsHidden(Collection<E> collection) {
+      super(collection);
+    }
+  }
+
+  public static class DefaultConstructorAddsElement<E> extends MutableList<E> {
+    public DefaultConstructorAddsElement() {
+      super(asList((E) newObject("x")));
+    }
+
+    public DefaultConstructorAddsElement(Collection<E> collection) {
+      super(collection);
+    }
+  }
+
+  public static class CopyConstructorIsMissing<E> extends MutableList<E> {
+    public CopyConstructorIsMissing() {}
+  }
+
+  public static class CopyConstructorIsHidden<E> extends MutableList<E> {
+    public CopyConstructorIsHidden() {}
+
+    CopyConstructorIsHidden(Collection<E> collection) {
+      super(collection);
+    }
+  }
+
+  public static class CopyConstructorCreatesEmpty<E> extends MutableList<E> {
+    public CopyConstructorCreatesEmpty() {}
+
+    public CopyConstructorCreatesEmpty(Collection<E> collection) {
+      if (collection == null) {
+        throw new NullPointerException();
+      }
+    }
+  }
+
+  public static class CopyConstructorAddsElement<E> extends MutableList<E> {
+    public CopyConstructorAddsElement() {}
+
+    public CopyConstructorAddsElement(Collection<E> collection) {
+      super(add((E) newObject("x"), collection));
+    }
+
+    private static <E> Collection<E> add(E element, Collection<E> collection) {
+      List<E> added = new ArrayList<>(collection);
+      added.add(element);
+      return added;
+    }
+  }
+
+  public static class CopyConstructorAcceptsNull<E> extends MutableList<E> {
+    public CopyConstructorAcceptsNull() {}
+
+    public CopyConstructorAcceptsNull(Collection<E> collection) {
+      super(unnull(collection));
+    }
+
+    private static <E> Collection<E> unnull(Collection<E> collection) {
+      return collection == null
+          ? Arrays.<E> asList()
+          : collection;
+    }
+  }
+
+  public static class CopyConstructorThrowsRuntimeExceptionUponNull<E> extends MutableList<E> {
+    public CopyConstructorThrowsRuntimeExceptionUponNull() {}
+
+    public CopyConstructorThrowsRuntimeExceptionUponNull(Collection<E> collection) {
+      super(notNull(collection));
+    }
+
+    private static <E> Collection<E> notNull(Collection<E> collection) {
+      if (collection == null) {
+        throw new RuntimeException();
+      }
+      return collection;
+    }
+  }
+
+  public static class CopyConstructorMakesNoDefensiveCopy<E> extends MutableList<E> {
+    public CopyConstructorMakesNoDefensiveCopy() {}
+
+    public CopyConstructorMakesNoDefensiveCopy(Collection<E> collection) {
+      super(collection);
+      delegate = (List<E>) collection;
+    }
+  }
+
+  public static class CopyConstructorModifiesArgument<E> extends MutableList<E> {
+    public CopyConstructorModifiesArgument() {}
+
+    public CopyConstructorModifiesArgument(Collection<E> collection) {
+      super(collection);
+      collection.add((E) newObject("x"));
+    }
+  }
+
+  public static class CopyConstructorCreatesFixed<E> extends MutableList<E> {
+    public CopyConstructorCreatesFixed() {}
+
+    public CopyConstructorCreatesFixed(Collection<E> collection) {
+      super(asList((E) newObject("x")));
+      if (collection == null) {
+        throw new NullPointerException();
+      }
+    }
+  }
+
+  private static Object newObject(final String name) {
+    return new Object() {
+      public String toString() {
+        return name;
+      }
+    };
   }
 }

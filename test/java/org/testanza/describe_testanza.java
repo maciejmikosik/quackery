@@ -18,7 +18,7 @@ public class describe_testanza {
     runTestsIn(describe_Testers_hasNoModifier.class);
     runTestsIn(describe_Testers_hasConstructor.class);
     runTestsIn(describe_Testers_isAssignableTo_Class.class);
-    runTestsIn(describe_Quacks_quacksLike_Collection.class);
+    runTestsIn(describe_Quacks_quacksLike_collection.class);
 
     if (failures.size() == 0) {
       System.out.println("no failures");
