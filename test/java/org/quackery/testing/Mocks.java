@@ -1,4 +1,4 @@
-package org.testanza.testing;
+package org.quackery.testing;
 
 public class Mocks {
   public static Object mockObject(final String name) {

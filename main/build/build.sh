@@ -20,7 +20,7 @@ javac \
   -source 1.7 \
   -target 1.7 \
   -d "./sink/building" \
-  ./java/org/testanza/Build.java
+  ./java/org/quackery/Build.java
 
 #copy sources
 cp \
@@ -33,18 +33,18 @@ cd ./sink/building
 zip \
   --quiet \
   --recurse-paths \
-  ./testanza.jar \
+  ./quackery.jar \
   ./*
 cd $MAIN
 
-#copy testanza.jar
+#copy quackery.jar
 cp \
-  ./sink/building/testanza.jar \
+  ./sink/building/quackery.jar \
   ./sink
 
 echo ""
 echo "BUILD SUCCESSFUL"
-echo "created $MAIN/sink/testanza.jar"
+echo "created $MAIN/sink/quackery.jar"
 
 #cleanup
 rm \

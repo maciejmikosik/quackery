@@ -1,8 +1,8 @@
-package org.testanza;
+package org.quackery;
 
 import static java.util.Arrays.asList;
-import static org.testanza.Quacks.quacksLike;
-import static org.testanza.testing.Tests.run;
+import static org.quackery.Quacks.quacksLike;
+import static org.quackery.testing.Tests.run;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -13,7 +13,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
 
-import org.testanza.testing.bug.collect.MutableList;
+import org.quackery.Case;
+import org.quackery.Suite;
+import org.quackery.Test;
+import org.quackery.QuackeryAssertionException;
+import org.quackery.QuackeryAssumptionException;
+import org.quackery.Tester;
+import org.quackery.testing.bug.collect.MutableList;
 
 public class describe_Quacks_quacksLike_collection {
   private Tester<Class<?>> tester;
@@ -50,11 +56,11 @@ public class describe_Quacks_quacksLike_collection {
     List<Result> failures = new ArrayList<>();
     List<Result> errors = new ArrayList<>();
     for (Result result : runAndCatch(test)) {
-      if (result.problem instanceof TestanzaAssertionException) {
+      if (result.problem instanceof QuackeryAssertionException) {
         failures.add(result);
       } else if (result.problem == null) {
 
-      } else if (result.problem instanceof TestanzaAssumptionException) {
+      } else if (result.problem instanceof QuackeryAssumptionException) {
 
       } else {
         errors.add(result);

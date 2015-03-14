@@ -1,10 +1,13 @@
-package org.testanza;
+package org.quackery;
 
-import static org.testanza.Testers.isAssignableTo;
-import static org.testanza.testing.Assertions.assertTrue;
-import static org.testanza.testing.Assertions.fail;
-import static org.testanza.testing.Tests.name;
-import static org.testanza.testing.Tests.run;
+import static org.quackery.Testers.isAssignableTo;
+import static org.quackery.testing.Assertions.assertTrue;
+import static org.quackery.testing.Assertions.fail;
+import static org.quackery.testing.Tests.name;
+import static org.quackery.testing.Tests.run;
+
+import org.quackery.Test;
+import org.quackery.QuackeryAssertionException;
 
 public class describe_Testers_isAssignableTo_Class {
   private Test test;
@@ -24,7 +27,7 @@ public class describe_Testers_isAssignableTo_Class {
     try {
       run(test);
       fail();
-    } catch (TestanzaAssertionException e) {}
+    } catch (QuackeryAssertionException e) {}
   }
 
   public void name_contains_simple_names_of_types() {
@@ -38,7 +41,7 @@ public class describe_Testers_isAssignableTo_Class {
     try {
       run(test);
       fail();
-    } catch (TestanzaAssertionException e) {
+    } catch (QuackeryAssertionException e) {
       assertTrue(e.getMessage().contains(Type.class.getName()));
       assertTrue(e.getMessage().contains(SuperType.class.getSimpleName()));
     }

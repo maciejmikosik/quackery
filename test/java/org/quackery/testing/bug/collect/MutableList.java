@@ -1,4 +1,4 @@
-package org.testanza.testing.bug.collect;
+package org.quackery.testing.bug.collect;
 
 import static java.util.Arrays.asList;
 

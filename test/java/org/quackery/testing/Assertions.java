@@ -1,4 +1,4 @@
-package org.testanza.testing;
+package org.quackery.testing;
 
 import java.util.Objects;
 

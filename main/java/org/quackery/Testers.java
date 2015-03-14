@@ -1,12 +1,12 @@
-package org.testanza;
+package org.quackery;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.deepEquals;
-import static org.testanza.TestanzaException.check;
-import static org.testanza.common.Classes.fullName;
-import static org.testanza.common.Classes.kind;
-import static org.testanza.common.Classes.modifiers;
-import static org.testanza.common.Classes.simpleName;
+import static org.quackery.QuackeryException.check;
+import static org.quackery.common.Classes.fullName;
+import static org.quackery.common.Classes.kind;
+import static org.quackery.common.Classes.modifiers;
+import static org.quackery.common.Classes.simpleName;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
@@ -21,7 +21,7 @@ public class Testers {
             + Modifier.toString(modifier)) {
           public void run() {
             if (!hasModifier(modifier, element)) {
-              throw new TestanzaAssertionException("" //
+              throw new QuackeryAssertionException("" //
                   + "\n" //
                   + "  expected that\n" //
                   + "    " + fullName(element) + "\n" //
@@ -42,7 +42,7 @@ public class Testers {
             + Modifier.toString(modifier)) {
           public void run() {
             if (hasModifier(modifier, element)) {
-              throw new TestanzaAssertionException("" //
+              throw new QuackeryAssertionException("" //
                   + "\n" //
                   + "  expected that\n" //
                   + "    " + fullName(element) + "\n" //
@@ -71,7 +71,7 @@ public class Testers {
                 return;
               }
             }
-            throw new TestanzaAssertionException("" //
+            throw new QuackeryAssertionException("" //
                 + "\n" //
                 + "  expected that\n" //
                 + "    " + type + "\n" //
@@ -92,7 +92,7 @@ public class Testers {
         return new Case(simpleName(item) + " is assignable to " + simpleName(type)) {
           public void run() {
             if (!type.isAssignableFrom(item)) {
-              throw new TestanzaAssertionException("" //
+              throw new QuackeryAssertionException("" //
                   + "\n" //
                   + "  expected that\n" //
                   + "    " + item + "\n" //

@@ -1,12 +1,18 @@
-package org.testanza;
+package org.quackery;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.hash;
-import static org.testanza.Suite.newSuite;
-import static org.testanza.testing.Assertions.assertEquals;
-import static org.testanza.testing.Assertions.assertTrue;
-import static org.testanza.testing.Assertions.fail;
-import static org.testanza.testing.Mocks.mockObject;
+import static org.quackery.Suite.newSuite;
+import static org.quackery.testing.Assertions.assertEquals;
+import static org.quackery.testing.Assertions.assertTrue;
+import static org.quackery.testing.Assertions.fail;
+import static org.quackery.testing.Mocks.mockObject;
+
+import org.quackery.Case;
+import org.quackery.Suite;
+import org.quackery.Test;
+import org.quackery.QuackeryException;
+import org.quackery.Tester;
 
 public class describe_Suite {
   private String name = "name";
@@ -121,7 +127,7 @@ public class describe_Suite {
     try {
       newSuite(name);
       fail();
-    } catch (TestanzaException e) {}
+    } catch (QuackeryException e) {}
   }
 
   public void test_cannot_be_null() {
@@ -129,23 +135,23 @@ public class describe_Suite {
     try {
       suite.test(null);
       fail();
-    } catch (TestanzaException e) {}
+    } catch (QuackeryException e) {}
     try {
       suite.testAll((Iterable<Test>) null);
       fail();
-    } catch (TestanzaException e) {}
+    } catch (QuackeryException e) {}
     try {
       suite.testAll(asList(testA, null, testB));
       fail();
-    } catch (TestanzaException e) {}
+    } catch (QuackeryException e) {}
     try {
       suite.testAll((Test[]) null);
       fail();
-    } catch (TestanzaException e) {}
+    } catch (QuackeryException e) {}
     try {
       suite.testAll(new Test[] { testA, null, testB });
       fail();
-    } catch (TestanzaException e) {}
+    } catch (QuackeryException e) {}
   }
 
   public void items_cannot_be_null() {
@@ -153,11 +159,11 @@ public class describe_Suite {
     try {
       suite.testThatAll((Iterable<Object>) null, testerA);
       fail();
-    } catch (TestanzaException e) {}
+    } catch (QuackeryException e) {}
     try {
       suite.testThatAll((Object[]) null, testerA);
       fail();
-    } catch (TestanzaException e) {}
+    } catch (QuackeryException e) {}
   }
 
   public void tester_cannot_be_null() {
@@ -165,15 +171,15 @@ public class describe_Suite {
     try {
       suite.testThat(itemA, (Tester<Object>) null);
       fail();
-    } catch (TestanzaException e) {}
+    } catch (QuackeryException e) {}
     try {
       suite.testThatAll(asList(), (Tester<Object>) null);
       fail();
-    } catch (TestanzaException e) {}
+    } catch (QuackeryException e) {}
     try {
       suite.testThatAll(new Object[0], (Tester<Object>) null);
       fail();
-    } catch (TestanzaException e) {}
+    } catch (QuackeryException e) {}
   }
 
   private static class MockTester<T> implements Tester<T> {

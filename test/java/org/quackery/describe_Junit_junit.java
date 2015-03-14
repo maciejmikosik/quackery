@@ -1,10 +1,10 @@
-package org.testanza;
+package org.quackery;
 
-import static org.testanza.Junit.junit;
-import static org.testanza.Suite.newSuite;
-import static org.testanza.testing.Assertions.assertEquals;
-import static org.testanza.testing.Assertions.assertNotEquals;
-import static org.testanza.testing.Assertions.fail;
+import static org.quackery.Junit.junit;
+import static org.quackery.Suite.newSuite;
+import static org.quackery.testing.Assertions.assertEquals;
+import static org.quackery.testing.Assertions.assertNotEquals;
+import static org.quackery.testing.Assertions.fail;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -16,6 +16,10 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.junit.AssumptionViolatedException;
+import org.quackery.Case;
+import org.quackery.Test;
+import org.quackery.QuackeryAssertionException;
+import org.quackery.QuackeryAssumptionException;
 
 public class describe_Junit_junit {
   private RuntimeException exception = new RuntimeException("exception");
@@ -65,7 +69,7 @@ public class describe_Junit_junit {
   }
 
   public void running_case_wraps_assertion_exception() throws Throwable {
-    exception = new TestanzaAssertionException(message);
+    exception = new QuackeryAssertionException(message);
     test = new Case(name) {
       public void run() {
         throw exception;
@@ -83,7 +87,7 @@ public class describe_Junit_junit {
   }
 
   public void running_case_wraps_assumption_exception() throws Throwable {
-    exception = new TestanzaAssumptionException(message);
+    exception = new QuackeryAssumptionException(message);
     test = new Case(name) {
       public void run() {
         throw exception;

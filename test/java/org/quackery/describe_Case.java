@@ -1,8 +1,12 @@
-package org.testanza;
+package org.quackery;
 
-import static org.testanza.testing.Assertions.assertEquals;
-import static org.testanza.testing.Assertions.assertTrue;
-import static org.testanza.testing.Assertions.fail;
+import static org.quackery.testing.Assertions.assertEquals;
+import static org.quackery.testing.Assertions.assertTrue;
+import static org.quackery.testing.Assertions.fail;
+
+import org.quackery.Case;
+import org.quackery.Test;
+import org.quackery.QuackeryException;
 
 public class describe_Case {
   private final String name = "name";
@@ -25,6 +29,6 @@ public class describe_Case {
         public void run() {}
       };
       fail();
-    } catch (TestanzaException e) {}
+    } catch (QuackeryException e) {}
   }
 }

@@ -1,4 +1,4 @@
-package org.testanza.common;
+package org.quackery.common;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;

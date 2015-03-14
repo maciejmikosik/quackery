@@ -1,6 +1,6 @@
-package org.testanza;
+package org.quackery;
 
-import static org.testanza.TestanzaException.check;
+import static org.quackery.QuackeryException.check;
 
 public abstract class Case implements Test {
   public final String name;

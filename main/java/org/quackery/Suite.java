@@ -1,8 +1,8 @@
-package org.testanza;
+package org.quackery;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
-import static org.testanza.TestanzaException.check;
+import static org.quackery.QuackeryException.check;
 
 import java.util.ArrayList;
 import java.util.Arrays;

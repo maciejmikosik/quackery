@@ -1,4 +1,4 @@
-package org.testanza;
+package org.quackery;
 
 import java.lang.ref.WeakReference;
 import java.util.Map;
@@ -29,9 +29,9 @@ public class Junit {
       protected void runTest() throws Throwable {
         try {
           cas.run();
-        } catch (TestanzaAssertionException e) {
+        } catch (QuackeryAssertionException e) {
           throw new AssertionError(e.getMessage(), e);
-        } catch (TestanzaAssumptionException e) {
+        } catch (QuackeryAssumptionException e) {
           throw newAssumptionException(e);
         }
       }
@@ -44,7 +44,7 @@ public class Junit {
    */
   @SuppressWarnings("deprecation")
   private static AssumptionViolatedException newAssumptionException(
-      TestanzaAssumptionException exception) {
+      QuackeryAssumptionException exception) {
     AssumptionViolatedException wrap = new AssumptionViolatedException(exception.getMessage());
     wrap.initCause(exception);
     return wrap;

@@ -1,8 +1,8 @@
-package org.testanza.testing;
+package org.quackery.testing;
 
-import org.testanza.Case;
-import org.testanza.Suite;
-import org.testanza.Test;
+import org.quackery.Case;
+import org.quackery.Suite;
+import org.quackery.Test;
 
 public class Tests {
   public static String name(Test test) {

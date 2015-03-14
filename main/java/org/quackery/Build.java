@@ -1,4 +1,4 @@
-package org.testanza;
+package org.quackery;
 
 import static java.util.Arrays.asList;
 

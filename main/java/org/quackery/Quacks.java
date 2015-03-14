@@ -1,7 +1,7 @@
-package org.testanza;
+package org.quackery;
 
 import static java.util.Arrays.asList;
-import static org.testanza.Suite.newSuite;
+import static org.quackery.Suite.newSuite;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -38,7 +38,7 @@ public class Quacks {
             return;
           }
         }
-        throw new TestanzaAssertionException("" //
+        throw new QuackeryAssertionException("" //
             + "\n" //
             + "  expected that\n" //
             + "    " + type.getName() + "\n" //
@@ -55,7 +55,7 @@ public class Quacks {
         Object[] toArray = collection.toArray();
         boolean expected = Arrays.equals(toArray, new Object[0]);
         if (!expected) {
-          throw new TestanzaAssertionException("" //
+          throw new QuackeryAssertionException("" //
               + "\n" //
               + "  Expected that\n" //
               + "    " + type + "\n" //
@@ -76,7 +76,7 @@ public class Quacks {
             return;
           }
         }
-        throw new TestanzaAssertionException("" //
+        throw new QuackeryAssertionException("" //
             + "\n" //
             + "  expected that\n" //
             + "    " + type.getName() + "\n" //
@@ -96,7 +96,7 @@ public class Quacks {
         Object[] toArray = collection.toArray();
         boolean expected = Arrays.equals(toArray, original.toArray());
         if (!expected) {
-          throw new TestanzaAssertionException("" //
+          throw new QuackeryAssertionException("" //
               + "\n" //
               + "  Expected that\n" //
               + "    " + type.getName() + "\n" //
@@ -119,7 +119,7 @@ public class Quacks {
         Collection<?> collection = null;
         try {
           collection = (Collection<?>) constructor.newInstance((Object) null);
-          throw new TestanzaAssertionException("" //
+          throw new QuackeryAssertionException("" //
               + "\n" //
               + "  Expected that\n" //
               + "    " + type + "\n" //
@@ -129,7 +129,7 @@ public class Quacks {
           );
         } catch (InvocationTargetException e) {
           if (!(e.getCause() instanceof NullPointerException)) {
-            throw new TestanzaAssertionException("" //
+            throw new QuackeryAssertionException("" //
                 + "\n" //
                 + "  Expected that\n" //
                 + "    " + type + "\n" //
@@ -154,7 +154,7 @@ public class Quacks {
         Object[] afterToArray = collection.toArray();
         boolean expected = Arrays.equals(beforeToArray, afterToArray);
         if (!expected) {
-          throw new TestanzaAssertionException("" //
+          throw new QuackeryAssertionException("" //
               + "\n" //
               + "  Expected that\n" //
               + "    " + type + "\n" //
@@ -186,7 +186,7 @@ public class Quacks {
         Object[] argumentToArray = argument.toArray();
         boolean expected = Arrays.equals(argumentToArray, original.toArray());
         if (!expected) {
-          throw new TestanzaAssertionException("" //
+          throw new QuackeryAssertionException("" //
               + "\n" //
               + "  Expected that\n" //
               + "    " + type + "\n" //
@@ -207,7 +207,7 @@ public class Quacks {
     try {
       return type.getConstructor(parameters);
     } catch (NoSuchMethodException e) {
-      throw new TestanzaAssumptionException(e);
+      throw new QuackeryAssumptionException(e);
     }
   }
 

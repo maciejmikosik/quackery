@@ -1,14 +1,20 @@
-package org.testanza;
+package org.quackery;
 
 import static java.lang.reflect.Modifier.PRIVATE;
 import static java.lang.reflect.Modifier.PUBLIC;
-import static org.testanza.Testers.hasConstructor;
-import static org.testanza.testing.Assertions.assertEquals;
-import static org.testanza.testing.Assertions.assertTrue;
-import static org.testanza.testing.Assertions.fail;
-import static org.testanza.testing.Tests.run;
+import static org.quackery.Testers.hasConstructor;
+import static org.quackery.testing.Assertions.assertEquals;
+import static org.quackery.testing.Assertions.assertTrue;
+import static org.quackery.testing.Assertions.fail;
+import static org.quackery.testing.Tests.run;
 
 import java.lang.reflect.Modifier;
+
+import org.quackery.Case;
+import org.quackery.Test;
+import org.quackery.QuackeryAssertionException;
+import org.quackery.QuackeryException;
+import org.quackery.Tester;
 
 public class describe_Testers_hasConstructor {
   private Tester<Class<?>> tester;
@@ -33,7 +39,7 @@ public class describe_Testers_hasConstructor {
     try {
       run(test);
       fail();
-    } catch (TestanzaAssertionException e) {}
+    } catch (QuackeryAssertionException e) {}
   }
 
   public void fails_if_class_has_constructor_with_different_parameters() throws Throwable {
@@ -43,7 +49,7 @@ public class describe_Testers_hasConstructor {
     try {
       run(test);
       fail();
-    } catch (TestanzaAssertionException e) {}
+    } catch (QuackeryAssertionException e) {}
   }
 
   public void failure_prints_message() throws Throwable {
@@ -53,7 +59,7 @@ public class describe_Testers_hasConstructor {
     try {
       run(test);
       fail();
-    } catch (TestanzaAssertionException e) {
+    } catch (QuackeryAssertionException e) {
       assertTrue(e.getMessage().contains("" //
           + "\n" //
           + "  expected that\n" //
@@ -78,13 +84,13 @@ public class describe_Testers_hasConstructor {
     try {
       hasConstructor(PRIVATE, (Class[]) null);
       fail();
-    } catch (TestanzaException e) {}
+    } catch (QuackeryException e) {}
   }
 
   public void parameter_cannot_be_null() {
     try {
       hasConstructor(PRIVATE, String.class, null, String.class);
       fail();
-    } catch (TestanzaException e) {}
+    } catch (QuackeryException e) {}
   }
 }
