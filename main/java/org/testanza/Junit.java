@@ -7,6 +7,8 @@ import java.util.WeakHashMap;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.junit.internal.AssumptionViolatedException;
+
 public class Junit {
   public static junit.framework.Test junit(Test test) {
     return test instanceof Case
@@ -29,9 +31,23 @@ public class Junit {
           cas.run();
         } catch (TestanzaAssertionException e) {
           throw new AssertionError(e.getMessage(), e);
+        } catch (TestanzaAssumptionException e) {
+          throw newAssumptionException(e);
         }
       }
     });
+  }
+
+  /**
+   * To keep code compatible with junit-4.11 we use deprecated {@link AssumptionViolatedException}
+   * instead of {@link org.junit.AssumptionViolatedException}
+   */
+  @SuppressWarnings("deprecation")
+  private static AssumptionViolatedException newAssumptionException(
+      TestanzaAssumptionException exception) {
+    AssumptionViolatedException wrap = new AssumptionViolatedException(exception.getMessage());
+    wrap.initCause(exception);
+    return wrap;
   }
 
   private static synchronized TestCase makeNameUnique(TestCase test) {

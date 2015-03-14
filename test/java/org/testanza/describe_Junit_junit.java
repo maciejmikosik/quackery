@@ -15,6 +15,8 @@ import java.util.List;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.junit.AssumptionViolatedException;
+
 public class describe_Junit_junit {
   private RuntimeException exception = new RuntimeException("exception");
   private final String message = "message";
@@ -75,6 +77,24 @@ public class describe_Junit_junit {
       run(junitTest);
       fail();
     } catch (AssertionError e) {
+      assertEquals(e.getCause(), exception);
+      assertEquals(e.getMessage(), exception.getMessage());
+    }
+  }
+
+  public void running_case_wraps_assumption_exception() throws Throwable {
+    exception = new TestanzaAssumptionException(message);
+    test = new Case(name) {
+      public void run() {
+        throw exception;
+      }
+    };
+    junitTest = junit(test);
+
+    try {
+      run(junitTest);
+      fail();
+    } catch (AssumptionViolatedException e) {
       assertEquals(e.getCause(), exception);
       assertEquals(e.getMessage(), exception.getMessage());
     }
