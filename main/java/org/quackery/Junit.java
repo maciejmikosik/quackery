@@ -54,13 +54,12 @@ public class Junit {
     String name = test.getName();
     String newName = name;
     if (names.containsKey(name) && !test.equals(names.get(name).get())) {
-      for (int i = 1;; i++) {
-        newName = name + " #" + i;
+      while (true) {
+        newName = newName + "\u200B";
         if (!names.containsKey(newName)) {
           break;
         }
       }
-
     }
     names.put(newName, new WeakReference<TestCase>(test));
     test.setName(newName);
