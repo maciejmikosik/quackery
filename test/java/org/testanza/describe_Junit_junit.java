@@ -16,7 +16,8 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 public class describe_Junit_junit {
-  private final RuntimeException exception = new RuntimeException("exception");
+  private RuntimeException exception = new RuntimeException("exception");
+  private final String message = "message";
   private final String name = "name " + hashCode();
   private boolean invoked;
   private Test test;
@@ -32,7 +33,7 @@ public class describe_Junit_junit {
     assertEquals(name(junitTest), name);
   }
 
-  public void running_test_invokes_case_body() throws Throwable {
+  public void running_case_invokes_case_body() throws Throwable {
     test = new Case(name) {
       public void run() {
         invoked = true;
@@ -45,7 +46,7 @@ public class describe_Junit_junit {
     assertEquals(invoked, true);
   }
 
-  public void running_test_throws_exception_from_case_body() throws Throwable {
+  public void running_case_passes_thrown_exception() throws Throwable {
     test = new Case(name) {
       public void run() {
         throw exception;
@@ -58,6 +59,24 @@ public class describe_Junit_junit {
       fail();
     } catch (RuntimeException e) {
       assertEquals(e, exception);
+    }
+  }
+
+  public void running_case_wraps_assertion_exception() throws Throwable {
+    exception = new TestanzaAssertionException(message);
+    test = new Case(name) {
+      public void run() {
+        throw exception;
+      }
+    };
+    junitTest = junit(test);
+
+    try {
+      run(junitTest);
+      fail();
+    } catch (AssertionError e) {
+      assertEquals(e.getCause(), exception);
+      assertEquals(e.getMessage(), exception.getMessage());
     }
   }
 

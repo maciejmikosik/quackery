@@ -33,7 +33,7 @@ public class describe_Testers_hasConstructor {
     try {
       run(test);
       fail();
-    } catch (TestanzaAssertionError e) {}
+    } catch (TestanzaAssertionException e) {}
   }
 
   public void fails_if_class_has_constructor_with_different_parameters() throws Throwable {
@@ -43,7 +43,7 @@ public class describe_Testers_hasConstructor {
     try {
       run(test);
       fail();
-    } catch (TestanzaAssertionError e) {}
+    } catch (TestanzaAssertionException e) {}
   }
 
   public void failure_prints_message() throws Throwable {
@@ -53,7 +53,7 @@ public class describe_Testers_hasConstructor {
     try {
       run(test);
       fail();
-    } catch (TestanzaAssertionError e) {
+    } catch (TestanzaAssertionException e) {
       assertTrue(e.getMessage().contains("" //
           + "\n" //
           + "  expected that\n" //

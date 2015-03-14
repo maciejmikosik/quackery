@@ -25,7 +25,11 @@ public class Junit {
   private static TestCase junit(final Case cas) {
     return makeNameUnique(new TestCase(cas.name) {
       protected void runTest() throws Throwable {
-        cas.run();
+        try {
+          cas.run();
+        } catch (TestanzaAssertionException e) {
+          throw new AssertionError(e.getMessage(), e);
+        }
       }
     });
   }

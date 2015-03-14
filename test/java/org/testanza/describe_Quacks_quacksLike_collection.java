@@ -50,7 +50,7 @@ public class describe_Quacks_quacksLike_collection {
     List<Result> failures = new ArrayList<>();
     List<Result> errors = new ArrayList<>();
     for (Result result : runAndCatch(test)) {
-      if (result.problem instanceof TestanzaAssertionError) {
+      if (result.problem instanceof TestanzaAssertionException) {
         failures.add(result);
       } else if (result.problem == null) {
 

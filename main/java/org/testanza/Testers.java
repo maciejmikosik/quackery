@@ -21,7 +21,7 @@ public class Testers {
             + Modifier.toString(modifier)) {
           public void run() {
             if (!hasModifier(modifier, element)) {
-              throw new TestanzaAssertionError("" //
+              throw new TestanzaAssertionException("" //
                   + "\n" //
                   + "  expected that\n" //
                   + "    " + fullName(element) + "\n" //
@@ -42,7 +42,7 @@ public class Testers {
             + Modifier.toString(modifier)) {
           public void run() {
             if (hasModifier(modifier, element)) {
-              throw new TestanzaAssertionError("" //
+              throw new TestanzaAssertionException("" //
                   + "\n" //
                   + "  expected that\n" //
                   + "    " + fullName(element) + "\n" //
@@ -71,7 +71,7 @@ public class Testers {
                 return;
               }
             }
-            throw new TestanzaAssertionError("" //
+            throw new TestanzaAssertionException("" //
                 + "\n" //
                 + "  expected that\n" //
                 + "    " + type + "\n" //
@@ -92,7 +92,7 @@ public class Testers {
         return new Case(simpleName(item) + " is assignable to " + simpleName(type)) {
           public void run() {
             if (!type.isAssignableFrom(item)) {
-              throw new TestanzaAssertionError("" //
+              throw new TestanzaAssertionException("" //
                   + "\n" //
                   + "  expected that\n" //
                   + "    " + item + "\n" //
