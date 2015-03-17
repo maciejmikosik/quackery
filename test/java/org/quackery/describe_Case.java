@@ -4,10 +4,6 @@ import static org.quackery.testing.Assertions.assertEquals;
 import static org.quackery.testing.Assertions.assertTrue;
 import static org.quackery.testing.Assertions.fail;
 
-import org.quackery.Case;
-import org.quackery.Test;
-import org.quackery.QuackeryException;
-
 public class describe_Case {
   private final String name = "name";
   private Case test;

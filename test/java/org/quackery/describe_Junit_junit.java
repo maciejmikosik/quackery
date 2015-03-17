@@ -16,10 +16,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.junit.AssumptionViolatedException;
-import org.quackery.Case;
-import org.quackery.Test;
-import org.quackery.QuackeryAssertionException;
-import org.quackery.QuackeryAssumptionException;
 
 public class describe_Junit_junit {
   private RuntimeException exception = new RuntimeException("exception");

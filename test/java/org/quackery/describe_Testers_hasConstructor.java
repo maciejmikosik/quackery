@@ -10,12 +10,6 @@ import static org.quackery.testing.Tests.run;
 
 import java.lang.reflect.Modifier;
 
-import org.quackery.Case;
-import org.quackery.Test;
-import org.quackery.QuackeryAssertionException;
-import org.quackery.QuackeryException;
-import org.quackery.Tester;
-
 public class describe_Testers_hasConstructor {
   private Tester<Class<?>> tester;
   private Test test;

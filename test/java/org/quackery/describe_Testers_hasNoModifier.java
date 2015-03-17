@@ -10,9 +10,6 @@ import static org.quackery.testing.Tests.run;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Modifier;
 
-import org.quackery.Test;
-import org.quackery.QuackeryAssertionException;
-
 public class describe_Testers_hasNoModifier {
   private AnnotatedElement item;
   private Test test;

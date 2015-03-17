@@ -6,9 +6,6 @@ import static org.quackery.testing.Assertions.fail;
 import static org.quackery.testing.Tests.name;
 import static org.quackery.testing.Tests.run;
 
-import org.quackery.Test;
-import org.quackery.QuackeryAssertionException;
-
 public class describe_Testers_isAssignableTo_Class {
   private Test test;
 

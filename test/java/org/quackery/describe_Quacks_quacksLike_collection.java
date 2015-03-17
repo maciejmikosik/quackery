@@ -13,12 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
 
-import org.quackery.Case;
-import org.quackery.Suite;
-import org.quackery.Test;
-import org.quackery.QuackeryAssertionException;
-import org.quackery.QuackeryAssumptionException;
-import org.quackery.Tester;
 import org.quackery.testing.bug.collect.MutableList;
 
 public class describe_Quacks_quacksLike_collection {

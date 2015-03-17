@@ -8,12 +8,6 @@ import static org.quackery.testing.Assertions.assertTrue;
 import static org.quackery.testing.Assertions.fail;
 import static org.quackery.testing.Mocks.mockObject;
 
-import org.quackery.Case;
-import org.quackery.Suite;
-import org.quackery.Test;
-import org.quackery.QuackeryException;
-import org.quackery.Tester;
-
 public class describe_Suite {
   private String name = "name";
   private final Test //
