@@ -15,7 +15,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.junit.AssumptionViolatedException;
+import org.junit.internal.AssumptionViolatedException;
 
 public class describe_Junit_junit {
   private RuntimeException exception = new RuntimeException("exception");
