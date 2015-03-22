@@ -1,14 +1,15 @@
 Quackery lets you test if your code quacks like intended type.
 
-Try adding this Junit3-style code to test class.
+Add this example class to you project.
 
-    @RunWith(AllTests.class)
+    @RunWith(QuackeryRunner.class)
     public class JdkCollectionTest {
-      public static junit.framework.Test suite() {
-        return junit(newSuite("jdk collections quack like java.util.Collection")
+      @Quackery
+      public static Test test() {
+        return newSuite("jdk collections quack like java.util.Collection")
             .testThat(ArrayList.class, quacksLike(Collection.class))
             .testThat(LinkedList.class, quacksLike(Collection.class))
-            .testThat(HashSet.class, quacksLike(Collection.class)));
+            .testThat(HashSet.class, quacksLike(Collection.class));
       }
     }
 
