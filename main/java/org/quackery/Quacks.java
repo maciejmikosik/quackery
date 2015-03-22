@@ -17,6 +17,7 @@ public class Quacks {
     return new Tester<Class<?>>() {
       public Test test(Class<?> type) {
         return newSuite(type.getName() + " quacks like " + Collection.class.getName()) //
+            .test(implementsCollection(type)) //
             .test(newSuite("implements default constructor") //
                 .test(hasDefaultConstructor(type)) //
                 .test(defaultConstructorCreatesEmptyCollection(type))) //
@@ -26,6 +27,23 @@ public class Quacks {
                 .test(copyConstructorFailsForNullArgument(type)) //
                 .test(copyConstructorMakesDefensiveCopy(type)) //
                 .test(copyConstructorDoesNotModifyArgument(type)));
+      }
+    };
+  }
+
+  private static Test implementsCollection(final Class<?> type) {
+    return new Case("implements Collection") {
+      public void run() throws Throwable {
+        boolean expected = Collection.class.isAssignableFrom(type);
+        if (!expected) {
+          throw new QuackeryAssertionException("" //
+              + "\n" //
+              + "  expected that\n" //
+              + "    " + type.getName() + "\n" //
+              + "  implements\n" //
+              + "  " + Collection.class.getName() + "\n" //
+          );
+        }
       }
     };
   }
@@ -51,6 +69,7 @@ public class Quacks {
   private static Case defaultConstructorCreatesEmptyCollection(final Class<?> type) {
     return new Case("default constructor creates empty collection") {
       public void run() throws Throwable {
+        assume(Collection.class.isAssignableFrom(type));
         Collection<?> collection = (Collection<?>) assumeConstructor(type).newInstance();
         Object[] toArray = collection.toArray();
         boolean expected = Arrays.equals(toArray, new Object[0]);
@@ -90,6 +109,7 @@ public class Quacks {
   private static Test copyConstructorCanCreateCollectionWithOneElement(final Class<?> type) {
     return new Case("copy constructor can create collection with one element") {
       public void run() throws Throwable {
+        assume(Collection.class.isAssignableFrom(type));
         ArrayList<Object> original = new ArrayList<Object>(asList("a"));
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
         Collection<?> collection = (Collection<?>) constructor.newInstance(original.clone());
@@ -145,6 +165,7 @@ public class Quacks {
   private static Test copyConstructorMakesDefensiveCopy(final Class<?> type) {
     return new Case("copy constructor makes defensive copy") {
       public void run() throws Throwable {
+        assume(Collection.class.isAssignableFrom(type));
         ArrayList<Object> original = new ArrayList<Object>(asList("a", "b", "c"));
         ArrayList<Object> trojan = (ArrayList<Object>) original.clone();
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
@@ -201,6 +222,12 @@ public class Quacks {
         }
       }
     };
+  }
+
+  private static void assume(boolean condition) {
+    if (!condition) {
+      throw new QuackeryAssumptionException();
+    }
   }
 
   private static Constructor<?> assumeConstructor(Class<?> type, Class<?>... parameters) {

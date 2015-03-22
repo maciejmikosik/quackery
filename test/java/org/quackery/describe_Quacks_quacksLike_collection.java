@@ -32,6 +32,8 @@ public class describe_Quacks_quacksLike_collection {
 
   public void detects_collection_bugs_in_mutable_list() throws Throwable {
     tester = quacksLike(Collection.class);
+    expectDetection(tester.test(Object.class));
+    expectDetection(tester.test(MutableList.InterfaceIsMissing.class));
     expectDetection(tester.test(MutableList.DefaultConstructorIsMissing.class));
     expectDetection(tester.test(MutableList.DefaultConstructorIsHidden.class));
     expectDetection(tester.test(MutableList.DefaultConstructorAddsElement.class));
@@ -60,11 +62,11 @@ public class describe_Quacks_quacksLike_collection {
         errors.add(result);
       }
     }
-    if (failures.size() != 1) {
+    if (failures.size() == 0) {
       StringBuilder builder = new StringBuilder();
       builder.append("found ").append(failures.size()).append(" failures:");
       for (Result result : failures) {
-        builder.append("\n").append(result.test.name);
+        builder.append("\n").append(result.test.name).append("\n");
       }
       throw new AssertionError(builder.toString());
     }
@@ -72,7 +74,7 @@ public class describe_Quacks_quacksLike_collection {
       StringBuilder builder = new StringBuilder();
       builder.append("found ").append(errors.size()).append(" errors:");
       for (Result result : errors) {
-        builder.append("\n").append(result.test.name);
+        builder.append("\n").append(result.test.name).append("\n");
         builder.append(printStackTrace(result.problem));
       }
       throw new AssertionError(builder.toString());
