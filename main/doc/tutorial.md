@@ -7,22 +7,24 @@ just use them instead of writing your own.
 
     Test test = quacksLike(Collection.class).test(MyList.class);
 
-If you provide Junit3-style `suite()` method, test can be run by junit test runner.
+You can run this test by junit test runner.
 
-    @RunWith(AllTests.class)
+    @RunWith(QuackeryRunner.class)
     public class MyListTest {
-      public static junit.framework.Test suite() {
-          return junit(quacksLike(Collection.class).test(MyList.class));
+      @Quackery
+      public static Test test() {
+          return quacksLike(Collection.class).test(MyList.class);
       }
     }
 
 You can combine tests into bigger test suites.
 
-    public static junit.framework.Test suite() {
-      return junit(newSuite("MyList ... ")
+    @Quackery
+    public static Test test() {
+      return newSuite("MyList ... ")
           .testThat(MyList.class, quacksLike(Collection.class))
           .testThat(MyList.class, quacksLike( ... ))
-          .testThat(MyList.class, quacksLike( ... )));
+          .testThat(MyList.class, quacksLike( ... ));
     }
 
 You can define your own contracts by implementing `org.quackery.Tester` interface.
@@ -52,7 +54,7 @@ You can define your own contracts by implementing `org.quackery.Tester` interfac
         };
       }
 
-Or `Test` combine many tests as `Suite`.
+Or `Test` can combine many tests as `Suite`.
 
       public static Tester<Class<?>> quacksLikeX() {
         return new Tester<Class<?>>() {
@@ -64,26 +66,30 @@ Or `Test` combine many tests as `Suite`.
         };
       }
 
-### Asserting
+### Built-in testers
 
-Quackery is agnostic about what assertion library you use and what exceptions/errors you throw.
-However all built-in testers throw `org.quackery.QuackeryAssertionException` in case of failed tests
-and `org.quackery.QuackeryAssumptionException` in case when test cannot be run.
-You are encouraged to copy that behavior.
+Built-in testers are designed to obey some rules.
+They throw `org.quackery.QuackeryAssertionException` if test fails.
+Sometimes executing test makes no sense because some more basic feature already covered by other test failed.
+In that situation `org.quackery.QuackeryAssumptionException` is thrown.
 
-Those exceptions are translated to native exceptions/errors when converting to other frameworks (like junit).
+Those exceptions are wrapped by native exceptions/errors
+when tests are run by runner from other framework (like junit).
 
 ### Junit
 
-Quackery `Test` can be converted to `junit.framework.Test` and run by junit test runner.
+Quackery does no provide native running mechanism.
+`org.quackery.Test` can be run by `org.quackery.QuackeryRunner` which implements `org.junit.runner.Runner`.
+Method returning `Test` you want to run must be public, static, have no parameters and be annotated with `org.quackery.Quackery`.
 
-    @RunWith(AllTests.class)
+    @RunWith(QuackeryRunner.class)
     public class MyListTest {
-      public static junit.framework.Test suite() {
-          return junit(quacksLike(Collection.class).test(MyList.class));
+      @Quackery
+      public static Test test() {
+          return quacksLike(Collection.class).test(MyList.class));
       }
     }
 
-Exceptions throws by quackery are translated to junit natives:
+Exceptions thrown by quackery are translated to junit natives:
   - `org.quackery.QuackeryAssertionException` to `java.lang.AssertionError`
   - `org.quackery.QuackeryAssumptionException` to `org.junit.internal.AssumptionViolatedException`
