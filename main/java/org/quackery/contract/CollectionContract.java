@@ -5,7 +5,6 @@ import static org.quackery.Suite.newSuite;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -59,8 +58,8 @@ public final class CollectionContract implements Contract<Class<?>> {
   private static Test hasDefaultConstructor(final Class<?> type) {
     return new Case("has default constructor") {
       public void run() {
-        for (Constructor<?> constructor : type.getDeclaredConstructors()) {
-          if (isPublic(constructor) && parameters(constructor).isEmpty()) {
+        for (Constructor<?> constructor : type.getConstructors()) {
+          if (parameters(constructor).isEmpty()) {
             return;
           }
         }
@@ -98,8 +97,8 @@ public final class CollectionContract implements Contract<Class<?>> {
   private static Test hasCopyConstructor(final Class<?> type) {
     return new Case("has copy constructor") {
       public void run() {
-        for (Constructor<?> constructor : type.getDeclaredConstructors()) {
-          if (isPublic(constructor) && parameters(constructor).equals(asList(Collection.class))) {
+        for (Constructor<?> constructor : type.getConstructors()) {
+          if (parameters(constructor).equals(asList(Collection.class))) {
             return;
           }
         }
@@ -256,9 +255,5 @@ public final class CollectionContract implements Contract<Class<?>> {
 
   private static String print(Collection<?> collection) {
     return print(collection.toArray());
-  }
-
-  private static boolean isPublic(Constructor<?> constructor) {
-    return Modifier.isPublic(constructor.getModifiers());
   }
 }
