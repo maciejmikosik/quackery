@@ -27,16 +27,16 @@ You can combine tests into bigger test suites.
           .testThat(MyList.class, quacksLike( ... ));
     }
 
-You can define your own contracts by implementing `org.quackery.Tester` interface.
+You can define your own contracts by implementing `org.quackery.Contract` interface.
 
-    public interface Tester<T> {
+    public interface Contract<T> {
       Test test(T item);
     }
 
-`Tester` can produce `Test` being single `Case`.
+`Contract` can produce `Test` being single `Case`.
 
-      public static Tester<Class<?>> quacksLikeFinalClass() {
-        return new Tester<Class<?>>() {
+      public static Contract<Class<?>> quacksLikeFinalClass() {
+        return new Contract<Class<?>>() {
           public Test test(final Class<?> type) {
             return new Case(type.getName() + " is final") {
               public void run() {
@@ -56,8 +56,8 @@ You can define your own contracts by implementing `org.quackery.Tester` interfac
 
 Or `Test` can combine many tests as `Suite`.
 
-      public static Tester<Class<?>> quacksLikeX() {
-        return new Tester<Class<?>>() {
+      public static Contract<Class<?>> quacksLikeX() {
+        return new Contract<Class<?>>() {
           public Test test(Class<?> type) {
             return newSuite(type + " quacks like X")
                 .testThat(type, quacksLikeA())
@@ -66,9 +66,9 @@ Or `Test` can combine many tests as `Suite`.
         };
       }
 
-### Built-in testers
+### Built-in contracts
 
-Built-in testers are designed to obey some rules.
+Built-in contracts are designed to obey some rules.
 They throw `org.quackery.FailureException` if test fails.
 Sometimes executing test makes no sense because some more basic feature already covered by other test failed.
 In that situation `org.quackery.AssumptionException` is thrown.

@@ -20,10 +20,10 @@ public class describe_Suite {
       itemB = mockObject("itemB"), //
       itemC = mockObject("itemC"), //
       itemD = mockObject("itemD");
-  private final Tester<Object> //
-      testerA = new MockTester<Object>("testerA"), //
-      testerB = new MockTester<Object>("testerB"), //
-      testerC = new MockTester<Object>("testerC");
+  private final Contract<Object> //
+      contractA = new MockContract<Object>("contractA"), //
+      contractB = new MockContract<Object>("contractB"), //
+      contractC = new MockContract<Object>("contractC");
   private Suite suite;
 
   public void implements_test_interface() {
@@ -64,49 +64,49 @@ public class describe_Suite {
 
   public void tests_that_item() {
     suite = newSuite(name) //
-        .testThat(itemA, testerA) //
-        .testThat(itemB, testerB) //
-        .testThat(itemC, testerC);
+        .testThat(itemA, contractA) //
+        .testThat(itemB, contractB) //
+        .testThat(itemC, contractC);
     assertEquals(suite.tests, asList( //
-        new MockTest(itemA, testerA), //
-        new MockTest(itemB, testerB), //
-        new MockTest(itemC, testerC)));
+        new MockTest(itemA, contractA), //
+        new MockTest(itemB, contractB), //
+        new MockTest(itemC, contractC)));
   }
 
   public void tests_that_all_items_in_iterable() {
     suite = newSuite(name) //
-        .testThatAll(asList(itemA, itemB), testerA) //
-        .testThatAll(asList(itemC, itemD), testerB);
+        .testThatAll(asList(itemA, itemB), contractA) //
+        .testThatAll(asList(itemC, itemD), contractB);
     assertEquals(suite.tests, asList( //
-        new MockTest(itemA, testerA), //
-        new MockTest(itemB, testerA), //
-        new MockTest(itemC, testerB), //
-        new MockTest(itemD, testerB)));
+        new MockTest(itemA, contractA), //
+        new MockTest(itemB, contractA), //
+        new MockTest(itemC, contractB), //
+        new MockTest(itemD, contractB)));
   }
 
   public void tests_that_all_items_in_array() {
     suite = newSuite(name) //
-        .testThatAll(new Object[] { itemA, itemB }, testerA) //
-        .testThatAll(new Object[] { itemC, itemD }, testerB);
+        .testThatAll(new Object[] { itemA, itemB }, contractA) //
+        .testThatAll(new Object[] { itemC, itemD }, contractB);
     assertEquals(suite.tests, asList( //
-        new MockTest(itemA, testerA), //
-        new MockTest(itemB, testerA), //
-        new MockTest(itemC, testerB), //
-        new MockTest(itemD, testerB)));
+        new MockTest(itemA, contractA), //
+        new MockTest(itemB, contractA), //
+        new MockTest(itemC, contractB), //
+        new MockTest(itemD, contractB)));
   }
 
   public void lists_are_covariant() {
     class Foo {}
     class Bar extends Foo {}
     final Bar bar = null;
-    final Tester<Foo> fooTester = null;
+    final Contract<Foo> fooContract = null;
 
     // don't run, just compile
     new Runnable() {
       public void run() {
         newSuite(name) //
             .testAll(asList(new Case[0])) //
-            .testThatAll(asList(bar), fooTester); //
+            .testThatAll(asList(bar), fooContract); //
       }
     };
   }
@@ -151,35 +151,35 @@ public class describe_Suite {
   public void items_cannot_be_null() {
     suite = newSuite(name);
     try {
-      suite.testThatAll((Iterable<Object>) null, testerA);
+      suite.testThatAll((Iterable<Object>) null, contractA);
       fail();
     } catch (QuackeryException e) {}
     try {
-      suite.testThatAll((Object[]) null, testerA);
+      suite.testThatAll((Object[]) null, contractA);
       fail();
     } catch (QuackeryException e) {}
   }
 
-  public void tester_cannot_be_null() {
+  public void contract_cannot_be_null() {
     suite = newSuite(name);
     try {
-      suite.testThat(itemA, (Tester<Object>) null);
+      suite.testThat(itemA, (Contract<Object>) null);
       fail();
     } catch (QuackeryException e) {}
     try {
-      suite.testThatAll(asList(), (Tester<Object>) null);
+      suite.testThatAll(asList(), (Contract<Object>) null);
       fail();
     } catch (QuackeryException e) {}
     try {
-      suite.testThatAll(new Object[0], (Tester<Object>) null);
+      suite.testThatAll(new Object[0], (Contract<Object>) null);
       fail();
     } catch (QuackeryException e) {}
   }
 
-  private static class MockTester<T> implements Tester<T> {
+  private static class MockContract<T> implements Contract<T> {
     private final String name;
 
-    public MockTester(String name) {
+    public MockContract(String name) {
       this.name = name;
     }
 
@@ -188,17 +188,17 @@ public class describe_Suite {
     }
 
     public String toString() {
-      return "MockTester(" + name + ")";
+      return "MockContract(" + name + ")";
     }
   }
 
   private static class MockTest implements Test {
     public final Object item;
-    public final Tester<?> tester;
+    public final Contract<?> contract;
 
-    public MockTest(Object item, Tester<?> tester) {
+    public MockTest(Object item, Contract<?> contract) {
       this.item = item;
-      this.tester = tester;
+      this.contract = contract;
     }
 
     public boolean equals(Object object) {
@@ -206,15 +206,15 @@ public class describe_Suite {
     }
 
     public boolean equals(MockTest that) {
-      return item.equals(that.item) && tester.equals(that.tester);
+      return item.equals(that.item) && contract.equals(that.contract);
     }
 
     public int hashCode() {
-      return hash(item, tester);
+      return hash(item, contract);
     }
 
     public String toString() {
-      return "MockTest(" + item + ", " + tester + ")";
+      return "MockTest(" + item + ", " + contract + ")";
     }
   }
 }

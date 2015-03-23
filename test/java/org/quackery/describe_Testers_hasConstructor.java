@@ -11,7 +11,7 @@ import static org.quackery.testing.Tests.run;
 import java.lang.reflect.Modifier;
 
 public class describe_Testers_hasConstructor {
-  private Tester<Class<?>> tester;
+  private Contract<Class<?>> contract;
   private Test test;
 
   private static class Testable {
@@ -20,15 +20,15 @@ public class describe_Testers_hasConstructor {
   }
 
   public void succeeds_if_class_has_constructor() throws Throwable {
-    tester = hasConstructor(PUBLIC, String.class);
-    test = tester.test(Testable.class);
+    contract = hasConstructor(PUBLIC, String.class);
+    test = contract.test(Testable.class);
 
     run(test);
   }
 
   public void fails_if_class_has_constructor_with_different_access() throws Throwable {
-    tester = hasConstructor(PRIVATE, String.class);
-    test = tester.test(Testable.class);
+    contract = hasConstructor(PRIVATE, String.class);
+    test = contract.test(Testable.class);
 
     try {
       run(test);
@@ -37,8 +37,8 @@ public class describe_Testers_hasConstructor {
   }
 
   public void fails_if_class_has_constructor_with_different_parameters() throws Throwable {
-    tester = hasConstructor(PUBLIC, String.class, String.class);
-    test = tester.test(Testable.class);
+    contract = hasConstructor(PUBLIC, String.class, String.class);
+    test = contract.test(Testable.class);
 
     try {
       run(test);
@@ -47,8 +47,8 @@ public class describe_Testers_hasConstructor {
   }
 
   public void failure_prints_message() throws Throwable {
-    tester = hasConstructor(PRIVATE, String.class, String.class);
-    test = tester.test(Testable.class);
+    contract = hasConstructor(PRIVATE, String.class, String.class);
+    test = contract.test(Testable.class);
 
     try {
       run(test);
@@ -68,8 +68,8 @@ public class describe_Testers_hasConstructor {
   }
 
   public void name_contains_type_modifier_and_parameters() {
-    tester = hasConstructor(PRIVATE, String.class, String.class);
-    test = tester.test(Testable.class);
+    contract = hasConstructor(PRIVATE, String.class, String.class);
+    test = contract.test(Testable.class);
     assertEquals(((Case) test).name,
         "class Testable has private constructor with 2 parameters String, String");
   }

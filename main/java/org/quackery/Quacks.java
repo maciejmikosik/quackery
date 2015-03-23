@@ -12,9 +12,9 @@ import java.util.Collection;
 import java.util.List;
 
 public class Quacks {
-  public static Tester<Class<?>> quacksLike(
+  public static Contract<Class<?>> quacksLike(
       @SuppressWarnings("rawtypes") Class<Collection> collectionType) {
-    return new Tester<Class<?>>() {
+    return new Contract<Class<?>>() {
       public Test test(Class<?> type) {
         return newSuite(type.getName() + " quacks like " + Collection.class.getName()) //
             .test(implementsCollection(type)) //

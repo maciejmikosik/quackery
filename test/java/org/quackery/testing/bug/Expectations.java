@@ -10,20 +10,20 @@ import java.util.List;
 
 import org.quackery.AssumptionException;
 import org.quackery.Case;
+import org.quackery.Contract;
 import org.quackery.FailureException;
 import org.quackery.Suite;
 import org.quackery.Test;
-import org.quackery.Tester;
 
 public class Expectations {
-  public static void expectSuccess(Tester<Class<?>> tester, Class<?> implementation)
+  public static void expectSuccess(Contract<Class<?>> contract, Class<?> implementation)
       throws Throwable {
-    run(tester.test(implementation));
+    run(contract.test(implementation));
   }
 
-  public static void expectFailure(Tester<Class<?>> tester, Class<?> implementation)
+  public static void expectFailure(Contract<Class<?>> contract, Class<?> implementation)
       throws Throwable {
-    Test test = tester.test(implementation);
+    Test test = contract.test(implementation);
     List<Result> failures = new ArrayList<>();
     List<Result> errors = new ArrayList<>();
     for (Result result : runAndCatch(test)) {
