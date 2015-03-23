@@ -6,15 +6,15 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-public class describe_quackery {
+public class test_quackery {
   private static List<Throwable> failures = new ArrayList<Throwable>();
   private static List<String> statistics = new ArrayList<String>();
 
   public static void main(String[] args) throws Throwable {
-    runTestsIn(describe_Case.class);
-    runTestsIn(describe_Suite.class);
-    runTestsIn(describe_QuackeryRunner.class);
-    runTestsIn(describe_Contracts_quacksLike_collection.class);
+    runTestsIn(test_Case.class);
+    runTestsIn(test_Suite.class);
+    runTestsIn(test_QuackeryRunner.class);
+    runTestsIn(test_Contracts_quacksLike_collection.class);
 
     if (failures.size() == 0) {
       System.out.println("no failures");

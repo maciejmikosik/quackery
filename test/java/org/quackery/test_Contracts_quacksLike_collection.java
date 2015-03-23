@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.TreeSet;
 
-public class describe_Contracts_quacksLike_collection {
+public class test_Contracts_quacksLike_collection {
   private final Contract<Class<?>> contract = quacksLike(Collection.class);
 
   public void accepts_mutable_list() throws Throwable {
