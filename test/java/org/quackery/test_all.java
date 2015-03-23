@@ -6,6 +6,8 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.quackery.contract.test_quacksLike_collection;
+
 public class test_all {
   private static List<Throwable> failures = new ArrayList<Throwable>();
   private static List<String> statistics = new ArrayList<String>();
@@ -14,7 +16,7 @@ public class test_all {
     runTestsIn(test_Case.class);
     runTestsIn(test_Suite.class);
     runTestsIn(test_QuackeryRunner.class);
-    runTestsIn(test_Contracts_quacksLike_collection.class);
+    runTestsIn(test_quacksLike_collection.class);
 
     if (failures.size() == 0) {
       System.out.println("no failures");
