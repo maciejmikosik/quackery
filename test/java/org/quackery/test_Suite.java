@@ -8,7 +8,7 @@ import static org.quackery.testing.Assertions.assertTrue;
 import static org.quackery.testing.Assertions.fail;
 import static org.quackery.testing.Mocks.mockObject;
 
-public class describe_Suite {
+public class test_Suite {
   private String name = "name";
   private final Test //
       testA = new Test() {}, //

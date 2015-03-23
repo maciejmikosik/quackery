@@ -4,7 +4,7 @@ import static org.quackery.testing.Assertions.assertEquals;
 import static org.quackery.testing.Assertions.assertTrue;
 import static org.quackery.testing.Assertions.fail;
 
-public class describe_Case {
+public class test_Case {
   private final String name = "name";
   private Case test;
 

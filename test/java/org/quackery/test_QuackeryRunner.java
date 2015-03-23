@@ -7,7 +7,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.RunWith;
 
-public class describe_QuackeryRunner {
+public class test_QuackeryRunner {
   private final String name = "name " + hashCode();
   private final String message = "message";
   private Throwable throwable = new RuntimeException("exception");
