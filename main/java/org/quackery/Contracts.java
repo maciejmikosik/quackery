@@ -1,12 +1,12 @@
 package org.quackery;
 
-import java.util.Collection;
+import static org.quackery.contract.collection.CollectionContract.collectionContract;
 
-import org.quackery.contract.CollectionContract;
+import java.util.Collection;
 
 public class Contracts {
   @SuppressWarnings("rawtypes")
   public static Contract<Class<?>> quacksLike(Class<Collection> type) {
-    return CollectionContract.quacksLike(type);
+    return collectionContract(type);
   }
 }

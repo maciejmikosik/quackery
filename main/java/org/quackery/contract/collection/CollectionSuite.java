@@ -1,4 +1,4 @@
-package org.quackery.contract;
+package org.quackery.contract.collection;
 
 import static java.util.Arrays.asList;
 import static org.quackery.AssumptionException.assume;
@@ -14,20 +14,12 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.quackery.Case;
-import org.quackery.Contract;
 import org.quackery.FailureException;
 import org.quackery.Test;
 
-public final class CollectionContract implements Contract<Class<?>> {
-  private CollectionContract() {}
-
-  @SuppressWarnings("rawtypes")
-  public static Contract<Class<?>> quacksLike(Class<Collection> type) {
-    return new CollectionContract();
-  }
-
-  public Test test(Class<?> type) {
-    return newSuite(type.getName() + " quacks like " + Collection.class.getName()) //
+public class CollectionSuite {
+  public static Test collectionSuite(Class<?> type) {
+    return newSuite(type.getName() + " quacks like Collection") //
         .test(implementsCollection(type)) //
         .test(newSuite("implements default constructor") //
             .test(hasDefaultConstructor(type)) //
