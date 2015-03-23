@@ -14,10 +14,6 @@ public class describe_quackery {
     runTestsIn(describe_Case.class);
     runTestsIn(describe_Suite.class);
     runTestsIn(describe_QuackeryRunner.class);
-    runTestsIn(describe_Testers_hasModifier.class);
-    runTestsIn(describe_Testers_hasNoModifier.class);
-    runTestsIn(describe_Testers_hasConstructor.class);
-    runTestsIn(describe_Testers_isAssignableTo_Class.class);
     runTestsIn(describe_Contracts_quacksLike_collection.class);
 
     if (failures.size() == 0) {
