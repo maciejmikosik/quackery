@@ -3,15 +3,16 @@ package org.quackery.contract;
 import static java.util.Arrays.asList;
 import static org.quackery.AssumptionException.assume;
 import static org.quackery.Suite.newSuite;
+import static org.quackery.contract.Commons.assumeConstructor;
+import static org.quackery.contract.Commons.parameters;
+import static org.quackery.contract.Commons.print;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
-import org.quackery.AssumptionException;
 import org.quackery.Case;
 import org.quackery.Contract;
 import org.quackery.FailureException;
@@ -230,25 +231,5 @@ public final class CollectionContract implements Contract<Class<?>> {
         }
       }
     };
-  }
-
-  private static Constructor<?> assumeConstructor(Class<?> type, Class<?>... parameters) {
-    try {
-      return type.getConstructor(parameters);
-    } catch (NoSuchMethodException e) {
-      throw new AssumptionException(e);
-    }
-  }
-
-  private static List<Class<?>> parameters(Constructor<?> constructor) {
-    return asList(constructor.getParameterTypes());
-  }
-
-  private static String print(Object[] array) {
-    return Arrays.toString(array);
-  }
-
-  private static String print(Collection<?> collection) {
-    return print(collection.toArray());
   }
 }
