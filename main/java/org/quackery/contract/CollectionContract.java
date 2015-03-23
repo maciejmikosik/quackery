@@ -1,6 +1,7 @@
 package org.quackery.contract;
 
 import static java.util.Arrays.asList;
+import static org.quackery.AssumptionException.assume;
 import static org.quackery.Suite.newSuite;
 
 import java.lang.reflect.Constructor;
@@ -229,12 +230,6 @@ public final class CollectionContract implements Contract<Class<?>> {
         }
       }
     };
-  }
-
-  private static void assume(boolean condition) {
-    if (!condition) {
-      throw new AssumptionException();
-    }
   }
 
   private static Constructor<?> assumeConstructor(Class<?> type, Class<?>... parameters) {

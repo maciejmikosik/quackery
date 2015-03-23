@@ -15,7 +15,7 @@ public class AssumptionException extends RuntimeException {
     super(cause);
   }
 
-  public static void check(boolean condition) {
+  public static void assume(boolean condition) {
     if (!condition) {
       throw new AssumptionException();
     }
