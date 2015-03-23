@@ -11,10 +11,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public class Quacks {
-  public static Tester<Class<?>> quacksLike(
+public class Contracts {
+  public static Contract<Class<?>> quacksLike(
       @SuppressWarnings("rawtypes") Class<Collection> collectionType) {
-    return new Tester<Class<?>>() {
+    return new Contract<Class<?>>() {
       public Test test(Class<?> type) {
         return newSuite(type.getName() + " quacks like " + Collection.class.getName()) //
             .test(implementsCollection(type)) //
@@ -36,7 +36,7 @@ public class Quacks {
       public void run() throws Throwable {
         boolean expected = Collection.class.isAssignableFrom(type);
         if (!expected) {
-          throw new QuackeryAssertionException("" //
+          throw new FailureException("" //
               + "\n" //
               + "  expected that\n" //
               + "    " + type.getName() + "\n" //
@@ -56,7 +56,7 @@ public class Quacks {
             return;
           }
         }
-        throw new QuackeryAssertionException("" //
+        throw new FailureException("" //
             + "\n" //
             + "  expected that\n" //
             + "    " + type.getName() + "\n" //
@@ -74,7 +74,7 @@ public class Quacks {
         Object[] toArray = collection.toArray();
         boolean expected = Arrays.equals(toArray, new Object[0]);
         if (!expected) {
-          throw new QuackeryAssertionException("" //
+          throw new FailureException("" //
               + "\n" //
               + "  Expected that\n" //
               + "    " + type + "\n" //
@@ -95,7 +95,7 @@ public class Quacks {
             return;
           }
         }
-        throw new QuackeryAssertionException("" //
+        throw new FailureException("" //
             + "\n" //
             + "  expected that\n" //
             + "    " + type.getName() + "\n" //
@@ -116,7 +116,7 @@ public class Quacks {
         Object[] toArray = collection.toArray();
         boolean expected = Arrays.equals(toArray, original.toArray());
         if (!expected) {
-          throw new QuackeryAssertionException("" //
+          throw new FailureException("" //
               + "\n" //
               + "  Expected that\n" //
               + "    " + type.getName() + "\n" //
@@ -139,7 +139,7 @@ public class Quacks {
         Collection<?> collection = null;
         try {
           collection = (Collection<?>) constructor.newInstance((Object) null);
-          throw new QuackeryAssertionException("" //
+          throw new FailureException("" //
               + "\n" //
               + "  Expected that\n" //
               + "    " + type + "\n" //
@@ -149,7 +149,7 @@ public class Quacks {
           );
         } catch (InvocationTargetException e) {
           if (!(e.getCause() instanceof NullPointerException)) {
-            throw new QuackeryAssertionException("" //
+            throw new FailureException("" //
                 + "\n" //
                 + "  Expected that\n" //
                 + "    " + type + "\n" //
@@ -175,7 +175,7 @@ public class Quacks {
         Object[] afterToArray = collection.toArray();
         boolean expected = Arrays.equals(beforeToArray, afterToArray);
         if (!expected) {
-          throw new QuackeryAssertionException("" //
+          throw new FailureException("" //
               + "\n" //
               + "  Expected that\n" //
               + "    " + type + "\n" //
@@ -207,7 +207,7 @@ public class Quacks {
         Object[] argumentToArray = argument.toArray();
         boolean expected = Arrays.equals(argumentToArray, original.toArray());
         if (!expected) {
-          throw new QuackeryAssertionException("" //
+          throw new FailureException("" //
               + "\n" //
               + "  Expected that\n" //
               + "    " + type + "\n" //
@@ -226,7 +226,7 @@ public class Quacks {
 
   private static void assume(boolean condition) {
     if (!condition) {
-      throw new QuackeryAssumptionException();
+      throw new AssumptionException();
     }
   }
 
@@ -234,7 +234,7 @@ public class Quacks {
     try {
       return type.getConstructor(parameters);
     } catch (NoSuchMethodException e) {
-      throw new QuackeryAssumptionException(e);
+      throw new AssumptionException(e);
     }
   }
 

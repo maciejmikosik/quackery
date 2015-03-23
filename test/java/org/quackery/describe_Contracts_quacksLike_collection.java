@@ -1,6 +1,6 @@
 package org.quackery;
 
-import static org.quackery.Quacks.quacksLike;
+import static org.quackery.Contracts.quacksLike;
 import static org.quackery.testing.bug.Bugs.bugs;
 import static org.quackery.testing.bug.Bugs.implementations;
 import static org.quackery.testing.bug.Expectations.expectFailure;
@@ -12,31 +12,31 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.TreeSet;
 
-public class describe_Quacks_quacksLike_collection {
-  private final Tester<Class<?>> tester = quacksLike(Collection.class);
+public class describe_Contracts_quacksLike_collection {
+  private final Contract<Class<?>> contract = quacksLike(Collection.class);
 
   public void accepts_mutable_list() throws Throwable {
     for (Class<?> implementation : implementations(Collection.class)) {
-      expectSuccess(tester, implementation);
+      expectSuccess(contract, implementation);
     }
   }
 
   public void detects_collection_bugs() throws Throwable {
     for (Class<?> bug : bugs(Collection.class)) {
-      expectFailure(tester, bug);
+      expectFailure(contract, bug);
     }
   }
 
   public void accepts_jdk_collections() throws Throwable {
-    expectSuccess(tester, ArrayList.class);
-    expectSuccess(tester, LinkedList.class);
-    expectSuccess(tester, HashSet.class);
-    expectSuccess(tester, TreeSet.class);
+    expectSuccess(contract, ArrayList.class);
+    expectSuccess(contract, LinkedList.class);
+    expectSuccess(contract, HashSet.class);
+    expectSuccess(contract, TreeSet.class);
   }
 
   public void detects_alien_types() throws Throwable {
-    expectFailure(tester, Object.class);
-    expectFailure(tester, String.class);
-    expectFailure(tester, Integer.class);
+    expectFailure(contract, Object.class);
+    expectFailure(contract, String.class);
+    expectFailure(contract, Integer.class);
   }
 }

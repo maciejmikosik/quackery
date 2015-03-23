@@ -54,24 +54,24 @@ public class Suite implements Test {
     return testAll(asList(extraTests));
   }
 
-  public <T> Suite testThat(T item, Tester<T> tester) {
-    check(tester != null);
-    return test(tester.test(item));
+  public <T> Suite testThat(T item, Contract<T> contract) {
+    check(contract != null);
+    return test(contract.test(item));
   }
 
-  public <T> Suite testThatAll(Iterable<? extends T> items, Tester<T> tester) {
+  public <T> Suite testThatAll(Iterable<? extends T> items, Contract<T> contract) {
     check(items != null);
-    check(tester != null);
+    check(contract != null);
     List<Test> extraTests = new ArrayList<>();
     for (T item : items) {
-      extraTests.add(tester.test(item));
+      extraTests.add(contract.test(item));
     }
     return testAll(extraTests);
   }
 
-  public <T> Suite testThatAll(T[] items, Tester<T> tester) {
+  public <T> Suite testThatAll(T[] items, Contract<T> contract) {
     check(items != null);
-    return testThatAll(asList(items), tester);
+    return testThatAll(asList(items), contract);
   }
 
   public String toString() {

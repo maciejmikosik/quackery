@@ -8,30 +8,30 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.quackery.AssumptionException;
 import org.quackery.Case;
-import org.quackery.QuackeryAssertionException;
-import org.quackery.QuackeryAssumptionException;
+import org.quackery.Contract;
+import org.quackery.FailureException;
 import org.quackery.Suite;
 import org.quackery.Test;
-import org.quackery.Tester;
 
 public class Expectations {
-  public static void expectSuccess(Tester<Class<?>> tester, Class<?> implementation)
+  public static void expectSuccess(Contract<Class<?>> contract, Class<?> implementation)
       throws Throwable {
-    run(tester.test(implementation));
+    run(contract.test(implementation));
   }
 
-  public static void expectFailure(Tester<Class<?>> tester, Class<?> implementation)
+  public static void expectFailure(Contract<Class<?>> contract, Class<?> implementation)
       throws Throwable {
-    Test test = tester.test(implementation);
+    Test test = contract.test(implementation);
     List<Result> failures = new ArrayList<>();
     List<Result> errors = new ArrayList<>();
     for (Result result : runAndCatch(test)) {
-      if (result.problem instanceof QuackeryAssertionException) {
+      if (result.problem instanceof FailureException) {
         failures.add(result);
       } else if (result.problem == null) {
 
-      } else if (result.problem instanceof QuackeryAssumptionException) {
+      } else if (result.problem instanceof AssumptionException) {
 
       } else {
         errors.add(result);

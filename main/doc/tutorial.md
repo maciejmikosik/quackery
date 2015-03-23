@@ -27,21 +27,21 @@ You can combine tests into bigger test suites.
           .testThat(MyList.class, quacksLike( ... ));
     }
 
-You can define your own contracts by implementing `org.quackery.Tester` interface.
+You can define your own contracts by implementing `org.quackery.Contract` interface.
 
-    public interface Tester<T> {
+    public interface Contract<T> {
       Test test(T item);
     }
 
-`Tester` can produce `Test` being single `Case`.
+`Contract` can produce `Test` being single `Case`.
 
-      public static Tester<Class<?>> quacksLikeFinalClass() {
-        return new Tester<Class<?>>() {
+      public static Contract<Class<?>> quacksLikeFinalClass() {
+        return new Contract<Class<?>>() {
           public Test test(final Class<?> type) {
             return new Case(type.getName() + " is final") {
               public void run() {
                 if (!Modifier.isFinal(type.getModifiers())) {
-                  throw new QuackeryAssertionException("" //
+                  throw new FailureException("" //
                       + "\n" //
                       + "  expected that type\n" //
                       + "    " + type.getName() + "\n" //
@@ -56,8 +56,8 @@ You can define your own contracts by implementing `org.quackery.Tester` interfac
 
 Or `Test` can combine many tests as `Suite`.
 
-      public static Tester<Class<?>> quacksLikeX() {
-        return new Tester<Class<?>>() {
+      public static Contract<Class<?>> quacksLikeX() {
+        return new Contract<Class<?>>() {
           public Test test(Class<?> type) {
             return newSuite(type + " quacks like X")
                 .testThat(type, quacksLikeA())
@@ -66,12 +66,12 @@ Or `Test` can combine many tests as `Suite`.
         };
       }
 
-### Built-in testers
+### Built-in contracts
 
-Built-in testers are designed to obey some rules.
-They throw `org.quackery.QuackeryAssertionException` if test fails.
+Built-in contracts are designed to obey some rules.
+They throw `org.quackery.FailureException` if test fails.
 Sometimes executing test makes no sense because some more basic feature already covered by other test failed.
-In that situation `org.quackery.QuackeryAssumptionException` is thrown.
+In that situation `org.quackery.AssumptionException` is thrown.
 
 Those exceptions are wrapped by native exceptions/errors
 when tests are run by runner from other framework (like junit).
@@ -91,5 +91,5 @@ Method returning `Test` you want to run must be public, static, have no paramete
     }
 
 Exceptions thrown by quackery are translated to junit natives:
-  - `org.quackery.QuackeryAssertionException` to `java.lang.AssertionError`
-  - `org.quackery.QuackeryAssumptionException` to `org.junit.internal.AssumptionViolatedException`
+  - `org.quackery.FailureException` to `java.lang.AssertionError`
+  - `org.quackery.AssumptionException` to `org.junit.internal.AssumptionViolatedException`

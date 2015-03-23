@@ -1,5 +1,5 @@
 package org.quackery;
 
-public interface Tester<T> {
+public interface Contract<T> {
   Test test(T item);
 }

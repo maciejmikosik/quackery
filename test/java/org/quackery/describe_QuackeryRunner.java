@@ -73,7 +73,7 @@ public class describe_QuackeryRunner {
   }
 
   public void case_fails_if_quackery_assertion_exception_is_thrown() {
-    throwable = new QuackeryAssertionException(message);
+    throwable = new FailureException(message);
     test = new Case(name) {
       public void run() throws Throwable {
         throw throwable.fillInStackTrace();
@@ -92,7 +92,7 @@ public class describe_QuackeryRunner {
   }
 
   public void case_is_skipped_if_quackery_assumption_exception_is_thrown() {
-    throwable = new QuackeryAssumptionException(message);
+    throwable = new AssumptionException(message);
     test = new Case(name) {
       public void run() throws Throwable {
         throw throwable.fillInStackTrace();

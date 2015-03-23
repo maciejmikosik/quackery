@@ -14,14 +14,14 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 
 public class Testers {
-  public static Tester<AnnotatedElement> hasModifier(final int modifier) {
-    return new Tester<AnnotatedElement>() {
+  public static Contract<AnnotatedElement> hasModifier(final int modifier) {
+    return new Contract<AnnotatedElement>() {
       public Test test(final AnnotatedElement element) {
         return new Case(kind(element) + " " + simpleName(element) + " has modifier "
             + Modifier.toString(modifier)) {
           public void run() {
             if (!hasModifier(modifier, element)) {
-              throw new QuackeryAssertionException("" //
+              throw new FailureException("" //
                   + "\n" //
                   + "  expected that\n" //
                   + "    " + fullName(element) + "\n" //
@@ -35,14 +35,14 @@ public class Testers {
     };
   }
 
-  public static Tester<AnnotatedElement> hasNoModifier(final int modifier) {
-    return new Tester<AnnotatedElement>() {
+  public static Contract<AnnotatedElement> hasNoModifier(final int modifier) {
+    return new Contract<AnnotatedElement>() {
       public Test test(final AnnotatedElement element) {
         return new Case(kind(element) + " " + simpleName(element) + " has no modifier "
             + Modifier.toString(modifier)) {
           public void run() {
             if (hasModifier(modifier, element)) {
-              throw new QuackeryAssertionException("" //
+              throw new FailureException("" //
                   + "\n" //
                   + "  expected that\n" //
                   + "    " + fullName(element) + "\n" //
@@ -56,10 +56,10 @@ public class Testers {
     };
   }
 
-  public static Tester<Class<?>> hasConstructor(final int modifier, final Class<?>... parameters) {
+  public static Contract<Class<?>> hasConstructor(final int modifier, final Class<?>... parameters) {
     check(parameters != null);
     check(!asList(parameters).contains(null));
-    return new Tester<Class<?>>() {
+    return new Contract<Class<?>>() {
       public Test test(final Class<?> type) {
         return new Case("class " + type.getSimpleName() + " has " + Modifier.toString(modifier)
             + " constructor with " + parameters.length + " parameters "
@@ -71,7 +71,7 @@ public class Testers {
                 return;
               }
             }
-            throw new QuackeryAssertionException("" //
+            throw new FailureException("" //
                 + "\n" //
                 + "  expected that\n" //
                 + "    " + type + "\n" //
@@ -86,13 +86,13 @@ public class Testers {
     };
   }
 
-  public static Tester<Class<?>> isAssignableTo(final Class<?> type) {
-    return new Tester<Class<?>>() {
+  public static Contract<Class<?>> isAssignableTo(final Class<?> type) {
+    return new Contract<Class<?>>() {
       public Test test(final Class<?> item) {
         return new Case(simpleName(item) + " is assignable to " + simpleName(type)) {
           public void run() {
             if (!type.isAssignableFrom(item)) {
-              throw new QuackeryAssertionException("" //
+              throw new FailureException("" //
                   + "\n" //
                   + "  expected that\n" //
                   + "    " + item + "\n" //
