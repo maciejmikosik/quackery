@@ -438,6 +438,19 @@ public class MutableList<E> implements List<E> {
     }
   }
 
+  @Bug(Collection.class)
+  public static class IsEmptyReturnsTrue<E> extends MutableList<E> {
+    public IsEmptyReturnsTrue() {}
+
+    public IsEmptyReturnsTrue(Collection<E> collection) {
+      super(collection);
+    }
+
+    public boolean isEmpty() {
+      return true;
+    }
+  }
+
   private static Object newObject(final String name) {
     return new Object() {
       public String toString() {

@@ -32,7 +32,9 @@ public class CollectionSuite {
             .test(copyConstructorDoesNotModifyArgument(type))) //
         .test(newSuite("implements size") //
             .test(sizeOfEmptyCollectionIsZero(type)) //
-            .test(sizeOfCollectionWithOneElementIsOne(type)));
+            .test(sizeOfCollectionWithOneElementIsOne(type))) //
+        .test(newSuite("implements isEmpty") //
+            .test(isEmptyReturnsFalseIfCollectionHasOneElement(type)));
   }
 
   private static Test implementsCollection(final Class<?> type) {
@@ -264,6 +266,27 @@ public class CollectionSuite {
               + "  Expected that\n" //
               + "    " + type.getName() + ".size()\n" //
               + "  returns 0 if collection is empty.\n" //
+          );
+        }
+      }
+    };
+  }
+
+  private static Test isEmptyReturnsFalseIfCollectionHasOneElement(final Class<?> type) {
+    return new Case("isEmpty returns false if collection has one element") {
+      public void run() throws Throwable {
+        assume(Collection.class.isAssignableFrom(type));
+        ArrayList<Object> original = new ArrayList<Object>(asList("a"));
+        Constructor<?> constructor = assumeConstructor(type, Collection.class);
+        Collection<?> collection = (Collection<?>) constructor.newInstance(original);
+
+        boolean expected = !collection.isEmpty();
+        if (!expected) {
+          throw new FailureException("" //
+              + "\n" //
+              + "  Expected that\n" //
+              + "    " + type.getName() + ".isEmpty()\n" //
+              + "  returns false if collection has 1 element.\n" //
           );
         }
       }
