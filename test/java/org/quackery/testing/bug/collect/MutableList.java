@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.quackery.testing.bug.Bug;
+
 public class MutableList<E> implements List<E> {
   protected List<E> delegate;
 
@@ -124,6 +126,7 @@ public class MutableList<E> implements List<E> {
     return delegate.toString();
   }
 
+  @Bug(Collection.class)
   public static class InterfaceIsMissing<E> {
     protected List<E> delegate;
 
@@ -240,12 +243,14 @@ public class MutableList<E> implements List<E> {
     }
   }
 
+  @Bug(Collection.class)
   public static class DefaultConstructorIsMissing<E> extends MutableList<E> {
     public DefaultConstructorIsMissing(Collection<E> collection) {
       super(collection);
     }
   }
 
+  @Bug(Collection.class)
   public static class DefaultConstructorIsHidden<E> extends MutableList<E> {
     DefaultConstructorIsHidden() {}
 
@@ -254,6 +259,7 @@ public class MutableList<E> implements List<E> {
     }
   }
 
+  @Bug(Collection.class)
   public static class DefaultConstructorAddsElement<E> extends MutableList<E> {
     public DefaultConstructorAddsElement() {
       super(asList((E) newObject("x")));
@@ -264,10 +270,12 @@ public class MutableList<E> implements List<E> {
     }
   }
 
+  @Bug(Collection.class)
   public static class CopyConstructorIsMissing<E> extends MutableList<E> {
     public CopyConstructorIsMissing() {}
   }
 
+  @Bug(Collection.class)
   public static class CopyConstructorIsHidden<E> extends MutableList<E> {
     public CopyConstructorIsHidden() {}
 
@@ -276,6 +284,7 @@ public class MutableList<E> implements List<E> {
     }
   }
 
+  @Bug(Collection.class)
   public static class CopyConstructorCreatesEmpty<E> extends MutableList<E> {
     public CopyConstructorCreatesEmpty() {}
 
@@ -286,6 +295,7 @@ public class MutableList<E> implements List<E> {
     }
   }
 
+  @Bug(Collection.class)
   public static class CopyConstructorAddsElement<E> extends MutableList<E> {
     public CopyConstructorAddsElement() {}
 
@@ -300,6 +310,7 @@ public class MutableList<E> implements List<E> {
     }
   }
 
+  @Bug(Collection.class)
   public static class CopyConstructorAcceptsNull<E> extends MutableList<E> {
     public CopyConstructorAcceptsNull() {}
 
@@ -314,6 +325,7 @@ public class MutableList<E> implements List<E> {
     }
   }
 
+  @Bug(Collection.class)
   public static class CopyConstructorThrowsRuntimeExceptionUponNull<E> extends MutableList<E> {
     public CopyConstructorThrowsRuntimeExceptionUponNull() {}
 
@@ -329,6 +341,7 @@ public class MutableList<E> implements List<E> {
     }
   }
 
+  @Bug(Collection.class)
   public static class CopyConstructorMakesNoDefensiveCopy<E> extends MutableList<E> {
     public CopyConstructorMakesNoDefensiveCopy() {}
 
@@ -338,6 +351,7 @@ public class MutableList<E> implements List<E> {
     }
   }
 
+  @Bug(Collection.class)
   public static class CopyConstructorModifiesArgument<E> extends MutableList<E> {
     public CopyConstructorModifiesArgument() {}
 
@@ -347,6 +361,7 @@ public class MutableList<E> implements List<E> {
     }
   }
 
+  @Bug(Collection.class)
   public static class CopyConstructorCreatesFixed<E> extends MutableList<E> {
     public CopyConstructorCreatesFixed() {}
 
