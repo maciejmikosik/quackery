@@ -2,6 +2,7 @@ package org.quackery;
 
 import static org.quackery.Quacks.quacksLike;
 import static org.quackery.testing.bug.Bugs.bugs;
+import static org.quackery.testing.bug.Bugs.implementations;
 import static org.quackery.testing.bug.Expectations.expectFailure;
 import static org.quackery.testing.bug.Expectations.expectSuccess;
 
@@ -11,13 +12,13 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.TreeSet;
 
-import org.quackery.testing.bug.collect.MutableList;
-
 public class describe_Quacks_quacksLike_collection {
   private final Tester<Class<?>> tester = quacksLike(Collection.class);
 
   public void accepts_mutable_list() throws Throwable {
-    expectSuccess(tester, MutableList.class);
+    for (Class<?> implementation : implementations(Collection.class)) {
+      expectSuccess(tester, implementation);
+    }
   }
 
   public void detects_collection_bugs() throws Throwable {
