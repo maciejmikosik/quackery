@@ -1,6 +1,7 @@
 package org.quackery.testing.bug;
 
 import static java.util.Arrays.asList;
+import static org.quackery.testing.Tests.run;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -15,6 +16,11 @@ import org.quackery.Test;
 import org.quackery.Tester;
 
 public class Expectations {
+  public static void expectSuccess(Tester<Class<?>> tester, Class<?> implementation)
+      throws Throwable {
+    run(tester.test(implementation));
+  }
+
   public static void expectFailure(Tester<Class<?>> tester, Class<?> implementation)
       throws Throwable {
     Test test = tester.test(implementation);

@@ -1,9 +1,9 @@
 package org.quackery;
 
 import static org.quackery.Quacks.quacksLike;
-import static org.quackery.testing.Tests.run;
 import static org.quackery.testing.bug.Bugs.bugs;
 import static org.quackery.testing.bug.Expectations.expectFailure;
+import static org.quackery.testing.bug.Expectations.expectSuccess;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,15 +19,17 @@ public class describe_Quacks_quacksLike_collection {
   private List<Class<?>> bugs;
 
   public void accepts_mutable_list() throws Throwable {
-    run(quacksLike(Collection.class).test(MutableList.class));
+    tester = quacksLike(Collection.class);
+    expectSuccess(tester, MutableList.class);
+
   }
 
   public void accepts_jdk_collections() throws Throwable {
     tester = quacksLike(Collection.class);
-    run(tester.test(ArrayList.class));
-    run(tester.test(LinkedList.class));
-    run(tester.test(HashSet.class));
-    run(tester.test(TreeSet.class));
+    expectSuccess(tester, ArrayList.class);
+    expectSuccess(tester, LinkedList.class);
+    expectSuccess(tester, HashSet.class);
+    expectSuccess(tester, TreeSet.class);
   }
 
   public void detects_wrong_type() throws Throwable {
