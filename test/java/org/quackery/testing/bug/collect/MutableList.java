@@ -373,6 +373,45 @@ public class MutableList<E> implements List<E> {
     }
   }
 
+  @Bug(Collection.class)
+  public static class ToArrayReturnsEmpty<E> extends MutableList<E> {
+    public ToArrayReturnsEmpty() {}
+
+    public ToArrayReturnsEmpty(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Object[] toArray() {
+      return new Object[0];
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class ToArrayReturnsUnknownElement<E> extends MutableList<E> {
+    public ToArrayReturnsUnknownElement() {}
+
+    public ToArrayReturnsUnknownElement(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Object[] toArray() {
+      return new Object[] { newObject("x") };
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class ToArrayReturnsNull<E> extends MutableList<E> {
+    public ToArrayReturnsNull() {}
+
+    public ToArrayReturnsNull(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Object[] toArray() {
+      return null;
+    }
+  }
+
   private static Object newObject(final String name) {
     return new Object() {
       public String toString() {
