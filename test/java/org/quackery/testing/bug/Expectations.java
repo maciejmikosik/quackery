@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.quackery.Case;
-import org.quackery.QuackeryAssertionException;
+import org.quackery.FailureException;
 import org.quackery.QuackeryAssumptionException;
 import org.quackery.Suite;
 import org.quackery.Test;
@@ -27,7 +27,7 @@ public class Expectations {
     List<Result> failures = new ArrayList<>();
     List<Result> errors = new ArrayList<>();
     for (Result result : runAndCatch(test)) {
-      if (result.problem instanceof QuackeryAssertionException) {
+      if (result.problem instanceof FailureException) {
         failures.add(result);
       } else if (result.problem == null) {
 

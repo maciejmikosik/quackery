@@ -36,7 +36,7 @@ public class Quacks {
       public void run() throws Throwable {
         boolean expected = Collection.class.isAssignableFrom(type);
         if (!expected) {
-          throw new QuackeryAssertionException("" //
+          throw new FailureException("" //
               + "\n" //
               + "  expected that\n" //
               + "    " + type.getName() + "\n" //
@@ -56,7 +56,7 @@ public class Quacks {
             return;
           }
         }
-        throw new QuackeryAssertionException("" //
+        throw new FailureException("" //
             + "\n" //
             + "  expected that\n" //
             + "    " + type.getName() + "\n" //
@@ -74,7 +74,7 @@ public class Quacks {
         Object[] toArray = collection.toArray();
         boolean expected = Arrays.equals(toArray, new Object[0]);
         if (!expected) {
-          throw new QuackeryAssertionException("" //
+          throw new FailureException("" //
               + "\n" //
               + "  Expected that\n" //
               + "    " + type + "\n" //
@@ -95,7 +95,7 @@ public class Quacks {
             return;
           }
         }
-        throw new QuackeryAssertionException("" //
+        throw new FailureException("" //
             + "\n" //
             + "  expected that\n" //
             + "    " + type.getName() + "\n" //
@@ -116,7 +116,7 @@ public class Quacks {
         Object[] toArray = collection.toArray();
         boolean expected = Arrays.equals(toArray, original.toArray());
         if (!expected) {
-          throw new QuackeryAssertionException("" //
+          throw new FailureException("" //
               + "\n" //
               + "  Expected that\n" //
               + "    " + type.getName() + "\n" //
@@ -139,7 +139,7 @@ public class Quacks {
         Collection<?> collection = null;
         try {
           collection = (Collection<?>) constructor.newInstance((Object) null);
-          throw new QuackeryAssertionException("" //
+          throw new FailureException("" //
               + "\n" //
               + "  Expected that\n" //
               + "    " + type + "\n" //
@@ -149,7 +149,7 @@ public class Quacks {
           );
         } catch (InvocationTargetException e) {
           if (!(e.getCause() instanceof NullPointerException)) {
-            throw new QuackeryAssertionException("" //
+            throw new FailureException("" //
                 + "\n" //
                 + "  Expected that\n" //
                 + "    " + type + "\n" //
@@ -175,7 +175,7 @@ public class Quacks {
         Object[] afterToArray = collection.toArray();
         boolean expected = Arrays.equals(beforeToArray, afterToArray);
         if (!expected) {
-          throw new QuackeryAssertionException("" //
+          throw new FailureException("" //
               + "\n" //
               + "  Expected that\n" //
               + "    " + type + "\n" //
@@ -207,7 +207,7 @@ public class Quacks {
         Object[] argumentToArray = argument.toArray();
         boolean expected = Arrays.equals(argumentToArray, original.toArray());
         if (!expected) {
-          throw new QuackeryAssertionException("" //
+          throw new FailureException("" //
               + "\n" //
               + "  Expected that\n" //
               + "    " + type + "\n" //

@@ -36,7 +36,7 @@ public class describe_Testers_hasModifier {
     try {
       run(test);
       fail();
-    } catch (QuackeryAssertionException e) {}
+    } catch (FailureException e) {}
   }
 
   public void succeeds_if_class_has_modifier() throws Throwable {
@@ -59,7 +59,7 @@ public class describe_Testers_hasModifier {
     try {
       run(test);
       fail();
-    } catch (QuackeryAssertionException e) {}
+    } catch (FailureException e) {}
   }
 
   public void failure_prints_message() throws Throwable {
@@ -73,7 +73,7 @@ public class describe_Testers_hasModifier {
     try {
       run(test);
       fail();
-    } catch (QuackeryAssertionException e) {
+    } catch (FailureException e) {
       assertEquals(e.getMessage(), "" //
           + "\n" //
           + "  expected that\n" //

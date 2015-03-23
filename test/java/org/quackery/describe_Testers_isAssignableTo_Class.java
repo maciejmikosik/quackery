@@ -24,7 +24,7 @@ public class describe_Testers_isAssignableTo_Class {
     try {
       run(test);
       fail();
-    } catch (QuackeryAssertionException e) {}
+    } catch (FailureException e) {}
   }
 
   public void name_contains_simple_names_of_types() {
@@ -38,7 +38,7 @@ public class describe_Testers_isAssignableTo_Class {
     try {
       run(test);
       fail();
-    } catch (QuackeryAssertionException e) {
+    } catch (FailureException e) {
       assertTrue(e.getMessage().contains(Type.class.getName()));
       assertTrue(e.getMessage().contains(SuperType.class.getSimpleName()));
     }
