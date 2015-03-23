@@ -37,21 +37,22 @@ public class Expectations {
         errors.add(result);
       }
     }
-    if (failures.size() == 0) {
+
+    boolean expected = failures.size() > 0 && errors.size() == 0;
+    if (!expected) {
       StringBuilder builder = new StringBuilder();
-      builder.append("found ").append(failures.size()).append(" failures:");
+      builder.append("\n<message>\n");
+      builder.append("expectedFailure of " + implementation.getName());
+      builder.append("\nfound ").append(failures.size()).append(" failures:");
       for (Result result : failures) {
         builder.append("\n").append(result.test.name).append("\n");
       }
-      throw new AssertionError(builder.toString());
-    }
-    if (errors.size() > 0) {
-      StringBuilder builder = new StringBuilder();
-      builder.append("found ").append(errors.size()).append(" errors:");
+      builder.append("\nfound ").append(errors.size()).append(" errors:");
       for (Result result : errors) {
         builder.append("\n").append(result.test.name).append("\n");
         builder.append(printStackTrace(result.problem));
       }
+      builder.append("\n<end of message>");
       throw new AssertionError(builder.toString());
     }
   }
