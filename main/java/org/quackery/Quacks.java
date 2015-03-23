@@ -226,7 +226,7 @@ public class Quacks {
 
   private static void assume(boolean condition) {
     if (!condition) {
-      throw new QuackeryAssumptionException();
+      throw new AssumptionException();
     }
   }
 
@@ -234,7 +234,7 @@ public class Quacks {
     try {
       return type.getConstructor(parameters);
     } catch (NoSuchMethodException e) {
-      throw new QuackeryAssumptionException(e);
+      throw new AssumptionException(e);
     }
   }
 

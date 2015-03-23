@@ -8,9 +8,9 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.quackery.AssumptionException;
 import org.quackery.Case;
 import org.quackery.FailureException;
-import org.quackery.QuackeryAssumptionException;
 import org.quackery.Suite;
 import org.quackery.Test;
 import org.quackery.Tester;
@@ -31,7 +31,7 @@ public class Expectations {
         failures.add(result);
       } else if (result.problem == null) {
 
-      } else if (result.problem instanceof QuackeryAssumptionException) {
+      } else if (result.problem instanceof AssumptionException) {
 
       } else {
         errors.add(result);

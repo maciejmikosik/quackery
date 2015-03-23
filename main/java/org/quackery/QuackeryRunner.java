@@ -100,7 +100,7 @@ public class QuackeryRunner extends Runner {
     } catch (FailureException e) {
       Throwable wrapper = new AssertionError(e.getMessage(), e);
       notifier.fireTestFailure(new Failure(description, wrapper));
-    } catch (QuackeryAssumptionException e) {
+    } catch (AssumptionException e) {
       Throwable wrapper = new AssumptionViolatedException(e.getMessage(), e);
       notifier.fireTestAssumptionFailed(new Failure(description, wrapper));
     } catch (Throwable throwable) {

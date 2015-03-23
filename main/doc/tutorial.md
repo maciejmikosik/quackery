@@ -71,7 +71,7 @@ Or `Test` can combine many tests as `Suite`.
 Built-in testers are designed to obey some rules.
 They throw `org.quackery.FailureException` if test fails.
 Sometimes executing test makes no sense because some more basic feature already covered by other test failed.
-In that situation `org.quackery.QuackeryAssumptionException` is thrown.
+In that situation `org.quackery.AssumptionException` is thrown.
 
 Those exceptions are wrapped by native exceptions/errors
 when tests are run by runner from other framework (like junit).
@@ -92,4 +92,4 @@ Method returning `Test` you want to run must be public, static, have no paramete
 
 Exceptions thrown by quackery are translated to junit natives:
   - `org.quackery.FailureException` to `java.lang.AssertionError`
-  - `org.quackery.QuackeryAssumptionException` to `org.junit.internal.AssumptionViolatedException`
+  - `org.quackery.AssumptionException` to `org.junit.internal.AssumptionViolatedException`
