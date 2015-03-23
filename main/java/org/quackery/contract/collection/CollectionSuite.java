@@ -29,7 +29,9 @@ public class CollectionSuite {
             .test(copyConstructorCanCreateCollectionWithOneElement(type)) //
             .test(copyConstructorFailsForNullArgument(type)) //
             .test(copyConstructorMakesDefensiveCopy(type)) //
-            .test(copyConstructorDoesNotModifyArgument(type)));
+            .test(copyConstructorDoesNotModifyArgument(type))) //
+        .test(newSuite("implements size") //
+            .test(sizeOfCollectionWithOneElementIsOne(type)));
   }
 
   private static Test implementsCollection(final Class<?> type) {
@@ -219,6 +221,27 @@ public class CollectionSuite {
               + "  after constructor finishes it is changed to\n" //
               + "    " + print(argumentToArray) + "\n" //
               + "  It should remain unchanged.\n" //
+          );
+        }
+      }
+    };
+  }
+
+  private static Test sizeOfCollectionWithOneElementIsOne(final Class<?> type) {
+    return new Case("size of collection with 1 element is 1") {
+      public void run() throws Throwable {
+        assume(Collection.class.isAssignableFrom(type));
+        ArrayList<Object> original = new ArrayList<Object>(asList("a"));
+        Constructor<?> constructor = assumeConstructor(type, Collection.class);
+        Collection<?> collection = (Collection<?>) constructor.newInstance(original);
+
+        boolean expected = collection.size() == 1;
+        if (!expected) {
+          throw new FailureException("" //
+              + "\n" //
+              + "  Expected that\n" //
+              + "    " + type.getName() + ".size()\n" //
+              + "  returns 1 if collection has 1 element.\n" //
           );
         }
       }

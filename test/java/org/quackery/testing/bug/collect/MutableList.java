@@ -412,6 +412,19 @@ public class MutableList<E> implements List<E> {
     }
   }
 
+  @Bug(Collection.class)
+  public static class SizeReturnsZero<E> extends MutableList<E> {
+    public SizeReturnsZero() {}
+
+    public SizeReturnsZero(Collection<E> collection) {
+      super(collection);
+    }
+
+    public int size() {
+      return 0;
+    }
+  }
+
   private static Object newObject(final String name) {
     return new Object() {
       public String toString() {
