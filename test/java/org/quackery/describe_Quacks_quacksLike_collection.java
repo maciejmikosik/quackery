@@ -3,6 +3,7 @@ package org.quackery;
 import static java.util.Arrays.asList;
 import static org.quackery.Quacks.quacksLike;
 import static org.quackery.testing.Tests.run;
+import static org.quackery.testing.bug.Bugs.bugs;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -17,6 +18,7 @@ import org.quackery.testing.bug.collect.MutableList;
 
 public class describe_Quacks_quacksLike_collection {
   private Tester<Class<?>> tester;
+  private List<Class<?>> bugs;
 
   public void accepts_mutable_list() throws Throwable {
     run(quacksLike(Collection.class).test(MutableList.class));
@@ -30,22 +32,17 @@ public class describe_Quacks_quacksLike_collection {
     run(tester.test(TreeSet.class));
   }
 
-  public void detects_collection_bugs_in_mutable_list() throws Throwable {
+  public void detects_wrong_type() throws Throwable {
     tester = quacksLike(Collection.class);
     expectDetection(tester.test(Object.class));
-    expectDetection(tester.test(MutableList.InterfaceIsMissing.class));
-    expectDetection(tester.test(MutableList.DefaultConstructorIsMissing.class));
-    expectDetection(tester.test(MutableList.DefaultConstructorIsHidden.class));
-    expectDetection(tester.test(MutableList.DefaultConstructorAddsElement.class));
-    expectDetection(tester.test(MutableList.CopyConstructorIsMissing.class));
-    expectDetection(tester.test(MutableList.CopyConstructorIsHidden.class));
-    expectDetection(tester.test(MutableList.CopyConstructorCreatesEmpty.class));
-    expectDetection(tester.test(MutableList.CopyConstructorAddsElement.class));
-    expectDetection(tester.test(MutableList.CopyConstructorAcceptsNull.class));
-    expectDetection(tester.test(MutableList.CopyConstructorThrowsRuntimeExceptionUponNull.class));
-    expectDetection(tester.test(MutableList.CopyConstructorMakesNoDefensiveCopy.class));
-    expectDetection(tester.test(MutableList.CopyConstructorModifiesArgument.class));
-    expectDetection(tester.test(MutableList.CopyConstructorCreatesFixed.class));
+  }
+
+  public void detects_collection_bugs_in_mutable_list() throws Throwable {
+    tester = quacksLike(Collection.class);
+    bugs = bugs(Collection.class);
+    for (Class<?> bug : bugs) {
+      expectDetection(tester.test(bug));
+    }
   }
 
   private static void expectDetection(Test test) throws Throwable {
