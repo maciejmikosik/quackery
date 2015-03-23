@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public class Quacks {
+public class Contracts {
   public static Contract<Class<?>> quacksLike(
       @SuppressWarnings("rawtypes") Class<Collection> collectionType) {
     return new Contract<Class<?>>() {

@@ -1,6 +1,6 @@
 package org.quackery;
 
-import static org.quackery.Quacks.quacksLike;
+import static org.quackery.Contracts.quacksLike;
 import static org.quackery.testing.bug.Bugs.bugs;
 import static org.quackery.testing.bug.Bugs.implementations;
 import static org.quackery.testing.bug.Expectations.expectFailure;
@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.TreeSet;
 
-public class describe_Quacks_quacksLike_collection {
+public class describe_Contracts_quacksLike_collection {
   private final Contract<Class<?>> contract = quacksLike(Collection.class);
 
   public void accepts_mutable_list() throws Throwable {
