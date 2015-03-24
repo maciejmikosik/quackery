@@ -1,6 +1,7 @@
 package org.quackery.contract.collection;
 
 import static org.quackery.AssumptionException.assume;
+import static org.quackery.FailureException.assertEquals;
 import static org.quackery.FailureException.assertThat;
 import static org.quackery.FailureException.fail;
 import static org.quackery.Suite.newSuite;
@@ -11,7 +12,6 @@ import static org.quackery.contract.Commons.newArrayList;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 import org.quackery.Case;
@@ -63,7 +63,7 @@ public class CollectionSuite {
       public void run() throws Throwable {
         assume(Collection.class.isAssignableFrom(type));
         Collection<?> collection = (Collection<?>) assumeConstructor(type).newInstance();
-        assertThat(Arrays.equals(collection.toArray(), new Object[0]));
+        assertEquals(collection.toArray(), new Object[0]);
       }
     };
   }
@@ -87,7 +87,7 @@ public class CollectionSuite {
         ArrayList<Object> original = newArrayList("a");
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
         Collection<?> collection = (Collection<?>) constructor.newInstance(copy(original));
-        assertThat(Arrays.equals(collection.toArray(), original.toArray()));
+        assertEquals(collection.toArray(), original.toArray());
       }
     };
   }
@@ -118,7 +118,7 @@ public class CollectionSuite {
         Collection<?> collection = (Collection<?>) constructor.newInstance(trojan);
         Object[] array = copy(collection.toArray());
         trojan.clear();
-        assertThat(Arrays.equals(array, collection.toArray()));
+        assertEquals(array, collection.toArray());
       }
     };
   }
@@ -130,7 +130,7 @@ public class CollectionSuite {
         ArrayList<Object> argument = copy(original);
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
         constructor.newInstance(argument);
-        assertThat(Arrays.equals(argument.toArray(), original.toArray()));
+        assertEquals(argument.toArray(), original.toArray());
       }
     };
   }
