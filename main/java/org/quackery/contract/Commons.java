@@ -1,9 +1,6 @@
 package org.quackery.contract;
 
-import static java.util.Arrays.asList;
-
 import java.lang.reflect.Constructor;
-import java.util.List;
 
 import org.quackery.AssumptionException;
 
@@ -14,9 +11,5 @@ public class Commons {
     } catch (NoSuchMethodException e) {
       throw new AssumptionException(e);
     }
-  }
-
-  public static List<Class<?>> parameters(Constructor<?> constructor) {
-    return asList(constructor.getParameterTypes());
   }
 }

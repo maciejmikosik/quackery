@@ -4,7 +4,6 @@ import static java.util.Arrays.asList;
 import static org.quackery.AssumptionException.assume;
 import static org.quackery.Suite.newSuite;
 import static org.quackery.contract.Commons.assumeConstructor;
-import static org.quackery.contract.Commons.parameters;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -51,12 +50,11 @@ public class CollectionSuite {
   private static Test hasDefaultConstructor(final Class<?> type) {
     return new Case("has default constructor") {
       public void run() {
-        for (Constructor<?> constructor : type.getConstructors()) {
-          if (parameters(constructor).isEmpty()) {
-            return;
-          }
+        try {
+          type.getConstructor();
+        } catch (NoSuchMethodException e) {
+          throw new FailureException();
         }
-        throw new FailureException();
       }
     };
   }
@@ -78,12 +76,11 @@ public class CollectionSuite {
   private static Test hasCopyConstructor(final Class<?> type) {
     return new Case("has copy constructor") {
       public void run() {
-        for (Constructor<?> constructor : type.getConstructors()) {
-          if (parameters(constructor).equals(asList(Collection.class))) {
-            return;
-          }
+        try {
+          type.getConstructor(Collection.class);
+        } catch (NoSuchMethodException e) {
+          throw new FailureException();
         }
-        throw new FailureException();
       }
     };
   }
