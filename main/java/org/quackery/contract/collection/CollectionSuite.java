@@ -5,7 +5,6 @@ import static org.quackery.AssumptionException.assume;
 import static org.quackery.Suite.newSuite;
 import static org.quackery.contract.Commons.assumeConstructor;
 import static org.quackery.contract.Commons.parameters;
-import static org.quackery.contract.Commons.print;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -43,13 +42,7 @@ public class CollectionSuite {
       public void run() throws Throwable {
         boolean expected = Collection.class.isAssignableFrom(type);
         if (!expected) {
-          throw new FailureException("" //
-              + "\n" //
-              + "  expected that\n" //
-              + "    " + type.getName() + "\n" //
-              + "  implements\n" //
-              + "  " + Collection.class.getName() + "\n" //
-          );
+          throw new FailureException();
         }
       }
     };
@@ -63,12 +56,7 @@ public class CollectionSuite {
             return;
           }
         }
-        throw new FailureException("" //
-            + "\n" //
-            + "  expected that\n" //
-            + "    " + type.getName() + "\n" //
-            + "  has public constructor with no parameters\n" //
-        );
+        throw new FailureException();
       }
     };
   }
@@ -81,14 +69,7 @@ public class CollectionSuite {
         Object[] toArray = collection.toArray();
         boolean expected = Arrays.equals(toArray, new Object[0]);
         if (!expected) {
-          throw new FailureException("" //
-              + "\n" //
-              + "  Expected that\n" //
-              + "    " + type + "\n" //
-              + "  has default constructor that creates empty collection, \n" //
-              + "  but collection contained elements\n" //
-              + "    " + print(toArray) + "\n" //
-          );
+          throw new FailureException();
         }
       }
     };
@@ -102,13 +83,7 @@ public class CollectionSuite {
             return;
           }
         }
-        throw new FailureException("" //
-            + "\n" //
-            + "  expected that\n" //
-            + "    " + type.getName() + "\n" //
-            + "  has public constructor with parameter\n" //
-            + "    " + Collection.class.getName() + "\n" //
-        );
+        throw new FailureException();
       }
     };
   }
@@ -123,17 +98,7 @@ public class CollectionSuite {
         Object[] toArray = collection.toArray();
         boolean expected = Arrays.equals(toArray, original.toArray());
         if (!expected) {
-          throw new FailureException("" //
-              + "\n" //
-              + "  Expected that\n" //
-              + "    " + type.getName() + "\n" //
-              + "  has copy constructor that accepts collection with one element.\n" //
-              + "  If collection passed as an argument contains\n" //
-              + "    " + print(original) + "\n" //
-              + "  then created collection contains\n" //
-              + "    " + print(toArray) + "\n" //
-              + "  It should contain same elements.\n" //
-          );
+          throw new FailureException();
         }
       }
     };
@@ -143,26 +108,12 @@ public class CollectionSuite {
     return new Case("copy constructor fails for null argument") {
       public void run() throws Throwable {
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
-        Collection<?> collection = null;
         try {
-          collection = (Collection<?>) constructor.newInstance((Object) null);
-          throw new FailureException("" //
-              + "\n" //
-              + "  Expected that\n" //
-              + "    " + type + "\n" //
-              + "  has copy constructor that throws NullPointerException for null argument.\n" //
-              + "  Instead it created collection containing\n" //
-              + "    " + print(collection) + "\n" //
-          );
+          constructor.newInstance((Object) null);
+          throw new FailureException();
         } catch (InvocationTargetException e) {
           if (!(e.getCause() instanceof NullPointerException)) {
-            throw new FailureException("" //
-                + "\n" //
-                + "  Expected that\n" //
-                + "    " + type + "\n" //
-                + "  has copy constructor that throws NullPointerException for null argument.\n" //
-                + "  Instead it thrown " + e.getCause().getClass().getName() + "\n" //
-            );
+            throw new FailureException();
           }
         }
       }
@@ -182,22 +133,7 @@ public class CollectionSuite {
         Object[] afterToArray = collection.toArray();
         boolean expected = Arrays.equals(beforeToArray, afterToArray);
         if (!expected) {
-          throw new FailureException("" //
-              + "\n" //
-              + "  Expected that\n" //
-              + "    " + type + "\n" //
-              + "  has copy constructor that defensive copies elements.\n" //
-              + "\n" //
-              + "  If collection passed as an argument to copy constructor contains\n" //
-              + "    " + print(original) + "\n" //
-              + "  then created collection contains\n" //
-              + "    " + print(beforeToArray) + "\n" //
-              + "  If you change collection passed as argument to\n" //
-              + "    " + print(trojan) + "\n" //
-              + "  as a result, created collection changes to\n" //
-              + "    " + print(afterToArray) + "\n" //
-              + "  It should remain unchanged.\n" //
-          );
+          throw new FailureException();
         }
       }
     };
@@ -214,18 +150,7 @@ public class CollectionSuite {
         Object[] argumentToArray = argument.toArray();
         boolean expected = Arrays.equals(argumentToArray, original.toArray());
         if (!expected) {
-          throw new FailureException("" //
-              + "\n" //
-              + "  Expected that\n" //
-              + "    " + type + "\n" //
-              + "  has copy constructor that does not modify argument.\n" //
-              + "\n" //
-              + "  However if collection passed as an argument to copy constructor contains\n" //
-              + "    " + print(original) + "\n" //
-              + "  after constructor finishes it is changed to\n" //
-              + "    " + print(argumentToArray) + "\n" //
-              + "  It should remain unchanged.\n" //
-          );
+          throw new FailureException();
         }
       }
     };
@@ -241,12 +166,7 @@ public class CollectionSuite {
 
         boolean expected = collection.size() == 1;
         if (!expected) {
-          throw new FailureException("" //
-              + "\n" //
-              + "  Expected that\n" //
-              + "    " + type.getName() + ".size()\n" //
-              + "  returns 1 if collection has 1 element.\n" //
-          );
+          throw new FailureException();
         }
       }
     };
@@ -262,12 +182,7 @@ public class CollectionSuite {
 
         boolean expected = collection.size() == 0;
         if (!expected) {
-          throw new FailureException("" //
-              + "\n" //
-              + "  Expected that\n" //
-              + "    " + type.getName() + ".size()\n" //
-              + "  returns 0 if collection is empty.\n" //
-          );
+          throw new FailureException();
         }
       }
     };
@@ -283,12 +198,7 @@ public class CollectionSuite {
 
         boolean expected = !collection.isEmpty();
         if (!expected) {
-          throw new FailureException("" //
-              + "\n" //
-              + "  Expected that\n" //
-              + "    " + type.getName() + ".isEmpty()\n" //
-              + "  returns false if collection has 1 element.\n" //
-          );
+          throw new FailureException();
         }
       }
     };
@@ -304,12 +214,7 @@ public class CollectionSuite {
 
         boolean expected = collection.isEmpty();
         if (!expected) {
-          throw new FailureException("" //
-              + "\n" //
-              + "  Expected that\n" //
-              + "    " + type.getName() + ".isEmpty()\n" //
-              + "  returns true if collection is empty.\n" //
-          );
+          throw new FailureException();
         }
       }
     };
