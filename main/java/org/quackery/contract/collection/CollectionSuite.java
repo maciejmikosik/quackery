@@ -112,12 +112,12 @@ public class CollectionSuite {
     return new Case("copy constructor makes defensive copy") {
       public void run() throws Throwable {
         assume(Collection.class.isAssignableFrom(type));
-        ArrayList<Object> original = newArrayList("a", "b", "c");
+        ArrayList<Object> original = newArrayList("a");
         ArrayList<Object> trojan = copy(original);
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
         Collection<?> collection = (Collection<?>) constructor.newInstance(trojan);
         Object[] array = copy(collection.toArray());
-        trojan.remove(1);
+        trojan.clear();
         assertThat(Arrays.equals(array, collection.toArray()));
       }
     };
@@ -126,7 +126,7 @@ public class CollectionSuite {
   private static Test copyConstructorDoesNotModifyArgument(final Class<?> type) {
     return new Case("copy constructor does not modify argument") {
       public void run() throws Throwable {
-        ArrayList<Object> original = newArrayList("a", "b", "c");
+        ArrayList<Object> original = newArrayList("a");
         ArrayList<Object> argument = copy(original);
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
         constructor.newInstance(argument);
