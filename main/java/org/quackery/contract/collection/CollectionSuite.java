@@ -2,6 +2,8 @@ package org.quackery.contract.collection;
 
 import static java.util.Arrays.asList;
 import static org.quackery.AssumptionException.assume;
+import static org.quackery.FailureException.assertThat;
+import static org.quackery.FailureException.fail;
 import static org.quackery.Suite.newSuite;
 import static org.quackery.contract.Commons.assumeConstructor;
 
@@ -12,7 +14,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.quackery.Case;
-import org.quackery.FailureException;
 import org.quackery.Test;
 
 public class CollectionSuite {
@@ -39,10 +40,7 @@ public class CollectionSuite {
   private static Test implementsCollection(final Class<?> type) {
     return new Case("implements Collection") {
       public void run() throws Throwable {
-        boolean expected = Collection.class.isAssignableFrom(type);
-        if (!expected) {
-          throw new FailureException();
-        }
+        assertThat(Collection.class.isAssignableFrom(type));
       }
     };
   }
@@ -53,7 +51,7 @@ public class CollectionSuite {
         try {
           type.getConstructor();
         } catch (NoSuchMethodException e) {
-          throw new FailureException();
+          fail();
         }
       }
     };
@@ -64,11 +62,7 @@ public class CollectionSuite {
       public void run() throws Throwable {
         assume(Collection.class.isAssignableFrom(type));
         Collection<?> collection = (Collection<?>) assumeConstructor(type).newInstance();
-        Object[] toArray = collection.toArray();
-        boolean expected = Arrays.equals(toArray, new Object[0]);
-        if (!expected) {
-          throw new FailureException();
-        }
+        assertThat(Arrays.equals(collection.toArray(), new Object[0]));
       }
     };
   }
@@ -79,7 +73,7 @@ public class CollectionSuite {
         try {
           type.getConstructor(Collection.class);
         } catch (NoSuchMethodException e) {
-          throw new FailureException();
+          fail();
         }
       }
     };
@@ -92,11 +86,7 @@ public class CollectionSuite {
         ArrayList<Object> original = new ArrayList<Object>(asList("a"));
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
         Collection<?> collection = (Collection<?>) constructor.newInstance(original.clone());
-        Object[] toArray = collection.toArray();
-        boolean expected = Arrays.equals(toArray, original.toArray());
-        if (!expected) {
-          throw new FailureException();
-        }
+        assertThat(Arrays.equals(collection.toArray(), original.toArray()));
       }
     };
   }
@@ -107,10 +97,10 @@ public class CollectionSuite {
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
         try {
           constructor.newInstance((Object) null);
-          throw new FailureException();
+          fail();
         } catch (InvocationTargetException e) {
           if (!(e.getCause() instanceof NullPointerException)) {
-            throw new FailureException();
+            fail();
           }
         }
       }
@@ -127,11 +117,7 @@ public class CollectionSuite {
         Collection<?> collection = (Collection<?>) constructor.newInstance(trojan);
         Object[] beforeToArray = collection.toArray();
         trojan.remove(1);
-        Object[] afterToArray = collection.toArray();
-        boolean expected = Arrays.equals(beforeToArray, afterToArray);
-        if (!expected) {
-          throw new FailureException();
-        }
+        assertThat(Arrays.equals(beforeToArray, collection.toArray()));
       }
     };
   }
@@ -143,12 +129,7 @@ public class CollectionSuite {
         ArrayList<Object> argument = (ArrayList<Object>) original.clone();
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
         constructor.newInstance(argument);
-
-        Object[] argumentToArray = argument.toArray();
-        boolean expected = Arrays.equals(argumentToArray, original.toArray());
-        if (!expected) {
-          throw new FailureException();
-        }
+        assertThat(Arrays.equals(argument.toArray(), original.toArray()));
       }
     };
   }
@@ -160,11 +141,7 @@ public class CollectionSuite {
         ArrayList<Object> original = new ArrayList<Object>(asList("a"));
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
         Collection<?> collection = (Collection<?>) constructor.newInstance(original);
-
-        boolean expected = collection.size() == 1;
-        if (!expected) {
-          throw new FailureException();
-        }
+        assertThat(collection.size() == 1);
       }
     };
   }
@@ -176,11 +153,7 @@ public class CollectionSuite {
         ArrayList<Object> original = new ArrayList<Object>();
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
         Collection<?> collection = (Collection<?>) constructor.newInstance(original);
-
-        boolean expected = collection.size() == 0;
-        if (!expected) {
-          throw new FailureException();
-        }
+        assertThat(collection.size() == 0);
       }
     };
   }
@@ -192,11 +165,7 @@ public class CollectionSuite {
         ArrayList<Object> original = new ArrayList<Object>(asList("a"));
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
         Collection<?> collection = (Collection<?>) constructor.newInstance(original);
-
-        boolean expected = !collection.isEmpty();
-        if (!expected) {
-          throw new FailureException();
-        }
+        assertThat(!collection.isEmpty());
       }
     };
   }
@@ -208,11 +177,7 @@ public class CollectionSuite {
         ArrayList<Object> original = new ArrayList<Object>();
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
         Collection<?> collection = (Collection<?>) constructor.newInstance(original);
-
-        boolean expected = collection.isEmpty();
-        if (!expected) {
-          throw new FailureException();
-        }
+        assertThat(collection.isEmpty());
       }
     };
   }
