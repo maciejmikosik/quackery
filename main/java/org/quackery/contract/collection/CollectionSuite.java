@@ -1,11 +1,12 @@
 package org.quackery.contract.collection;
 
-import static java.util.Arrays.asList;
 import static org.quackery.AssumptionException.assume;
 import static org.quackery.FailureException.assertThat;
 import static org.quackery.FailureException.fail;
 import static org.quackery.Suite.newSuite;
 import static org.quackery.contract.Commons.assumeConstructor;
+import static org.quackery.contract.Commons.copy;
+import static org.quackery.contract.Commons.newArrayList;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -83,9 +84,9 @@ public class CollectionSuite {
     return new Case("copy constructor can create collection with one element") {
       public void run() throws Throwable {
         assume(Collection.class.isAssignableFrom(type));
-        ArrayList<Object> original = new ArrayList<Object>(asList("a"));
+        ArrayList<Object> original = newArrayList("a");
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
-        Collection<?> collection = (Collection<?>) constructor.newInstance(original.clone());
+        Collection<?> collection = (Collection<?>) constructor.newInstance(copy(original));
         assertThat(Arrays.equals(collection.toArray(), original.toArray()));
       }
     };
@@ -111,13 +112,13 @@ public class CollectionSuite {
     return new Case("copy constructor makes defensive copy") {
       public void run() throws Throwable {
         assume(Collection.class.isAssignableFrom(type));
-        ArrayList<Object> original = new ArrayList<Object>(asList("a", "b", "c"));
-        ArrayList<Object> trojan = (ArrayList<Object>) original.clone();
+        ArrayList<Object> original = newArrayList("a", "b", "c");
+        ArrayList<Object> trojan = copy(original);
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
         Collection<?> collection = (Collection<?>) constructor.newInstance(trojan);
-        Object[] beforeToArray = collection.toArray();
+        Object[] array = copy(collection.toArray());
         trojan.remove(1);
-        assertThat(Arrays.equals(beforeToArray, collection.toArray()));
+        assertThat(Arrays.equals(array, collection.toArray()));
       }
     };
   }
@@ -125,8 +126,8 @@ public class CollectionSuite {
   private static Test copyConstructorDoesNotModifyArgument(final Class<?> type) {
     return new Case("copy constructor does not modify argument") {
       public void run() throws Throwable {
-        ArrayList<Object> original = new ArrayList<Object>(asList("a", "b", "c"));
-        ArrayList<Object> argument = (ArrayList<Object>) original.clone();
+        ArrayList<Object> original = newArrayList("a", "b", "c");
+        ArrayList<Object> argument = copy(original);
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
         constructor.newInstance(argument);
         assertThat(Arrays.equals(argument.toArray(), original.toArray()));
@@ -138,9 +139,8 @@ public class CollectionSuite {
     return new Case("size of collection with 1 element is 1") {
       public void run() throws Throwable {
         assume(Collection.class.isAssignableFrom(type));
-        ArrayList<Object> original = new ArrayList<Object>(asList("a"));
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
-        Collection<?> collection = (Collection<?>) constructor.newInstance(original);
+        Collection<?> collection = (Collection<?>) constructor.newInstance(newArrayList("a"));
         assertThat(collection.size() == 1);
       }
     };
@@ -150,9 +150,8 @@ public class CollectionSuite {
     return new Case("size of empty collection is 0") {
       public void run() throws Throwable {
         assume(Collection.class.isAssignableFrom(type));
-        ArrayList<Object> original = new ArrayList<Object>();
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
-        Collection<?> collection = (Collection<?>) constructor.newInstance(original);
+        Collection<?> collection = (Collection<?>) constructor.newInstance(newArrayList());
         assertThat(collection.size() == 0);
       }
     };
@@ -162,9 +161,8 @@ public class CollectionSuite {
     return new Case("isEmpty returns false if collection has one element") {
       public void run() throws Throwable {
         assume(Collection.class.isAssignableFrom(type));
-        ArrayList<Object> original = new ArrayList<Object>(asList("a"));
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
-        Collection<?> collection = (Collection<?>) constructor.newInstance(original);
+        Collection<?> collection = (Collection<?>) constructor.newInstance(newArrayList("a"));
         assertThat(!collection.isEmpty());
       }
     };
@@ -174,9 +172,8 @@ public class CollectionSuite {
     return new Case("isEmpty returns true if collection is empty") {
       public void run() throws Throwable {
         assume(Collection.class.isAssignableFrom(type));
-        ArrayList<Object> original = new ArrayList<Object>();
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
-        Collection<?> collection = (Collection<?>) constructor.newInstance(original);
+        Collection<?> collection = (Collection<?>) constructor.newInstance(newArrayList());
         assertThat(collection.isEmpty());
       }
     };
