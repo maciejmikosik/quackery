@@ -373,6 +373,110 @@ public class MutableList<E> implements List<E> {
     }
   }
 
+  @Bug(Collection.class)
+  public static class ToArrayReturnsEmpty<E> extends MutableList<E> {
+    public ToArrayReturnsEmpty() {}
+
+    public ToArrayReturnsEmpty(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Object[] toArray() {
+      return new Object[0];
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class ToArrayReturnsUnknownElement<E> extends MutableList<E> {
+    public ToArrayReturnsUnknownElement() {}
+
+    public ToArrayReturnsUnknownElement(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Object[] toArray() {
+      return new Object[] { newObject("x") };
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class ToArrayReturnsNull<E> extends MutableList<E> {
+    public ToArrayReturnsNull() {}
+
+    public ToArrayReturnsNull(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Object[] toArray() {
+      return null;
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class SizeReturnsZero<E> extends MutableList<E> {
+    public SizeReturnsZero() {}
+
+    public SizeReturnsZero(Collection<E> collection) {
+      super(collection);
+    }
+
+    public int size() {
+      return 0;
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class SizeReturnsOne<E> extends MutableList<E> {
+    public SizeReturnsOne() {}
+
+    public SizeReturnsOne(Collection<E> collection) {
+      super(collection);
+    }
+
+    public int size() {
+      return 1;
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class IsEmptyReturnsTrue<E> extends MutableList<E> {
+    public IsEmptyReturnsTrue() {}
+
+    public IsEmptyReturnsTrue(Collection<E> collection) {
+      super(collection);
+    }
+
+    public boolean isEmpty() {
+      return true;
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class IsEmptyNegates<E> extends MutableList<E> {
+    public IsEmptyNegates() {}
+
+    public IsEmptyNegates(Collection<E> collection) {
+      super(collection);
+    }
+
+    public boolean isEmpty() {
+      return !delegate.isEmpty();
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class IsEmptyReturnsFalse<E> extends MutableList<E> {
+    public IsEmptyReturnsFalse() {}
+
+    public IsEmptyReturnsFalse(Collection<E> collection) {
+      super(collection);
+    }
+
+    public boolean isEmpty() {
+      return false;
+    }
+  }
+
   private static Object newObject(final String name) {
     return new Object() {
       public String toString() {

@@ -29,7 +29,13 @@ public class CollectionSuite {
             .test(copyConstructorCanCreateCollectionWithOneElement(type)) //
             .test(copyConstructorFailsForNullArgument(type)) //
             .test(copyConstructorMakesDefensiveCopy(type)) //
-            .test(copyConstructorDoesNotModifyArgument(type)));
+            .test(copyConstructorDoesNotModifyArgument(type))) //
+        .test(newSuite("implements size") //
+            .test(sizeOfEmptyCollectionIsZero(type)) //
+            .test(sizeOfCollectionWithOneElementIsOne(type))) //
+        .test(newSuite("implements isEmpty") //
+            .test(isEmptyReturnsFalseIfCollectionHasOneElement(type)) //
+            .test(isEmptyReturnsTrueIfCollectionIsEmpty(type)));
   }
 
   private static Test implementsCollection(final Class<?> type) {
@@ -219,6 +225,90 @@ public class CollectionSuite {
               + "  after constructor finishes it is changed to\n" //
               + "    " + print(argumentToArray) + "\n" //
               + "  It should remain unchanged.\n" //
+          );
+        }
+      }
+    };
+  }
+
+  private static Test sizeOfCollectionWithOneElementIsOne(final Class<?> type) {
+    return new Case("size of collection with 1 element is 1") {
+      public void run() throws Throwable {
+        assume(Collection.class.isAssignableFrom(type));
+        ArrayList<Object> original = new ArrayList<Object>(asList("a"));
+        Constructor<?> constructor = assumeConstructor(type, Collection.class);
+        Collection<?> collection = (Collection<?>) constructor.newInstance(original);
+
+        boolean expected = collection.size() == 1;
+        if (!expected) {
+          throw new FailureException("" //
+              + "\n" //
+              + "  Expected that\n" //
+              + "    " + type.getName() + ".size()\n" //
+              + "  returns 1 if collection has 1 element.\n" //
+          );
+        }
+      }
+    };
+  }
+
+  private static Test sizeOfEmptyCollectionIsZero(final Class<?> type) {
+    return new Case("size of empty collection is 0") {
+      public void run() throws Throwable {
+        assume(Collection.class.isAssignableFrom(type));
+        ArrayList<Object> original = new ArrayList<Object>();
+        Constructor<?> constructor = assumeConstructor(type, Collection.class);
+        Collection<?> collection = (Collection<?>) constructor.newInstance(original);
+
+        boolean expected = collection.size() == 0;
+        if (!expected) {
+          throw new FailureException("" //
+              + "\n" //
+              + "  Expected that\n" //
+              + "    " + type.getName() + ".size()\n" //
+              + "  returns 0 if collection is empty.\n" //
+          );
+        }
+      }
+    };
+  }
+
+  private static Test isEmptyReturnsFalseIfCollectionHasOneElement(final Class<?> type) {
+    return new Case("isEmpty returns false if collection has one element") {
+      public void run() throws Throwable {
+        assume(Collection.class.isAssignableFrom(type));
+        ArrayList<Object> original = new ArrayList<Object>(asList("a"));
+        Constructor<?> constructor = assumeConstructor(type, Collection.class);
+        Collection<?> collection = (Collection<?>) constructor.newInstance(original);
+
+        boolean expected = !collection.isEmpty();
+        if (!expected) {
+          throw new FailureException("" //
+              + "\n" //
+              + "  Expected that\n" //
+              + "    " + type.getName() + ".isEmpty()\n" //
+              + "  returns false if collection has 1 element.\n" //
+          );
+        }
+      }
+    };
+  }
+
+  private static Test isEmptyReturnsTrueIfCollectionIsEmpty(final Class<?> type) {
+    return new Case("isEmpty returns true if collection is empty") {
+      public void run() throws Throwable {
+        assume(Collection.class.isAssignableFrom(type));
+        ArrayList<Object> original = new ArrayList<Object>();
+        Constructor<?> constructor = assumeConstructor(type, Collection.class);
+        Collection<?> collection = (Collection<?>) constructor.newInstance(original);
+
+        boolean expected = collection.isEmpty();
+        if (!expected) {
+          throw new FailureException("" //
+              + "\n" //
+              + "  Expected that\n" //
+              + "    " + type.getName() + ".isEmpty()\n" //
+              + "  returns true if collection is empty.\n" //
           );
         }
       }
