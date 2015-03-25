@@ -1,4 +1,4 @@
-package org.quackery.contract;
+package org.quackery.contract.collection;
 
 import static org.quackery.Contracts.quacksLike;
 import static org.quackery.testing.Assertions.assertFailure;
