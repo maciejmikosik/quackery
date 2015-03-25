@@ -1,22 +1,21 @@
-Quackery lets you test if your code quacks like intended type.
+When you write a class that implements some popular contract, you face the boring task of writing same tests again and again. 
+Quackery lets you write those tests once and reuse them.
+It also has some built-in tests for well-known contracts, so you don't have to write those tests at all.
 
-Add this example class to you project.
+Running this example
 
     @RunWith(QuackeryRunner.class)
     public class JdkCollectionTest {
       @Quackery
       public static Test test() {
-        return newSuite("jdk collections quack like java.util.Collection")
-            .testThat(ArrayList.class, quacksLike(Collection.class))
-            .testThat(LinkedList.class, quacksLike(Collection.class))
-            .testThat(HashSet.class, quacksLike(Collection.class));
+        return quacksLike(Collection.class).test(ArrayList.class);
       }
     }
 
-Run it with junit test runner to see something like this.
+with junit test runner produces something like this
 
 ![JdkTest.png](main/doc/JdkTest.png "JdkTest.png")
 
-You can use built-in contracts or create your own.
+Obviously this list is going to grow.
 
 See [tutorial](main/doc/tutorial.md) for all features.
