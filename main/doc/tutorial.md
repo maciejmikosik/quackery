@@ -80,7 +80,6 @@ when tests are run by runner from other framework (like junit).
 
 Quackery does not provide native running mechanism.
 `org.quackery.Test` can be run by `org.quackery.QuackeryRunner` which implements `org.junit.runner.Runner`.
-Method returning `Test` you want to run must be public, static, have no parameters and be annotated with `org.quackery.Quackery`.
 
     @RunWith(QuackeryRunner.class)
     public class MyListTest {
