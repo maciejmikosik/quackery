@@ -16,4 +16,6 @@ with junit test runner produces something like this
 
 ![JdkTest.png](main/doc/JdkTest.png "JdkTest.png")
 
+Obviously this list is going to grow.
+
 See [tutorial](main/doc/tutorial.md) for all features.
