@@ -3,9 +3,8 @@ package org.quackery.contract;
 import static java.util.Arrays.asList;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 import org.quackery.AssumptionException;
 
@@ -18,15 +17,19 @@ public class Commons {
     }
   }
 
-  public static List<Class<?>> parameters(Constructor<?> constructor) {
-    return asList(constructor.getParameterTypes());
+  public static <T, E extends T> ArrayList<T> newArrayList(E... elements) {
+    return new ArrayList<T>(asList(elements));
   }
 
-  public static String print(Object[] array) {
-    return Arrays.toString(array);
+  public static <E> ArrayList<E> copy(ArrayList<E> list) {
+    return list == null
+        ? null
+        : (ArrayList<E>) list.clone();
   }
 
-  public static String print(Collection<?> collection) {
-    return print(collection.toArray());
+  public static <E> E[] copy(E... array) {
+    return array == null
+        ? null
+        : Arrays.copyOf(array, array.length);
   }
 }
