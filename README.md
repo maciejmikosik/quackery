@@ -8,10 +8,7 @@ Running this example
     public class JdkCollectionTest {
       @Quackery
       public static Test test() {
-        return newSuite("jdk collections quack like java.util.Collection")
-            .testThat(ArrayList.class, quacksLike(Collection.class))
-            .testThat(LinkedList.class, quacksLike(Collection.class))
-            .testThat(HashSet.class, quacksLike(Collection.class));
+        return quacksLike(Collection.class).test(ArrayList.class);
       }
     }
 
