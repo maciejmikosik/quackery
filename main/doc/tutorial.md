@@ -41,7 +41,7 @@ You can define your own contracts by implementing `org.quackery.Contract` interf
             return new Case(type.getName() + " is final") {
               public void run() {
                 if (!Modifier.isFinal(type.getModifiers())) {
-                  throw new FailureException("" //
+                  throw new AssertionException("" //
                       + "\n" //
                       + "  expected that type\n" //
                       + "    " + type.getName() + "\n" //
@@ -69,7 +69,7 @@ Or `Test` can combine many tests as `Suite`.
 ### Built-in contracts
 
 Built-in contracts are designed to obey some rules.
-They throw `org.quackery.FailureException` if test fails.
+They throw `org.quackery.AssertionException` if test fails.
 Sometimes executing test makes no sense because some more basic feature already covered by other test failed.
 In that situation `org.quackery.AssumptionException` is thrown.
 
@@ -91,5 +91,5 @@ Method returning `Test` you want to run must be public, static, have no paramete
     }
 
 Exceptions thrown by quackery are translated to junit natives:
-  - `org.quackery.FailureException` to `java.lang.AssertionError`
+  - `org.quackery.AssertionException` to `java.lang.AssertionError`
   - `org.quackery.AssumptionException` to `org.junit.internal.AssumptionViolatedException`

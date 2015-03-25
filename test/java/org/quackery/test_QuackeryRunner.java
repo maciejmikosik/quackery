@@ -73,7 +73,7 @@ public class test_QuackeryRunner {
   }
 
   public void case_fails_if_quackery_assertion_exception_is_thrown() {
-    throwable = new FailureException(message);
+    throwable = new AssertionException(message);
     test = new Case(name) {
       public void run() throws Throwable {
         throw throwable.fillInStackTrace();

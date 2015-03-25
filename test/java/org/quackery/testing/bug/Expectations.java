@@ -8,10 +8,10 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.quackery.AssertionException;
 import org.quackery.AssumptionException;
 import org.quackery.Case;
 import org.quackery.Contract;
-import org.quackery.FailureException;
 import org.quackery.Suite;
 import org.quackery.Test;
 
@@ -27,7 +27,7 @@ public class Expectations {
     List<Result> failures = new ArrayList<>();
     List<Result> errors = new ArrayList<>();
     for (Result result : runAndCatch(test)) {
-      if (result.problem instanceof FailureException) {
+      if (result.problem instanceof AssertionException) {
         failures.add(result);
       } else if (result.problem == null) {
 

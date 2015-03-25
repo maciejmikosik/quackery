@@ -2,34 +2,34 @@ package org.quackery;
 
 import static java.util.Objects.deepEquals;
 
-public class FailureException extends RuntimeException {
-  public FailureException() {}
+public class AssertionException extends RuntimeException {
+  public AssertionException() {}
 
-  public FailureException(String message) {
+  public AssertionException(String message) {
     super(message);
   }
 
-  public FailureException(String message, Throwable cause) {
+  public AssertionException(String message, Throwable cause) {
     super(message, cause);
   }
 
-  public FailureException(Throwable cause) {
+  public AssertionException(Throwable cause) {
     super(cause);
   }
 
   public static void assertThat(boolean condition) {
     if (!condition) {
-      throw new FailureException();
+      throw new AssertionException();
     }
   }
 
   public static void assertEquals(Object a, Object b) {
     if (!deepEquals(a, b)) {
-      throw new FailureException();
+      throw new AssertionException();
     }
   }
 
   public static void fail() {
-    throw new FailureException();
+    throw new AssertionException();
   }
 }

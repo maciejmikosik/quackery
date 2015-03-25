@@ -1,9 +1,9 @@
 package org.quackery.contract.collection;
 
+import static org.quackery.AssertionException.assertEquals;
+import static org.quackery.AssertionException.assertThat;
+import static org.quackery.AssertionException.fail;
 import static org.quackery.AssumptionException.assume;
-import static org.quackery.FailureException.assertEquals;
-import static org.quackery.FailureException.assertThat;
-import static org.quackery.FailureException.fail;
 import static org.quackery.Suite.newSuite;
 import static org.quackery.contract.Commons.assumeConstructor;
 import static org.quackery.contract.Commons.copy;
