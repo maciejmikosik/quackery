@@ -1,6 +1,6 @@
 package org.quackery.testing.bug;
 
-import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static org.quackery.testing.Tests.run;
 
 import java.io.PrintWriter;
@@ -24,72 +24,128 @@ public class Expectations {
   public static void expectFailure(Contract<Class<?>> contract, Class<?> implementation)
       throws Throwable {
     Test test = contract.test(implementation);
-    List<Result> failures = new ArrayList<>();
-    List<Result> errors = new ArrayList<>();
-    for (Result result : runAndCatch(test)) {
-      if (result.problem instanceof AssertionException) {
-        failures.add(result);
-      } else if (result.problem == null) {
+    Report report = runAndCatch(test);
 
-      } else if (result.problem instanceof AssumptionException) {
-
-      } else {
-        errors.add(result);
-      }
-    }
-
-    boolean expected = failures.size() > 0 && errors.size() == 0;
+    boolean expected = report.failures().size() > 0 && report.errors().size() == 0;
     if (!expected) {
       StringBuilder builder = new StringBuilder();
       builder.append("\n<message>\n");
       builder.append("expectedFailure of " + implementation.getName());
-      builder.append("\nfound ").append(failures.size()).append(" failures:");
-      for (Result result : failures) {
-        builder.append("\n").append(result.test.name).append("\n");
-      }
-      builder.append("\nfound ").append(errors.size()).append(" errors:");
-      for (Result result : errors) {
-        builder.append("\n").append(result.test.name).append("\n");
-        builder.append(printStackTrace(result.problem));
-      }
+      builder.append(report);
       builder.append("\n<end of message>");
       throw new AssertionError(builder.toString());
     }
   }
 
-  private static String printStackTrace(Throwable throwable) {
-    StringWriter writer = new StringWriter();
-    throwable.printStackTrace(new PrintWriter(writer));
-    return writer.toString();
-  }
-
-  private static List<Result> runAndCatch(Test test) {
+  private static Report runAndCatch(Test test) {
     if (test instanceof Case) {
       Case cas = (Case) test;
       try {
         cas.run();
-        return asList(new Result(cas, null));
+        return new Report().add(new Problem(cas, null));
       } catch (Throwable t) {
-        return asList(new Result(cas, t));
+        return new Report().add(new Problem(cas, t));
       }
     } else if (test instanceof Suite) {
-      List<Result> results = new ArrayList<>();
+      Report report = new Report();
       for (Test subtest : ((Suite) test).tests) {
-        results.addAll(runAndCatch(subtest));
+        report = report.merge(runAndCatch(subtest));
       }
-      return results;
+      return report;
     } else {
       throw new RuntimeException("");
     }
   }
 
-  private static class Result {
-    public final Case test;
-    public final Throwable problem;
+  private static class Report {
+    public List<Problem> problems;
 
-    public Result(Case test, Throwable problem) {
+    private Report(List<Problem> problems) {
+      this.problems = problems;
+    }
+
+    public Report() {
+      this(unmodifiableList(new ArrayList<Problem>()));
+    }
+
+    public Report add(Problem problem) {
+      List<Problem> newProblems = new ArrayList<>(problems);
+      newProblems.add(problem);
+      return new Report(unmodifiableList(newProblems));
+    }
+
+    public Report merge(Report report) {
+      List<Problem> newProblems = new ArrayList<>(problems);
+      newProblems.addAll(report.problems);
+      return new Report(unmodifiableList(newProblems));
+    }
+
+    public List<Problem> failures() {
+      List<Problem> failures = new ArrayList<>();
+      for (Problem result : problems) {
+        if (result.isFailure()) {
+          failures.add(result);
+        }
+      }
+      return failures;
+    }
+
+    public List<Problem> errors() {
+      List<Problem> errors = new ArrayList<>();
+      for (Problem result : problems) {
+        if (result.isError()) {
+          errors.add(result);
+        }
+      }
+      return errors;
+    }
+
+    public String toString() {
+      List<Problem> failures = failures();
+      List<Problem> errors = errors();
+      StringBuilder builder = new StringBuilder();
+      builder.append("\nfound ").append(failures.size()).append(" failures:");
+      for (Problem result : failures) {
+        builder.append("\n").append(result.test.name).append("\n");
+      }
+      builder.append("\nfound ").append(errors.size()).append(" errors:");
+      for (Problem result : errors) {
+        builder.append("\n").append(result.test.name).append("\n");
+        builder.append(printStackTrace(result.throwable));
+      }
+      return builder.toString();
+    }
+
+    private static String printStackTrace(Throwable throwable) {
+      StringWriter writer = new StringWriter();
+      throwable.printStackTrace(new PrintWriter(writer));
+      return writer.toString();
+    }
+  }
+
+  private static class Problem {
+    public final Case test;
+    public final Throwable throwable;
+
+    public Problem(Case test, Throwable problem) {
       this.test = test;
-      this.problem = problem;
+      this.throwable = problem;
+    }
+
+    public boolean isSuccess() {
+      return throwable == null;
+    }
+
+    public boolean isFailure() {
+      return throwable instanceof AssertionException;
+    }
+
+    public boolean isAssumption() {
+      return throwable instanceof AssumptionException;
+    }
+
+    public boolean isError() {
+      return !isSuccess() && !isFailure() && !isAssumption();
     }
   }
 }
