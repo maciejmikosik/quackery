@@ -98,20 +98,20 @@ public class Expectations {
       return errors;
     }
 
-    public List<Problem> assumptions() {
-      List<Problem> assumptions = new ArrayList<>();
+    public List<Problem> misassumptions() {
+      List<Problem> misassumptions = new ArrayList<>();
       for (Problem result : problems) {
         if (result.isError()) {
-          assumptions.add(result);
+          misassumptions.add(result);
         }
       }
-      return assumptions;
+      return misassumptions;
     }
 
     public String toString() {
       List<Problem> failures = failures();
       List<Problem> errors = errors();
-      List<Problem> assumptions = assumptions();
+      List<Problem> misassumptions = misassumptions();
 
       StringBuilder builder = new StringBuilder();
       builder.append("\nfound ").append(failures.size()).append(" failures:");
@@ -123,8 +123,8 @@ public class Expectations {
         builder.append("\n").append(result.test.name).append("\n");
         builder.append(printStackTrace(result.throwable));
       }
-      builder.append("\nfound ").append(assumptions.size()).append(" assumptions:");
-      for (Problem result : assumptions) {
+      builder.append("\nfound ").append(misassumptions.size()).append(" misassumptions:");
+      for (Problem result : misassumptions) {
         builder.append("\n").append(result.test.name).append("\n");
       }
       return builder.toString();
@@ -154,12 +154,12 @@ public class Expectations {
       return throwable instanceof AssertionException;
     }
 
-    public boolean isAssumption() {
+    public boolean isMisassumption() {
       return throwable instanceof AssumptionException;
     }
 
     public boolean isError() {
-      return !isSuccess() && !isFailure() && !isAssumption();
+      return !isSuccess() && !isFailure() && !isMisassumption();
     }
   }
 }
