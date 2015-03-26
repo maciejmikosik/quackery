@@ -29,7 +29,7 @@ public class test_QuackeryRunner {
   }
 
   public void suite_name_is_preserved() {
-    test = newSuite(name) //
+    test = newSuite(name)
         .test(new Case("anything") {
           public void run() throws Throwable {
             throw throwable.fillInStackTrace();
@@ -107,12 +107,12 @@ public class test_QuackeryRunner {
   }
 
   public void case_is_invoked_even_if_name_collides() {
-    test = newSuite("suite") //
+    test = newSuite("suite")
         .test(new Case(name) {
           public void run() {
             invoked = true;
           }
-        }) //
+        })
         .test(new Case(name) {
           public void run() {
             otherInvoked = true;

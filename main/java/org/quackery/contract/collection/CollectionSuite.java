@@ -19,22 +19,22 @@ import org.quackery.Test;
 
 public class CollectionSuite {
   public static Test collectionSuite(Class<?> type) {
-    return newSuite(type.getName() + " quacks like Collection") //
-        .test(implementsCollection(type)) //
-        .test(newSuite("implements default constructor") //
-            .test(hasDefaultConstructor(type)) //
-            .test(defaultConstructorCreatesEmptyCollection(type))) //
-        .test(newSuite("implements copy constructor") //
-            .test(hasCopyConstructor(type)) //
-            .test(copyConstructorCanCreateCollectionWithOneElement(type)) //
-            .test(copyConstructorFailsForNullArgument(type)) //
-            .test(copyConstructorMakesDefensiveCopy(type)) //
-            .test(copyConstructorDoesNotModifyArgument(type))) //
-        .test(newSuite("implements size") //
-            .test(sizeOfEmptyCollectionIsZero(type)) //
-            .test(sizeOfCollectionWithOneElementIsOne(type))) //
-        .test(newSuite("implements isEmpty") //
-            .test(isEmptyReturnsFalseIfCollectionHasOneElement(type)) //
+    return newSuite(type.getName() + " quacks like Collection")
+        .test(implementsCollection(type))
+        .test(newSuite("implements default constructor")
+            .test(hasDefaultConstructor(type))
+            .test(defaultConstructorCreatesEmptyCollection(type)))
+        .test(newSuite("implements copy constructor")
+            .test(hasCopyConstructor(type))
+            .test(copyConstructorCanCreateCollectionWithOneElement(type))
+            .test(copyConstructorFailsForNullArgument(type))
+            .test(copyConstructorMakesDefensiveCopy(type))
+            .test(copyConstructorDoesNotModifyArgument(type)))
+        .test(newSuite("implements size")
+            .test(sizeOfEmptyCollectionIsZero(type))
+            .test(sizeOfCollectionWithOneElementIsOne(type)))
+        .test(newSuite("implements isEmpty")
+            .test(isEmptyReturnsFalseIfCollectionHasOneElement(type))
             .test(isEmptyReturnsTrueIfCollectionIsEmpty(type)));
   }
 
