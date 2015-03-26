@@ -1,4 +1,4 @@
-package org.quackery.testing.bug;
+package org.quackery.contract;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

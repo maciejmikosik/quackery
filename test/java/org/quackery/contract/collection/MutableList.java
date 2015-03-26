@@ -1,4 +1,4 @@
-package org.quackery.testing.bug.collect;
+package org.quackery.contract.collection;
 
 import static java.util.Arrays.asList;
 
@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.quackery.testing.bug.Bug;
+import org.quackery.contract.Bug;
 
 public class MutableList<E> implements List<E> {
   protected List<E> delegate;

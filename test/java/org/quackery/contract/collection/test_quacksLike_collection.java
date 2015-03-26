@@ -1,10 +1,10 @@
-package org.quackery.contract;
+package org.quackery.contract.collection;
 
 import static org.quackery.Contracts.quacksLike;
+import static org.quackery.contract.collection.Bugs.bugs;
+import static org.quackery.contract.collection.Bugs.implementations;
 import static org.quackery.testing.Assertions.assertFailure;
 import static org.quackery.testing.Assertions.assertSuccess;
-import static org.quackery.testing.bug.Bugs.bugs;
-import static org.quackery.testing.bug.Bugs.implementations;
 
 import java.util.ArrayList;
 import java.util.Collection;

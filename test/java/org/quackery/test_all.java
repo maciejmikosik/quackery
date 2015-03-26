@@ -6,7 +6,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.quackery.contract.test_quacksLike_collection;
+import org.quackery.contract.collection.test_quacksLike_collection;
 
 public class test_all {
   private static List<Throwable> failures = new ArrayList<Throwable>();
