@@ -15,8 +15,7 @@ import org.quackery.Suite;
 import org.quackery.Test;
 
 public class Expectations {
-  public static void expectSuccess(Contract<Class<?>> contract, Class<?> implementation)
-      throws Throwable {
+  public static void expectSuccess(Contract<Class<?>> contract, Class<?> implementation) {
     Test test = contract.test(implementation);
     Report report = runAndCatch(test);
     boolean expected = report.problems.size() == 0;
@@ -25,8 +24,7 @@ public class Expectations {
     }
   }
 
-  public static void expectFailure(Contract<Class<?>> contract, Class<?> implementation)
-      throws Throwable {
+  public static void expectFailure(Contract<Class<?>> contract, Class<?> implementation) {
     Test test = contract.test(implementation);
     Report report = runAndCatch(test);
     boolean expected = report.failures().size() > 0 && report.errors().size() == 0;

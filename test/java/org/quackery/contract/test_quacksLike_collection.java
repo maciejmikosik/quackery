@@ -17,26 +17,26 @@ import org.quackery.Contract;
 public class test_quacksLike_collection {
   private final Contract<Class<?>> contract = quacksLike(Collection.class);
 
-  public void accepts_mutable_list() throws Throwable {
+  public void accepts_mutable_list() {
     for (Class<?> implementation : implementations(Collection.class)) {
       expectSuccess(contract, implementation);
     }
   }
 
-  public void detects_collection_bugs() throws Throwable {
+  public void detects_collection_bugs() {
     for (Class<?> bug : bugs(Collection.class)) {
       expectFailure(contract, bug);
     }
   }
 
-  public void accepts_jdk_collections() throws Throwable {
+  public void accepts_jdk_collections() {
     expectSuccess(contract, ArrayList.class);
     expectSuccess(contract, LinkedList.class);
     expectSuccess(contract, HashSet.class);
     expectSuccess(contract, TreeSet.class);
   }
 
-  public void detects_alien_types() throws Throwable {
+  public void detects_alien_types() {
     expectFailure(contract, Object.class);
     expectFailure(contract, String.class);
     expectFailure(contract, Integer.class);
