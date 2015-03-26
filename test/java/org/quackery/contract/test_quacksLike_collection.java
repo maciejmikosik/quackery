@@ -1,10 +1,10 @@
 package org.quackery.contract;
 
 import static org.quackery.Contracts.quacksLike;
+import static org.quackery.testing.Assertions.assertFailure;
+import static org.quackery.testing.Assertions.assertSuccess;
 import static org.quackery.testing.bug.Bugs.bugs;
 import static org.quackery.testing.bug.Bugs.implementations;
-import static org.quackery.testing.bug.Expectations.expectFailure;
-import static org.quackery.testing.bug.Expectations.expectSuccess;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,26 +19,26 @@ public class test_quacksLike_collection {
 
   public void accepts_mutable_list() {
     for (Class<?> implementation : implementations(Collection.class)) {
-      expectSuccess(contract, implementation);
+      assertSuccess(contract.test(implementation));
     }
   }
 
   public void detects_collection_bugs() {
     for (Class<?> bug : bugs(Collection.class)) {
-      expectFailure(contract, bug);
+      assertFailure(contract.test(bug));
     }
   }
 
   public void accepts_jdk_collections() {
-    expectSuccess(contract, ArrayList.class);
-    expectSuccess(contract, LinkedList.class);
-    expectSuccess(contract, HashSet.class);
-    expectSuccess(contract, TreeSet.class);
+    assertSuccess(contract.test(ArrayList.class));
+    assertSuccess(contract.test(LinkedList.class));
+    assertSuccess(contract.test(HashSet.class));
+    assertSuccess(contract.test(TreeSet.class));
   }
 
   public void detects_alien_types() {
-    expectFailure(contract, Object.class);
-    expectFailure(contract, String.class);
-    expectFailure(contract, Integer.class);
+    assertFailure(contract.test(Object.class));
+    assertFailure(contract.test(String.class));
+    assertFailure(contract.test(Integer.class));
   }
 }

@@ -1,6 +1,11 @@
 package org.quackery.testing;
 
+import static org.quackery.testing.Tests.name;
+import static org.quackery.testing.Tests.runQuietly;
+
 import java.util.Objects;
+
+import org.quackery.Test;
 
 public class Assertions {
   public static void assertTrue(boolean condition) {
@@ -35,5 +40,21 @@ public class Assertions {
 
   public static void fail() {
     throw new AssertionError();
+  }
+
+  public static void assertSuccess(Test test) {
+    Report report = runQuietly(test);
+    boolean expected = report.problems.size() == 0;
+    if (!expected) {
+      throw new AssertionError("expected success: " + name(test) + report);
+    }
+  }
+
+  public static void assertFailure(Test test) {
+    Report report = runQuietly(test);
+    boolean expected = report.failures().size() > 0 && report.errors().size() == 0;
+    if (!expected) {
+      throw new AssertionError("expected failure: " + name(test) + report);
+    }
   }
 }
