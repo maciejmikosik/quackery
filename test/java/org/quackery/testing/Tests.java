@@ -28,4 +28,24 @@ public class Tests {
   private static <T> T unknown(Class<T> type) {
     throw new RuntimeException("" + type);
   }
+
+  public static Report runQuietly(Test test) {
+    if (test instanceof Case) {
+      Case cas = (Case) test;
+      try {
+        cas.run();
+        return new Report();
+      } catch (Throwable t) {
+        return new Report().add(new Problem(cas, t));
+      }
+    } else if (test instanceof Suite) {
+      Report report = new Report();
+      for (Test subtest : ((Suite) test).tests) {
+        report = report.merge(runQuietly(subtest));
+      }
+      return report;
+    } else {
+      throw new RuntimeException("");
+    }
+  }
 }
