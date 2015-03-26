@@ -25,15 +25,9 @@ public class Expectations {
       throws Throwable {
     Test test = contract.test(implementation);
     Report report = runAndCatch(test);
-
     boolean expected = report.failures().size() > 0 && report.errors().size() == 0;
     if (!expected) {
-      StringBuilder builder = new StringBuilder();
-      builder.append("\n<message>\n");
-      builder.append("expectedFailure of " + implementation.getName());
-      builder.append(report);
-      builder.append("\n<end of message>");
-      throw new AssertionError(builder.toString());
+      throw new AssertionError("expected failure of " + implementation.getName() + report);
     }
   }
 
@@ -100,9 +94,21 @@ public class Expectations {
       return errors;
     }
 
+    public List<Problem> assumptions() {
+      List<Problem> assumptions = new ArrayList<>();
+      for (Problem result : problems) {
+        if (result.isError()) {
+          assumptions.add(result);
+        }
+      }
+      return assumptions;
+    }
+
     public String toString() {
       List<Problem> failures = failures();
       List<Problem> errors = errors();
+      List<Problem> assumptions = assumptions();
+
       StringBuilder builder = new StringBuilder();
       builder.append("\nfound ").append(failures.size()).append(" failures:");
       for (Problem result : failures) {
@@ -112,6 +118,10 @@ public class Expectations {
       for (Problem result : errors) {
         builder.append("\n").append(result.test.name).append("\n");
         builder.append(printStackTrace(result.throwable));
+      }
+      builder.append("\nfound ").append(assumptions.size()).append(" assumptions:");
+      for (Problem result : assumptions) {
+        builder.append("\n").append(result.test.name).append("\n");
       }
       return builder.toString();
     }
