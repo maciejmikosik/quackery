@@ -1,4 +1,4 @@
-package org.quackery.testing.bug;
+package org.quackery.contract.collection;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
@@ -6,7 +6,7 @@ import static java.util.Collections.unmodifiableList;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.quackery.testing.bug.collect.MutableList;
+import org.quackery.contract.Bug;
 
 public class Bugs {
   private static final List<Class<?>> universe = universe();
