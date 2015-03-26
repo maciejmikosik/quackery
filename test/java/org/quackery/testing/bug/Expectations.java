@@ -1,7 +1,6 @@
 package org.quackery.testing.bug;
 
 import static java.util.Collections.unmodifiableList;
-import static org.quackery.testing.Tests.run;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -18,7 +17,12 @@ import org.quackery.Test;
 public class Expectations {
   public static void expectSuccess(Contract<Class<?>> contract, Class<?> implementation)
       throws Throwable {
-    run(contract.test(implementation));
+    Test test = contract.test(implementation);
+    Report report = runAndCatch(test);
+    boolean expected = report.problems.size() == 0;
+    if (!expected) {
+      throw new AssertionError("expected success of " + implementation.getName() + report);
+    }
   }
 
   public static void expectFailure(Contract<Class<?>> contract, Class<?> implementation)
@@ -36,7 +40,7 @@ public class Expectations {
       Case cas = (Case) test;
       try {
         cas.run();
-        return new Report().add(new Problem(cas, null));
+        return new Report();
       } catch (Throwable t) {
         return new Report().add(new Problem(cas, t));
       }
