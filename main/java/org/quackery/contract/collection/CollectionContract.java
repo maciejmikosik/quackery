@@ -10,7 +10,6 @@ import org.quackery.Test;
 public final class CollectionContract implements Contract<Class<?>> {
   private CollectionContract() {}
 
-  @SuppressWarnings("rawtypes")
   public static Contract<Class<?>> collectionContract(Class<Collection> type) {
     return new CollectionContract();
   }
