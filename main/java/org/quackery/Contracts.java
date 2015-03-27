@@ -4,8 +4,10 @@ import static org.quackery.contract.collection.CollectionContract.collectionCont
 
 import java.util.Collection;
 
+import org.quackery.contract.collection.CollectionContract;
+
 public class Contracts {
-  public static Contract<Class<?>> quacksLike(Class<Collection> type) {
+  public static CollectionContract quacksLike(Class<Collection> type) {
     return collectionContract(type);
   }
 }

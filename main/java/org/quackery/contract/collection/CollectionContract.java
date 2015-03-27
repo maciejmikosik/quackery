@@ -10,11 +10,15 @@ import org.quackery.Test;
 public final class CollectionContract implements Contract<Class<?>> {
   private CollectionContract() {}
 
-  public static Contract<Class<?>> collectionContract(Class<Collection> type) {
+  public static CollectionContract collectionContract(Class<Collection> type) {
     return new CollectionContract();
   }
 
   public Test test(Class<?> type) {
     return collectionSuite(type);
+  }
+
+  public Contract<Class<?>> mutable() {
+    return null;
   }
 }
