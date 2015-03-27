@@ -10,17 +10,23 @@ import java.util.Collection;
 
 import org.quackery.Contract;
 
-public class test_quacksLike_collection {
-  private final Contract<Class<?>> contract = quacksLike(Collection.class);
+public class test_contract_for_collection_mutable {
+  private final Contract<Class<?>> contract = quacksLike(Collection.class).mutable();
 
-  public void accepts_collections() {
-    for (Class<?> implementation : implementations(Collection.class)) {
+  public void accepts_mutable_collections() {
+    for (Class<?> implementation : implementations(Collection.class, Mutable.class)) {
       assertSuccess(contract.test(implementation));
     }
   }
 
   public void detects_collection_bugs() {
     for (Class<?> bug : bugs(Collection.class)) {
+      assertFailure(contract.test(bug));
+    }
+  }
+
+  public void detects_mutable_collection_bugs() {
+    for (Class<?> bug : bugs(Collection.class, Mutable.class)) {
       assertFailure(contract.test(bug));
     }
   }
