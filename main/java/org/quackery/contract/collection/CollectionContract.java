@@ -7,6 +7,7 @@ import static org.quackery.contract.collection.CollectionSuite.collectionSuite;
 import java.util.Collection;
 
 import org.quackery.Contract;
+import org.quackery.Suite;
 import org.quackery.Test;
 
 public final class CollectionContract implements Contract<Class<?>> {
@@ -21,11 +22,13 @@ public final class CollectionContract implements Contract<Class<?>> {
   }
 
   public Test test(Class<?> type) {
-    return mutable
-        ? newSuite(type.getName() + " quacks like mutable collection")
+    Suite suite = mutable
+        ? newSuite("quacks like mutable collection")
             .test(collectionSuite(type))
             .test(collectionMutableSuite(type))
-        : collectionSuite(type);
+        : newSuite("quacks like collection")
+            .test(collectionSuite(type));
+    return newSuite(type.getName() + " " + suite.name).testAll(suite.tests);
   }
 
   public Contract<Class<?>> mutable() {
