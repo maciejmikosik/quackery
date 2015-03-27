@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.quackery.contract.collection.test_detecting_alien_types;
+import org.quackery.contract.collection.test_jdk_collections;
 import org.quackery.contract.collection.test_quacksLike_collection;
 import org.quackery.contract.collection.test_quacksLike_collection_mutable;
 
@@ -21,6 +22,7 @@ public class test_all {
     runTestsIn(test_quacksLike_collection.class);
     runTestsIn(test_quacksLike_collection_mutable.class);
     runTestsIn(test_detecting_alien_types.class);
+    runTestsIn(test_jdk_collections.class);
 
     if (failures.size() == 0) {
       System.out.println("no failures");

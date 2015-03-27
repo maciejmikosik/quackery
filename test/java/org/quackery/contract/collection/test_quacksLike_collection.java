@@ -6,11 +6,7 @@ import static org.quackery.contract.collection.Bugs.implementations;
 import static org.quackery.testing.Assertions.assertFailure;
 import static org.quackery.testing.Assertions.assertSuccess;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.TreeSet;
 
 import org.quackery.Contract;
 
@@ -27,12 +23,5 @@ public class test_quacksLike_collection {
     for (Class<?> bug : bugs(Collection.class)) {
       assertFailure(contract.test(bug));
     }
-  }
-
-  public void accepts_jdk_collections() {
-    assertSuccess(contract.test(ArrayList.class));
-    assertSuccess(contract.test(LinkedList.class));
-    assertSuccess(contract.test(HashSet.class));
-    assertSuccess(contract.test(TreeSet.class));
   }
 }
