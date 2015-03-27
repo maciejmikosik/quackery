@@ -11,7 +11,7 @@ import java.util.ListIterator;
 
 import org.quackery.contract.Bug;
 
-public class MutableList<E> implements List<E> {
+public class MutableList<E> implements Mutable, List<E> {
   protected List<E> delegate;
 
   public MutableList() {
@@ -475,6 +475,17 @@ public class MutableList<E> implements List<E> {
     public boolean isEmpty() {
       return false;
     }
+  }
+
+  @Bug({ Collection.class, Mutable.class })
+  public static class ClearHasNoEffect<E> extends MutableList<E> {
+    public ClearHasNoEffect() {}
+
+    public ClearHasNoEffect(Collection<E> collection) {
+      super(collection);
+    }
+
+    public void clear() {}
   }
 
   private static Object newObject(final String name) {

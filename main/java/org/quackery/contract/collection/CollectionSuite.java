@@ -19,7 +19,7 @@ import org.quackery.Test;
 
 public class CollectionSuite {
   public static Test collectionSuite(Class<?> type) {
-    return newSuite(type.getName() + " quacks like Collection")
+    return newSuite("quacks like Collection")
         .test(implementsCollection(type))
         .test(newSuite("implements default constructor")
             .test(hasDefaultConstructor(type))

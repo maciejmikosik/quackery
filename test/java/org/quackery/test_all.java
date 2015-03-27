@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.quackery.contract.collection.test_quacksLike_collection;
+import org.quackery.contract.collection.test_quacksLike_collection_mutable;
 
 public class test_all {
   private static List<Throwable> failures = new ArrayList<Throwable>();
@@ -17,6 +18,7 @@ public class test_all {
     runTestsIn(test_Suite.class);
     runTestsIn(test_QuackeryRunner.class);
     runTestsIn(test_quacksLike_collection.class);
+    runTestsIn(test_quacksLike_collection_mutable.class);
 
     if (failures.size() == 0) {
       System.out.println("no failures");
