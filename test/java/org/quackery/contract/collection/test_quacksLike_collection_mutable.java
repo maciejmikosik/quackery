@@ -17,8 +17,8 @@ import org.quackery.Contract;
 public class test_quacksLike_collection_mutable {
   private final Contract<Class<?>> contract = quacksLike(Collection.class).mutable();
 
-  public void accepts_collections() {
-    for (Class<?> implementation : implementations(Collection.class)) {
+  public void accepts_mutable_collections() {
+    for (Class<?> implementation : implementations(Collection.class, Mutable.class)) {
       assertSuccess(contract.test(implementation));
     }
   }
@@ -29,13 +29,13 @@ public class test_quacksLike_collection_mutable {
     }
   }
 
-  public void detects_collection_mutable_bugs() {
+  public void detects_mutable_collection_bugs() {
     for (Class<?> bug : bugs(Collection.class, Mutable.class)) {
       assertFailure(contract.test(bug));
     }
   }
 
-  public void accepts_jdk_collections() {
+  public void accepts_mutable_jdk_collections() {
     assertSuccess(contract.test(ArrayList.class));
     assertSuccess(contract.test(LinkedList.class));
     assertSuccess(contract.test(HashSet.class));
