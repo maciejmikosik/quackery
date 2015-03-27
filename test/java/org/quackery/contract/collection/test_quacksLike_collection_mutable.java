@@ -29,6 +29,12 @@ public class test_quacksLike_collection_mutable {
     }
   }
 
+  public void detects_collection_mutable_bugs() {
+    for (Class<?> bug : bugs(Collection.class, Mutable.class)) {
+      assertFailure(contract.test(bug));
+    }
+  }
+
   public void accepts_jdk_collections() {
     assertSuccess(contract.test(ArrayList.class));
     assertSuccess(contract.test(LinkedList.class));

@@ -477,6 +477,17 @@ public class MutableList<E> implements Mutable, List<E> {
     }
   }
 
+  @Bug({ Collection.class, Mutable.class })
+  public static class ClearHasNoEffect<E> extends MutableList<E> {
+    public ClearHasNoEffect() {}
+
+    public ClearHasNoEffect(Collection<E> collection) {
+      super(collection);
+    }
+
+    public void clear() {}
+  }
+
   private static Object newObject(final String name) {
     return new Object() {
       public String toString() {
