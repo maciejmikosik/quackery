@@ -5,7 +5,6 @@ import static org.quackery.contract.collection.CollectionContract.collectionCont
 import java.util.Collection;
 
 public class Contracts {
-  @SuppressWarnings("rawtypes")
   public static Contract<Class<?>> quacksLike(Class<Collection> type) {
     return collectionContract(type);
   }

@@ -10,19 +10,19 @@ import static org.quackery.testing.Mocks.mockObject;
 
 public class test_Suite {
   private String name = "name";
-  private final Test //
-      testA = new Test() {}, //
-      testB = new Test() {}, //
-      testC = new Test() {}, //
+  private final Test
+      testA = new Test() {},
+      testB = new Test() {},
+      testC = new Test() {},
       testD = new Test() {};
-  private final Object //
-      itemA = mockObject("itemA"), //
-      itemB = mockObject("itemB"), //
-      itemC = mockObject("itemC"), //
+  private final Object
+      itemA = mockObject("itemA"),
+      itemB = mockObject("itemB"),
+      itemC = mockObject("itemC"),
       itemD = mockObject("itemD");
-  private final Contract<Object> //
-      contractA = new MockContract<Object>("contractA"), //
-      contractB = new MockContract<Object>("contractB"), //
+  private final Contract<Object>
+      contractA = new MockContract<Object>("contractA"),
+      contractB = new MockContract<Object>("contractB"),
       contractC = new MockContract<Object>("contractC");
   private Suite suite;
 
@@ -41,57 +41,57 @@ public class test_Suite {
   }
 
   public void tests_test() {
-    suite = newSuite(name) //
-        .test(testA) //
-        .test(testB) //
+    suite = newSuite(name)
+        .test(testA)
+        .test(testB)
         .test(testC);
     assertEquals(suite.tests, asList(testA, testB, testC));
   }
 
   public void tests_all_tests_in_iterable() {
-    suite = newSuite(name) //
-        .testAll(asList(testA, testB)) //
+    suite = newSuite(name)
+        .testAll(asList(testA, testB))
         .testAll(asList(testC, testD));
     assertEquals(suite.tests, asList(testA, testB, testC, testD));
   }
 
   public void tests_all_tests_in_array() {
-    suite = newSuite(name) //
-        .testAll(new Test[] { testA, testB }) //
+    suite = newSuite(name)
+        .testAll(new Test[] { testA, testB })
         .testAll(new Test[] { testC, testD });
     assertEquals(suite.tests, asList(testA, testB, testC, testD));
   }
 
   public void tests_that_item() {
-    suite = newSuite(name) //
-        .testThat(itemA, contractA) //
-        .testThat(itemB, contractB) //
+    suite = newSuite(name)
+        .testThat(itemA, contractA)
+        .testThat(itemB, contractB)
         .testThat(itemC, contractC);
-    assertEquals(suite.tests, asList( //
-        new MockTest(itemA, contractA), //
-        new MockTest(itemB, contractB), //
+    assertEquals(suite.tests, asList(
+        new MockTest(itemA, contractA),
+        new MockTest(itemB, contractB),
         new MockTest(itemC, contractC)));
   }
 
   public void tests_that_all_items_in_iterable() {
-    suite = newSuite(name) //
-        .testThatAll(asList(itemA, itemB), contractA) //
+    suite = newSuite(name)
+        .testThatAll(asList(itemA, itemB), contractA)
         .testThatAll(asList(itemC, itemD), contractB);
-    assertEquals(suite.tests, asList( //
-        new MockTest(itemA, contractA), //
-        new MockTest(itemB, contractA), //
-        new MockTest(itemC, contractB), //
+    assertEquals(suite.tests, asList(
+        new MockTest(itemA, contractA),
+        new MockTest(itemB, contractA),
+        new MockTest(itemC, contractB),
         new MockTest(itemD, contractB)));
   }
 
   public void tests_that_all_items_in_array() {
-    suite = newSuite(name) //
-        .testThatAll(new Object[] { itemA, itemB }, contractA) //
+    suite = newSuite(name)
+        .testThatAll(new Object[] { itemA, itemB }, contractA)
         .testThatAll(new Object[] { itemC, itemD }, contractB);
-    assertEquals(suite.tests, asList( //
-        new MockTest(itemA, contractA), //
-        new MockTest(itemB, contractA), //
-        new MockTest(itemC, contractB), //
+    assertEquals(suite.tests, asList(
+        new MockTest(itemA, contractA),
+        new MockTest(itemB, contractA),
+        new MockTest(itemC, contractB),
         new MockTest(itemD, contractB)));
   }
 
@@ -104,9 +104,9 @@ public class test_Suite {
     // don't run, just compile
     new Runnable() {
       public void run() {
-        newSuite(name) //
-            .testAll(asList(new Case[0])) //
-            .testThatAll(asList(bar), fooContract); //
+        newSuite(name)
+            .testAll(asList(new Case[0]))
+            .testThatAll(asList(bar), fooContract);
       }
     };
   }
