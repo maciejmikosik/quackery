@@ -41,10 +41,4 @@ public class test_quacksLike_collection_mutable {
     assertSuccess(contract.test(HashSet.class));
     assertSuccess(contract.test(TreeSet.class));
   }
-
-  public void detects_alien_types() {
-    assertFailure(contract.test(Object.class));
-    assertFailure(contract.test(String.class));
-    assertFailure(contract.test(Integer.class));
-  }
 }
