@@ -53,7 +53,7 @@ public class Report {
   public List<Problem> misassumptions() {
     List<Problem> misassumptions = new ArrayList<>();
     for (Problem result : problems) {
-      if (result.isError()) {
+      if (result.isMisassumption()) {
         misassumptions.add(result);
       }
     }
