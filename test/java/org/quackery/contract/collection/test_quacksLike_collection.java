@@ -17,7 +17,7 @@ import org.quackery.Contract;
 public class test_quacksLike_collection {
   private final Contract<Class<?>> contract = quacksLike(Collection.class);
 
-  public void accepts_mutable_list() {
+  public void accepts_collections() {
     for (Class<?> implementation : implementations(Collection.class)) {
       assertSuccess(contract.test(implementation));
     }

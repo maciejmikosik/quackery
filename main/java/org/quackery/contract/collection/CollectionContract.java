@@ -19,6 +19,6 @@ public final class CollectionContract implements Contract<Class<?>> {
   }
 
   public Contract<Class<?>> mutable() {
-    return null;
+    return this;
   }
 }
