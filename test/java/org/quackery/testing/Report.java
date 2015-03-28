@@ -53,7 +53,7 @@ public class Report {
   public List<Problem> misassumptions() {
     List<Problem> misassumptions = new ArrayList<>();
     for (Problem result : problems) {
-      if (result.isError()) {
+      if (result.isMisassumption()) {
         misassumptions.add(result);
       }
     }
@@ -65,19 +65,19 @@ public class Report {
     List<Problem> errors = errors();
     List<Problem> misassumptions = misassumptions();
 
-    StringBuilder builder = new StringBuilder();
-    builder.append("\nfound ").append(failures.size()).append(" failures:");
+    StringBuilder builder = new StringBuilder("\n");
+    builder.append("found ").append(failures.size()).append(" failures\n");
     for (Problem result : failures) {
-      builder.append("\n").append(result.test.name).append("\n");
+      builder.append(result.test.name).append("\n");
     }
-    builder.append("\nfound ").append(errors.size()).append(" errors:");
+    builder.append("found ").append(errors.size()).append(" errors\n");
     for (Problem result : errors) {
-      builder.append("\n").append(result.test.name).append("\n");
+      builder.append(result.test.name).append("\n");
       builder.append(printStackTrace(result.throwable));
     }
-    builder.append("\nfound ").append(misassumptions.size()).append(" misassumptions:");
+    builder.append("found ").append(misassumptions.size()).append(" misassumptions\n");
     for (Problem result : misassumptions) {
-      builder.append("\n").append(result.test.name).append("\n");
+      builder.append(result.test.name).append("\n");
     }
     return builder.toString();
   }
