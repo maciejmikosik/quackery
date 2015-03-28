@@ -21,7 +21,7 @@ You can combine tests into bigger test suites.
 
     @Quackery
     public static Test test() {
-      return newSuite("MyList ... ")
+      return suite("MyList ... ")
           .testThat(MyList.class, quacksLike(Collection.class))
           .testThat(MyList.class, quacksLike( ... ))
           .testThat(MyList.class, quacksLike( ... ));
@@ -52,7 +52,7 @@ Or `Test` can combine many tests as `Suite`.
       public static Contract<Class<?>> quacksLikeX() {
         return new Contract<Class<?>>() {
           public Test test(Class<?> type) {
-            return newSuite(type + " quacks like X")
+            return suite(type + " quacks like X")
                 .testThat(type, quacksLikeA())
                 .testThat(type, quacksLikeB());
           }

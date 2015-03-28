@@ -17,7 +17,7 @@ public class Suite implements Test {
     this.tests = tests;
   }
 
-  private static Suite newSuite(String name, List<Test> tests) {
+  private static Suite suite(String name, List<Test> tests) {
     check(name != null);
     check(tests != null);
     Suite suite = new Suite(name, unmodifiableList(new ArrayList<Test>(tests)));
@@ -25,9 +25,9 @@ public class Suite implements Test {
     return suite;
   }
 
-  public static Suite newSuite(String name) {
+  public static Suite suite(String name) {
     check(name != null);
-    return newSuite(name, Arrays.<Test> asList());
+    return suite(name, Arrays.<Test> asList());
   }
 
   public Suite test(Test extraTest) {
@@ -35,7 +35,7 @@ public class Suite implements Test {
     ArrayList<Test> allTests = new ArrayList<>();
     allTests.addAll(tests);
     allTests.add(extraTest);
-    return newSuite(name, allTests);
+    return suite(name, allTests);
   }
 
   public Suite testAll(Iterable<? extends Test> extraTests) {
@@ -46,7 +46,7 @@ public class Suite implements Test {
       check(extraTest != null);
       allTests.add(extraTest);
     }
-    return newSuite(name, allTests);
+    return suite(name, allTests);
   }
 
   public Suite testAll(Test[] extraTests) {

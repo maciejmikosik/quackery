@@ -1,6 +1,6 @@
 package org.quackery;
 
-import static org.quackery.Suite.newSuite;
+import static org.quackery.Suite.suite;
 import static org.quackery.testing.Assertions.assertEquals;
 
 import org.junit.runner.JUnitCore;
@@ -29,7 +29,7 @@ public class test_QuackeryRunner {
   }
 
   public void suite_name_is_preserved() {
-    test = newSuite(name)
+    test = suite(name)
         .test(new Case("anything") {
           public void run() throws Throwable {
             throw throwable.fillInStackTrace();
@@ -107,7 +107,7 @@ public class test_QuackeryRunner {
   }
 
   public void case_is_invoked_even_if_name_collides() {
-    test = newSuite("suite")
+    test = suite("suite")
         .test(new Case(name) {
           public void run() {
             invoked = true;

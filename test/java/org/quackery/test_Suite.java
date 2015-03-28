@@ -2,7 +2,7 @@ package org.quackery;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.hash;
-import static org.quackery.Suite.newSuite;
+import static org.quackery.Suite.suite;
 import static org.quackery.testing.Assertions.assertEquals;
 import static org.quackery.testing.Assertions.assertTrue;
 import static org.quackery.testing.Assertions.fail;
@@ -31,17 +31,17 @@ public class test_Suite {
   }
 
   public void creates_empty_suite() {
-    suite = newSuite(name);
+    suite = suite(name);
     assertEquals(suite.tests, asList());
   }
 
   public void assigns_name() {
-    suite = newSuite(name);
+    suite = suite(name);
     assertEquals(name, suite.name);
   }
 
   public void tests_test() {
-    suite = newSuite(name)
+    suite = suite(name)
         .test(testA)
         .test(testB)
         .test(testC);
@@ -49,21 +49,21 @@ public class test_Suite {
   }
 
   public void tests_all_tests_in_iterable() {
-    suite = newSuite(name)
+    suite = suite(name)
         .testAll(asList(testA, testB))
         .testAll(asList(testC, testD));
     assertEquals(suite.tests, asList(testA, testB, testC, testD));
   }
 
   public void tests_all_tests_in_array() {
-    suite = newSuite(name)
+    suite = suite(name)
         .testAll(new Test[] { testA, testB })
         .testAll(new Test[] { testC, testD });
     assertEquals(suite.tests, asList(testA, testB, testC, testD));
   }
 
   public void tests_that_item() {
-    suite = newSuite(name)
+    suite = suite(name)
         .testThat(itemA, contractA)
         .testThat(itemB, contractB)
         .testThat(itemC, contractC);
@@ -74,7 +74,7 @@ public class test_Suite {
   }
 
   public void tests_that_all_items_in_iterable() {
-    suite = newSuite(name)
+    suite = suite(name)
         .testThatAll(asList(itemA, itemB), contractA)
         .testThatAll(asList(itemC, itemD), contractB);
     assertEquals(suite.tests, asList(
@@ -85,7 +85,7 @@ public class test_Suite {
   }
 
   public void tests_that_all_items_in_array() {
-    suite = newSuite(name)
+    suite = suite(name)
         .testThatAll(new Object[] { itemA, itemB }, contractA)
         .testThatAll(new Object[] { itemC, itemD }, contractB);
     assertEquals(suite.tests, asList(
@@ -104,7 +104,7 @@ public class test_Suite {
     // don't run, just compile
     new Runnable() {
       public void run() {
-        newSuite(name)
+        suite(name)
             .testAll(asList(new Case[0]))
             .testThatAll(asList(bar), fooContract);
       }
@@ -112,20 +112,20 @@ public class test_Suite {
   }
 
   public void to_string_returns_name() {
-    suite = newSuite(name);
+    suite = suite(name);
     assertEquals(name, suite.toString());
   }
 
   public void name_cannot_be_null() {
     name = null;
     try {
-      newSuite(name);
+      suite(name);
       fail();
     } catch (QuackeryException e) {}
   }
 
   public void test_cannot_be_null() {
-    suite = newSuite(name);
+    suite = suite(name);
     try {
       suite.test(null);
       fail();
@@ -149,7 +149,7 @@ public class test_Suite {
   }
 
   public void items_cannot_be_null() {
-    suite = newSuite(name);
+    suite = suite(name);
     try {
       suite.testThatAll((Iterable<Object>) null, contractA);
       fail();
@@ -161,7 +161,7 @@ public class test_Suite {
   }
 
   public void contract_cannot_be_null() {
-    suite = newSuite(name);
+    suite = suite(name);
     try {
       suite.testThat(itemA, (Contract<Object>) null);
       fail();

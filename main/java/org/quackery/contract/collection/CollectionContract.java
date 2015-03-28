@@ -1,6 +1,6 @@
 package org.quackery.contract.collection;
 
-import static org.quackery.Suite.newSuite;
+import static org.quackery.Suite.suite;
 import static org.quackery.contract.collection.CollectionMutableSuite.collectionMutableSuite;
 import static org.quackery.contract.collection.CollectionSuite.collectionSuite;
 
@@ -23,12 +23,12 @@ public final class CollectionContract implements Contract<Class<?>> {
 
   public Test test(Class<?> type) {
     Suite suite = mutable
-        ? newSuite("quacks like mutable collection")
+        ? suite("quacks like mutable collection")
             .test(collectionSuite(type))
             .test(collectionMutableSuite(type))
-        : newSuite("quacks like collection")
+        : suite("quacks like collection")
             .test(collectionSuite(type));
-    return newSuite(type.getName() + " " + suite.name).testAll(suite.tests);
+    return suite(type.getName() + " " + suite.name).testAll(suite.tests);
   }
 
   public Contract<Class<?>> mutable() {

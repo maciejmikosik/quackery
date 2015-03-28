@@ -2,7 +2,7 @@ package org.quackery.contract.collection;
 
 import static org.quackery.AssertionException.assertEquals;
 import static org.quackery.AssumptionException.assume;
-import static org.quackery.Suite.newSuite;
+import static org.quackery.Suite.suite;
 import static org.quackery.contract.Commons.assumeConstructor;
 import static org.quackery.contract.Commons.newArrayList;
 
@@ -14,8 +14,8 @@ import org.quackery.Test;
 
 public class CollectionMutableSuite {
   public static Test collectionMutableSuite(Class<?> type) {
-    return newSuite("quacks like mutable collection")
-        .test(newSuite("overrides clear")
+    return suite("quacks like mutable collection")
+        .test(suite("overrides clear")
             .test(clearRemovesElement(type)));
   }
 

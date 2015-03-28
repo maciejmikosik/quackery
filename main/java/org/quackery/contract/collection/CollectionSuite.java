@@ -4,7 +4,7 @@ import static org.quackery.AssertionException.assertEquals;
 import static org.quackery.AssertionException.assertThat;
 import static org.quackery.AssertionException.fail;
 import static org.quackery.AssumptionException.assume;
-import static org.quackery.Suite.newSuite;
+import static org.quackery.Suite.suite;
 import static org.quackery.contract.Commons.assumeConstructor;
 import static org.quackery.contract.Commons.copy;
 import static org.quackery.contract.Commons.newArrayList;
@@ -19,21 +19,21 @@ import org.quackery.Test;
 
 public class CollectionSuite {
   public static Test collectionSuite(Class<?> type) {
-    return newSuite("quacks like Collection")
+    return suite("quacks like Collection")
         .test(implementsCollectionInterface(type))
-        .test(newSuite("provides default constructor")
+        .test(suite("provides default constructor")
             .test(hasDefaultConstructor(type))
             .test(defaultConstructorCreatesEmptyCollection(type)))
-        .test(newSuite("provides copy constructor")
+        .test(suite("provides copy constructor")
             .test(hasCopyConstructor(type))
             .test(copyConstructorCanCreateCollectionWithOneElement(type))
             .test(copyConstructorFailsForNullArgument(type))
             .test(copyConstructorMakesDefensiveCopy(type))
             .test(copyConstructorDoesNotModifyArgument(type)))
-        .test(newSuite("overrides size")
+        .test(suite("overrides size")
             .test(sizeOfEmptyCollectionIsZero(type))
             .test(sizeOfCollectionWithOneElementIsOne(type)))
-        .test(newSuite("overrides isEmpty")
+        .test(suite("overrides isEmpty")
             .test(isEmptyReturnsFalseIfCollectionHasOneElement(type))
             .test(isEmptyReturnsTrueIfCollectionIsEmpty(type)));
   }
