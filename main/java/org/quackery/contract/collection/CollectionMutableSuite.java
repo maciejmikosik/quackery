@@ -15,7 +15,7 @@ import org.quackery.Test;
 public class CollectionMutableSuite {
   public static Test collectionMutableSuite(Class<?> type) {
     return newSuite("quacks like mutable collection")
-        .test(newSuite("implements clear")
+        .test(newSuite("overrides clear")
             .test(clearRemovesElement(type)));
   }
 
