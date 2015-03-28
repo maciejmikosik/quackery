@@ -20,26 +20,26 @@ import org.quackery.Test;
 public class CollectionSuite {
   public static Test collectionSuite(Class<?> type) {
     return newSuite("quacks like Collection")
-        .test(implementsCollection(type))
-        .test(newSuite("implements default constructor")
+        .test(implementsCollectionInterface(type))
+        .test(newSuite("provides default constructor")
             .test(hasDefaultConstructor(type))
             .test(defaultConstructorCreatesEmptyCollection(type)))
-        .test(newSuite("implements copy constructor")
+        .test(newSuite("provides copy constructor")
             .test(hasCopyConstructor(type))
             .test(copyConstructorCanCreateCollectionWithOneElement(type))
             .test(copyConstructorFailsForNullArgument(type))
             .test(copyConstructorMakesDefensiveCopy(type))
             .test(copyConstructorDoesNotModifyArgument(type)))
-        .test(newSuite("implements size")
+        .test(newSuite("overrides size")
             .test(sizeOfEmptyCollectionIsZero(type))
             .test(sizeOfCollectionWithOneElementIsOne(type)))
-        .test(newSuite("implements isEmpty")
+        .test(newSuite("overrides isEmpty")
             .test(isEmptyReturnsFalseIfCollectionHasOneElement(type))
             .test(isEmptyReturnsTrueIfCollectionIsEmpty(type)));
   }
 
-  private static Test implementsCollection(final Class<?> type) {
-    return new Case("implements Collection") {
+  private static Test implementsCollectionInterface(final Class<?> type) {
+    return new Case("implements Collection interface") {
       public void run() throws Throwable {
         assertThat(Collection.class.isAssignableFrom(type));
       }
@@ -81,7 +81,7 @@ public class CollectionSuite {
   }
 
   private static Test copyConstructorCanCreateCollectionWithOneElement(final Class<?> type) {
-    return new Case("copy constructor can create collection with one element") {
+    return new Case("copy constructor can create collection with 1 element") {
       public void run() throws Throwable {
         assume(Collection.class.isAssignableFrom(type));
         ArrayList<Object> original = newArrayList("a");
@@ -158,7 +158,7 @@ public class CollectionSuite {
   }
 
   private static Test isEmptyReturnsFalseIfCollectionHasOneElement(final Class<?> type) {
-    return new Case("isEmpty returns false if collection has one element") {
+    return new Case("isEmpty returns false if collection has 1 element") {
       public void run() throws Throwable {
         assume(Collection.class.isAssignableFrom(type));
         Constructor<?> constructor = assumeConstructor(type, Collection.class);

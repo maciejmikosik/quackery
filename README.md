@@ -5,16 +5,18 @@ It also has some built-in tests for well-known contracts, so you don't have to w
 Running this example
 
     @RunWith(QuackeryRunner.class)
-    public class JdkCollectionTest {
+    public class ArrayListTest {
       @Quackery
       public static Test test() {
-        return quacksLike(Collection.class).test(ArrayList.class);
+        return quacksLike(Collection.class)
+            .mutable()
+            .test(ArrayList.class);
       }
     }
 
 with junit test runner produces something like this
 
-![JdkTest.png](main/doc/JdkTest.png "JdkTest.png")
+![ArrayListTest.png](main/doc/ArrayListTest.png "ArrayListTest.png")
 
 Obviously this list is going to grow.
 
