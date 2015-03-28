@@ -71,8 +71,7 @@ when tests are run by runner from other framework (like junit).
 
 ### Junit
 
-Quackery does not provide native running mechanism.
-`org.quackery.Test` can be run by `org.quackery.QuackeryRunner` which implements `org.junit.runner.Runner`.
+You can run quackery tests using junit by using `QuackeryRunner`.
 
     @RunWith(QuackeryRunner.class)
     public class MyListTest {
@@ -81,7 +80,3 @@ Quackery does not provide native running mechanism.
           return quacksLike(Collection.class).test(MyList.class));
       }
     }
-
-Exceptions thrown by quackery are translated to junit natives:
-  - `org.quackery.AssertionException` to `java.lang.AssertionError`
-  - `org.quackery.AssumptionException` to `org.junit.internal.AssumptionViolatedException`
