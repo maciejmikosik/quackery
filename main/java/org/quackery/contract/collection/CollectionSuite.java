@@ -81,7 +81,7 @@ public class CollectionSuite {
   }
 
   private static Test copyConstructorCanCreateCollectionWithOneElement(final Class<?> type) {
-    return new Case("copy constructor can create collection with one element") {
+    return new Case("copy constructor can create collection with 1 element") {
       public void run() throws Throwable {
         assume(Collection.class.isAssignableFrom(type));
         ArrayList<Object> original = newArrayList("a");
@@ -158,7 +158,7 @@ public class CollectionSuite {
   }
 
   private static Test isEmptyReturnsFalseIfCollectionHasOneElement(final Class<?> type) {
-    return new Case("isEmpty returns false if collection has one element") {
+    return new Case("isEmpty returns false if collection has 1 element") {
       public void run() throws Throwable {
         assume(Collection.class.isAssignableFrom(type));
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
