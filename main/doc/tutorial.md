@@ -61,13 +61,9 @@ Or `Test` can combine many tests as `Suite`.
 
 ### Built-in contracts
 
-Built-in contracts are designed to obey some rules.
-They throw `org.quackery.AssertionException` if test fails.
-Sometimes executing test makes no sense because some more basic feature already covered by other test failed.
-In that situation `org.quackery.AssumptionException` is thrown.
-
-Those exceptions are wrapped by native exceptions/errors
-when tests are run by runner from other framework (like junit).
+Some well-known contracts are already implemented by quackery.
+Best example being contracts for `Collections` like `List` and `Set`.
+Look into `Contracts` class for `quacksLike*` family of methods.
 
 ### Junit
 
