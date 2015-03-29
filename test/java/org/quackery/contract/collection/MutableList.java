@@ -367,19 +367,6 @@ public class MutableList<E> implements Mutable, List<E> {
   }
 
   @Bug(Collection.class)
-  public static class IsEmptyNegates<E> extends MutableList<E> {
-    public IsEmptyNegates() {}
-
-    public IsEmptyNegates(Collection<E> collection) {
-      super(collection);
-    }
-
-    public boolean isEmpty() {
-      return !delegate.isEmpty();
-    }
-  }
-
-  @Bug(Collection.class)
   public static class IsEmptyReturnsFalse<E> extends MutableList<E> {
     public IsEmptyReturnsFalse() {}
 
@@ -389,6 +376,19 @@ public class MutableList<E> implements Mutable, List<E> {
 
     public boolean isEmpty() {
       return false;
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class IsEmptyNegates<E> extends MutableList<E> {
+    public IsEmptyNegates() {}
+
+    public IsEmptyNegates(Collection<E> collection) {
+      super(collection);
+    }
+
+    public boolean isEmpty() {
+      return !super.isEmpty();
     }
   }
 
