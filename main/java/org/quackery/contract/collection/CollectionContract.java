@@ -5,6 +5,7 @@ import static org.quackery.contract.collection.CollectionMutableSuite.collection
 import static org.quackery.contract.collection.CollectionSuite.collectionSuite;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.quackery.Contract;
 import org.quackery.Suite;
@@ -17,7 +18,12 @@ public final class CollectionContract implements Contract<Class<?>> {
     this.mutable = mutable;
   }
 
-  public static CollectionContract collectionContract(Class<Collection> type) {
+  public static CollectionContract collectionContract(Class<Collection> type,
+      Collection<?>... erasure) {
+    return new CollectionContract(false);
+  }
+
+  public static CollectionContract collectionContract(Class<List> type, List<?>... erasure) {
     return new CollectionContract(false);
   }
 
