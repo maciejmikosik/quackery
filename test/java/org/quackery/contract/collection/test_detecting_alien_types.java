@@ -33,6 +33,21 @@ public class test_detecting_alien_types {
     }
   }
 
+  public void are_detected_by_list_contract() {
+    contract = quacksLike(List.class);
+    for (Class<?> alienType : alienTypes) {
+      assertFailure(contract.test(alienType));
+    }
+  }
+
+  public void are_detected_by_mutable_list_contract() {
+    contract = quacksLike(List.class)
+        .mutable();
+    for (Class<?> alienType : alienTypes) {
+      assertFailure(contract.test(alienType));
+    }
+  }
+
   @SuppressWarnings("unused")
   private static class HasCollectionConstructors {
     public HasCollectionConstructors() {}
