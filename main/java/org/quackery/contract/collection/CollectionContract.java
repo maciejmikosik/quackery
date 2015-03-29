@@ -4,11 +4,11 @@ import static org.quackery.Suite.suite;
 import static org.quackery.contract.collection.CollectionMutableSuite.collectionMutableSuite;
 import static org.quackery.contract.collection.CollectionSuite.collectionSuite;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.quackery.Contract;
-import org.quackery.Suite;
 import org.quackery.Test;
 
 public final class CollectionContract implements Contract<Class<?>> {
@@ -28,13 +28,22 @@ public final class CollectionContract implements Contract<Class<?>> {
   }
 
   public Test test(Class<?> type) {
-    Suite suite = mutable
-        ? suite("quacks like mutable collection")
-            .test(collectionSuite(type))
-            .test(collectionMutableSuite(type))
-        : suite("quacks like collection")
-            .test(collectionSuite(type));
-    return suite(type.getName() + " " + suite.name).testAll(suite.tests);
+    List<Test> suites = new ArrayList<>();
+    suites.add(collectionSuite(type));
+    if (mutable) {
+      suites.add(collectionMutableSuite(type));
+    }
+    return suite(name(type)).testAll(suites);
+  }
+
+  private String name(Class<?> type) {
+    StringBuilder builder = new StringBuilder();
+    builder.append(type.getName() + " quacks like");
+    if (mutable) {
+      builder.append(" mutable");
+    }
+    builder.append(" collection");
+    return builder.toString();
   }
 
   public Contract<Class<?>> mutable() {
