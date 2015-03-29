@@ -408,6 +408,75 @@ public class MutableList<E> implements Mutable, List<E> {
     }
   }
 
+  @Bug(List.class)
+  public static class GetReturnsFirstElement<E> extends MutableList<E> {
+    public GetReturnsFirstElement() {}
+
+    public GetReturnsFirstElement(Collection<E> collection) {
+      super(collection);
+    }
+
+    public E get(int index) {
+      return super.get(0);
+    }
+  }
+
+  @Bug(List.class)
+  public static class GetReturnsLastElement<E> extends MutableList<E> {
+    public GetReturnsLastElement() {}
+
+    public GetReturnsLastElement(Collection<E> collection) {
+      super(collection);
+    }
+
+    public E get(int index) {
+      return super.get(size() - 1);
+    }
+  }
+
+  @Bug(List.class)
+  public static class GetReturnsNull<E> extends MutableList<E> {
+    public GetReturnsNull() {}
+
+    public GetReturnsNull(Collection<E> collection) {
+      super(collection);
+    }
+
+    public E get(int index) {
+      return null;
+    }
+  }
+
+  @Bug(List.class)
+  public static class GetReturnsNullAboveBound<E> extends MutableList<E> {
+    public GetReturnsNullAboveBound() {}
+
+    public GetReturnsNullAboveBound(Collection<E> collection) {
+      super(collection);
+    }
+
+    public E get(int index) {
+      return index >= size()
+          ? null
+          : super.get(index);
+    }
+  }
+
+  @Bug(List.class)
+  public static class GetReturnsNullBelowBound<E> extends MutableList<E> {
+    public GetReturnsNullBelowBound() {}
+
+    public GetReturnsNullBelowBound(Collection<E> collection) {
+      super(collection);
+    }
+
+    public E get(int index) {
+      return index < 0
+          ? null
+          : super.get(index);
+    }
+  }
+
   @Bug({ Collection.class, Mutable.class })
   public static class ClearHasNoEffect<E> extends MutableList<E> {
     public ClearHasNoEffect() {}
