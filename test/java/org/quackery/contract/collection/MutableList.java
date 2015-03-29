@@ -210,22 +210,6 @@ public class MutableList<E> implements Mutable, List<E> {
   }
 
   @Bug(Collection.class)
-  public static class CopyConstructorThrowsRuntimeExceptionUponNull<E> extends MutableList<E> {
-    public CopyConstructorThrowsRuntimeExceptionUponNull() {}
-
-    public CopyConstructorThrowsRuntimeExceptionUponNull(Collection<E> collection) {
-      super(notNull(collection));
-    }
-
-    private static <E> Collection<E> notNull(Collection<E> collection) {
-      if (collection == null) {
-        throw new RuntimeException();
-      }
-      return collection;
-    }
-  }
-
-  @Bug(Collection.class)
   public static class CopyConstructorMakesNoDefensiveCopy<E> extends MutableList<E> {
     public CopyConstructorMakesNoDefensiveCopy() {}
 
