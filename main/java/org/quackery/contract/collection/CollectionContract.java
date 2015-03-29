@@ -3,35 +3,60 @@ package org.quackery.contract.collection;
 import static org.quackery.Suite.suite;
 import static org.quackery.contract.collection.CollectionMutableSuite.collectionMutableSuite;
 import static org.quackery.contract.collection.CollectionSuite.collectionSuite;
+import static org.quackery.contract.collection.ListMutableSuite.listMutableSuite;
+import static org.quackery.contract.collection.ListSuite.listSuite;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.quackery.Contract;
-import org.quackery.Suite;
 import org.quackery.Test;
 
 public final class CollectionContract implements Contract<Class<?>> {
+  private final Class<?> supertype;
   private final boolean mutable;
 
-  private CollectionContract(boolean mutable) {
+  private CollectionContract(Class<?> supertype, boolean mutable) {
+    this.supertype = supertype;
     this.mutable = mutable;
   }
 
-  public static CollectionContract collectionContract(Class<Collection> type) {
-    return new CollectionContract(false);
+  public static CollectionContract collectionContract(Class<Collection> supertype,
+      Collection<?>... erasure) {
+    return new CollectionContract(supertype, false);
+  }
+
+  public static CollectionContract collectionContract(Class<List> supertype, List<?>... erasure) {
+    return new CollectionContract(supertype, false);
   }
 
   public Test test(Class<?> type) {
-    Suite suite = mutable
-        ? suite("quacks like mutable collection")
-            .test(collectionSuite(type))
-            .test(collectionMutableSuite(type))
-        : suite("quacks like collection")
-            .test(collectionSuite(type));
-    return suite(type.getName() + " " + suite.name).testAll(suite.tests);
+    List<Test> suites = new ArrayList<>();
+    suites.add(collectionSuite(type));
+    if (mutable) {
+      suites.add(collectionMutableSuite(type));
+    }
+    if (supertype == List.class) {
+      suites.add(listSuite(type));
+    }
+    if (supertype == List.class && mutable) {
+      suites.add(listMutableSuite(type));
+    }
+    return suite(name(type)).testAll(suites);
+  }
+
+  private String name(Class<?> type) {
+    StringBuilder builder = new StringBuilder();
+    builder.append(type.getName() + " quacks like");
+    if (mutable) {
+      builder.append(" mutable");
+    }
+    builder.append(" ").append(supertype.getSimpleName().toLowerCase());
+    return builder.toString();
   }
 
   public Contract<Class<?>> mutable() {
-    return new CollectionContract(true);
+    return new CollectionContract(supertype, true);
   }
 }
