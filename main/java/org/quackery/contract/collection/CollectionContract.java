@@ -12,19 +12,21 @@ import org.quackery.Contract;
 import org.quackery.Test;
 
 public final class CollectionContract implements Contract<Class<?>> {
+  private final Class<?> supertype;
   private final boolean mutable;
 
-  private CollectionContract(boolean mutable) {
+  private CollectionContract(Class<?> supertype, boolean mutable) {
+    this.supertype = supertype;
     this.mutable = mutable;
   }
 
-  public static CollectionContract collectionContract(Class<Collection> type,
+  public static CollectionContract collectionContract(Class<Collection> supertype,
       Collection<?>... erasure) {
-    return new CollectionContract(false);
+    return new CollectionContract(supertype, false);
   }
 
-  public static CollectionContract collectionContract(Class<List> type, List<?>... erasure) {
-    return new CollectionContract(false);
+  public static CollectionContract collectionContract(Class<List> supertype, List<?>... erasure) {
+    return new CollectionContract(supertype, false);
   }
 
   public Test test(Class<?> type) {
@@ -42,11 +44,11 @@ public final class CollectionContract implements Contract<Class<?>> {
     if (mutable) {
       builder.append(" mutable");
     }
-    builder.append(" collection");
+    builder.append(" ").append(supertype.getSimpleName().toLowerCase());
     return builder.toString();
   }
 
   public Contract<Class<?>> mutable() {
-    return new CollectionContract(true);
+    return new CollectionContract(supertype, true);
   }
 }
