@@ -256,6 +256,21 @@ public class MutableList<E> implements Mutable, List<E> {
     }
   }
 
+  @Bug(List.class)
+  public static class CopyConstructorStoresOneElement<E> extends MutableList<E> {
+    public CopyConstructorStoresOneElement() {}
+
+    public CopyConstructorStoresOneElement(Collection<E> collection) {
+      super(one(collection));
+    }
+
+    private static <E> Collection<E> one(Collection<E> collection) {
+      return collection.isEmpty()
+          ? collection
+          : asList(collection.iterator().next());
+    }
+  }
+
   @Bug(Collection.class)
   public static class ToArrayReturnsEmpty<E> extends MutableList<E> {
     public ToArrayReturnsEmpty() {}
