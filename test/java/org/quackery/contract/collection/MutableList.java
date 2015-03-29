@@ -488,6 +488,47 @@ public class MutableList<E> implements Mutable, List<E> {
     public void clear() {}
   }
 
+  @Bug({ List.class, Mutable.class })
+  public static class AddHasNoEffect<E> extends MutableList<E> {
+    public AddHasNoEffect() {}
+
+    public AddHasNoEffect(Collection<E> collection) {
+      super(collection);
+    }
+
+    public boolean add(E e) {
+      return true;
+    }
+  }
+
+  @Bug({ List.class, Mutable.class })
+  public static class AddAddsAtTheBegin<E> extends MutableList<E> {
+    public AddAddsAtTheBegin() {}
+
+    public AddAddsAtTheBegin(Collection<E> collection) {
+      super(collection);
+    }
+
+    public boolean add(E e) {
+      super.add(0, e);
+      return true;
+    }
+  }
+
+  @Bug({ List.class, Mutable.class })
+  public static class AddReturnsFalse<E> extends MutableList<E> {
+    public AddReturnsFalse() {}
+
+    public AddReturnsFalse(Collection<E> collection) {
+      super(collection);
+    }
+
+    public boolean add(E e) {
+      super.add(e);
+      return false;
+    }
+  }
+
   private static Object newObject(final String name) {
     return new Object() {
       public String toString() {
