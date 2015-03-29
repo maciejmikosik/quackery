@@ -5,6 +5,7 @@ import static java.util.Arrays.asList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -268,6 +269,38 @@ public class MutableList<E> implements Mutable, List<E> {
       return collection.isEmpty()
           ? collection
           : asList(collection.iterator().next());
+    }
+  }
+
+  @Bug(List.class)
+  public static class CopyConstructorReversesOrder<E> extends MutableList<E> {
+    public CopyConstructorReversesOrder() {}
+
+    public CopyConstructorReversesOrder(Collection<E> collection) {
+      super(reverse(collection));
+    }
+
+    private static <E> Collection<E> reverse(Collection<E> collection) {
+      List<E> list = new ArrayList<>(collection);
+      Collections.reverse(list);
+      return list;
+    }
+  }
+
+  @Bug(List.class)
+  public static class CopyConstructorRemovesLastElement<E> extends MutableList<E> {
+    public CopyConstructorRemovesLastElement() {}
+
+    public CopyConstructorRemovesLastElement(Collection<E> collection) {
+      super(withoutLast(collection));
+    }
+
+    private static <E> Collection<E> withoutLast(Collection<E> collection) {
+      List<E> list = new ArrayList<>(collection);
+      if (!list.isEmpty()) {
+        list.remove(list.size() - 1);
+      }
+      return list;
     }
   }
 
