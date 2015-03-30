@@ -30,7 +30,7 @@ public class ListSuite {
   private static Test copyConstructorStoresAllElementsInOrder(final Class<?> type) {
     return new Case("copy constructor stores all elements in order") {
       public void run() throws Throwable {
-        assume(Collection.class.isAssignableFrom(type));
+        assume(List.class.isAssignableFrom(type));
         run(newArrayList("a", "b", "c"));
         run(newArrayList("a", "c", "b"));
         run(newArrayList("b", "a", "c"));
@@ -41,8 +41,8 @@ public class ListSuite {
 
       private void run(ArrayList<?> order) throws Throwable {
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
-        Collection<?> collection = (Collection<?>) constructor.newInstance(copy(order));
-        assertEquals(copy(collection.toArray()), order.toArray());
+        List<?> list = (List<?>) constructor.newInstance(copy(order));
+        assertEquals(copy(list.toArray()), order.toArray());
       }
     };
   }
@@ -50,7 +50,7 @@ public class ListSuite {
   private static Test getCanReturnEachElement(final Class<?> type) {
     return new Case("get can return each element") {
       public void run() throws Throwable {
-        assume(Collection.class.isAssignableFrom(type));
+        assume(List.class.isAssignableFrom(type));
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
         ArrayList<Object> original = newArrayList("a", "b", "c");
         List<?> list = (List<?>) constructor.newInstance(copy(original));
@@ -68,7 +68,7 @@ public class ListSuite {
   private static Test getFailsForIndexAboveBound(final Class<?> type) {
     return new Case("get fails for index above bound") {
       public void run() throws Throwable {
-        assume(Collection.class.isAssignableFrom(type));
+        assume(List.class.isAssignableFrom(type));
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
         ArrayList<Object> original = newArrayList("a", "b", "c");
         List<?> list = (List<?>) constructor.newInstance(copy(original));
@@ -83,7 +83,7 @@ public class ListSuite {
   private static Test getFailsForIndexBelowBound(final Class<?> type) {
     return new Case("get fails for index below bound") {
       public void run() throws Throwable {
-        assume(Collection.class.isAssignableFrom(type));
+        assume(List.class.isAssignableFrom(type));
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
         ArrayList<Object> original = newArrayList("a", "b", "c");
         List<?> list = (List<?>) constructor.newInstance(copy(original));

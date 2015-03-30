@@ -210,22 +210,6 @@ public class MutableList<E> implements Mutable, List<E> {
   }
 
   @Bug(Collection.class)
-  public static class CopyConstructorThrowsRuntimeExceptionUponNull<E> extends MutableList<E> {
-    public CopyConstructorThrowsRuntimeExceptionUponNull() {}
-
-    public CopyConstructorThrowsRuntimeExceptionUponNull(Collection<E> collection) {
-      super(notNull(collection));
-    }
-
-    private static <E> Collection<E> notNull(Collection<E> collection) {
-      if (collection == null) {
-        throw new RuntimeException();
-      }
-      return collection;
-    }
-  }
-
-  @Bug(Collection.class)
   public static class CopyConstructorMakesNoDefensiveCopy<E> extends MutableList<E> {
     public CopyConstructorMakesNoDefensiveCopy() {}
 
@@ -383,19 +367,6 @@ public class MutableList<E> implements Mutable, List<E> {
   }
 
   @Bug(Collection.class)
-  public static class IsEmptyNegates<E> extends MutableList<E> {
-    public IsEmptyNegates() {}
-
-    public IsEmptyNegates(Collection<E> collection) {
-      super(collection);
-    }
-
-    public boolean isEmpty() {
-      return !delegate.isEmpty();
-    }
-  }
-
-  @Bug(Collection.class)
   public static class IsEmptyReturnsFalse<E> extends MutableList<E> {
     public IsEmptyReturnsFalse() {}
 
@@ -405,6 +376,19 @@ public class MutableList<E> implements Mutable, List<E> {
 
     public boolean isEmpty() {
       return false;
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class IsEmptyNegates<E> extends MutableList<E> {
+    public IsEmptyNegates() {}
+
+    public IsEmptyNegates(Collection<E> collection) {
+      super(collection);
+    }
+
+    public boolean isEmpty() {
+      return !super.isEmpty();
     }
   }
 

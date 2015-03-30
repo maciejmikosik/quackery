@@ -27,7 +27,7 @@ public class ListMutableSuite {
   private static Test addAddsElementAtTheEnd(final Class<?> type) {
     return new Case("add adds element at the end") {
       public void run() throws Throwable {
-        assume(Collection.class.isAssignableFrom(type));
+        assume(List.class.isAssignableFrom(type));
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
         ArrayList<Object> original = newArrayList("a", "b", "c");
         List<Object> list = (List<Object>) constructor.newInstance(copy(original));
@@ -41,7 +41,7 @@ public class ListMutableSuite {
   private static Test addReturnsTrue(final Class<?> type) {
     return new Case("add returns true") {
       public void run() throws Throwable {
-        assume(Collection.class.isAssignableFrom(type));
+        assume(List.class.isAssignableFrom(type));
         Constructor<?> constructor = assumeConstructor(type, Collection.class);
         List<Object> list = (List<Object>) constructor.newInstance(newArrayList("a", "b", "c"));
         assertThat(list.add("d"));

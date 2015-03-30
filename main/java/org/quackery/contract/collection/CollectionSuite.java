@@ -100,9 +100,9 @@ public class CollectionSuite {
           constructor.newInstance((Object) null);
           fail();
         } catch (InvocationTargetException e) {
-          if (!(e.getCause() instanceof NullPointerException)) {
-            fail();
-          }
+          try {
+            throw e.getCause();
+          } catch (NullPointerException f) {}
         }
       }
     };
