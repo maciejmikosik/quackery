@@ -1,4 +1,4 @@
-package org.quackery.contract.collection;
+package org.quackery.contract.collection.suite;
 
 import static org.quackery.AssertionException.assertEquals;
 import static org.quackery.AssumptionException.assume;
