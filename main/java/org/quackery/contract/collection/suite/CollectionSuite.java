@@ -4,14 +4,15 @@ import static org.quackery.AssertionException.assertEquals;
 import static org.quackery.AssertionException.assertThat;
 import static org.quackery.AssertionException.fail;
 import static org.quackery.AssumptionException.assume;
-import static org.quackery.Suite.suite;
 import static org.quackery.contract.collection.Assumptions.assumeConstructor;
 import static org.quackery.contract.collection.Assumptions.assumeCreateCollection;
 import static org.quackery.contract.collection.Collections.copy;
 import static org.quackery.contract.collection.Collections.newArrayList;
 import static org.quackery.contract.collection.Element.a;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -19,39 +20,11 @@ import org.quackery.Case;
 import org.quackery.Test;
 
 public class CollectionSuite {
-  public static Test collectionSuite(Class<?> type) {
-    return suite("quacks like Collection")
-        .test(implementsCollectionInterface(type))
-        .test(suite("provides default constructor")
-            .test(hasDefaultConstructor(type))
-            .test(defaultConstructorCreatesEmptyCollection(type)))
-        .test(suite("provides copy constructor")
-            .test(hasCopyConstructor(type))
-            .test(copyConstructorCanCreateCollectionWithOneElement(type))
-            .test(copyConstructorFailsForNullArgument(type))
-            .test(copyConstructorMakesDefensiveCopy(type))
-            .test(copyConstructorDoesNotModifyArgument(type)))
-        .test(suite("overrides size")
-            .test(sizeOfEmptyCollectionIsZero(type))
-            .test(sizeOfCollectionWithOneElementIsOne(type)))
-        .test(suite("overrides isEmpty")
-            .test(isEmptyReturnsFalseIfCollectionHasOneElement(type))
-            .test(isEmptyReturnsTrueIfCollectionIsEmpty(type)));
-  }
-
-  private static Test implementsCollectionInterface(final Class<?> type) {
-    return new Case("implements Collection interface") {
-      public void run() throws Throwable {
-        assertThat(Collection.class.isAssignableFrom(type));
-      }
-    };
-  }
-
-  private static Test hasDefaultConstructor(final Class<?> type) {
-    return new Case("has default constructor") {
+  public static Test defaultConstructorIsDeclared(final Class<?> type) {
+    return new Case("is declared") {
       public void run() {
         try {
-          type.getConstructor();
+          type.getDeclaredConstructor();
         } catch (NoSuchMethodException e) {
           fail();
         }
@@ -59,8 +32,21 @@ public class CollectionSuite {
     };
   }
 
-  private static Case defaultConstructorCreatesEmptyCollection(final Class<?> type) {
-    return new Case("default constructor creates empty collection") {
+  public static Test defaultConstructorIsPublic(final Class<?> type) {
+    return new Case("is public") {
+      public void run() {
+        try {
+          Constructor<?> constructor = type.getDeclaredConstructor();
+          assertThat(Modifier.isPublic(constructor.getModifiers()));
+        } catch (NoSuchMethodException e) {
+          assume(false);
+        }
+      }
+    };
+  }
+
+  public static Test defaultConstructorCreatesEmptyCollection(final Class<?> type) {
+    return new Case("creates empty collection") {
       public void run() throws Throwable {
         assume(Collection.class.isAssignableFrom(type));
         Collection<?> collection = (Collection<?>) assumeConstructor(type).newInstance();
@@ -69,11 +55,11 @@ public class CollectionSuite {
     };
   }
 
-  private static Test hasCopyConstructor(final Class<?> type) {
-    return new Case("has copy constructor") {
+  public static Test instantiatorIsDeclared(final Class<?> type) {
+    return new Case("is declared") {
       public void run() {
         try {
-          type.getConstructor(Collection.class);
+          type.getDeclaredConstructor(Collection.class);
         } catch (NoSuchMethodException e) {
           fail();
         }
@@ -81,8 +67,29 @@ public class CollectionSuite {
     };
   }
 
-  private static Test copyConstructorCanCreateCollectionWithOneElement(final Class<?> type) {
-    return new Case("copy constructor can create collection with 1 element") {
+  public static Test instantiatorIsPublic(final Class<?> type) {
+    return new Case("is public") {
+      public void run() {
+        try {
+          Constructor<?> constructor = type.getDeclaredConstructor(Collection.class);
+          assertThat(Modifier.isPublic(constructor.getModifiers()));
+        } catch (NoSuchMethodException e) {
+          assume(false);
+        }
+      }
+    };
+  }
+
+  public static Test instantiatorReturnsCollection(final Class<?> type) {
+    return new Case("implements Collection interface") {
+      public void run() throws Throwable {
+        assertThat(Collection.class.isAssignableFrom(type));
+      }
+    };
+  }
+
+  public static Test instantiatorCanCreateCollectionWithOneElement(final Class<?> type) {
+    return new Case("can create collection with 1 element") {
       public void run() throws Throwable {
         ArrayList<Object> original = newArrayList(a);
         Collection<?> collection = assumeCreateCollection(type, copy(original));
@@ -91,8 +98,8 @@ public class CollectionSuite {
     };
   }
 
-  private static Test copyConstructorFailsForNullArgument(final Class<?> type) {
-    return new Case("copy constructor fails for null argument") {
+  public static Test instantiatorFailsForNullArgument(final Class<?> type) {
+    return new Case("fails for null argument") {
       public void run() throws Throwable {
         try {
           assumeCreateCollection(type, null);
@@ -106,8 +113,8 @@ public class CollectionSuite {
     };
   }
 
-  private static Test copyConstructorMakesDefensiveCopy(final Class<?> type) {
-    return new Case("copy constructor makes defensive copy") {
+  public static Test instantiatorMakesDefensiveCopy(final Class<?> type) {
+    return new Case("makes defensive copy") {
       public void run() throws Throwable {
         ArrayList<Object> original = newArrayList(a);
         ArrayList<Object> trojan = copy(original);
@@ -119,8 +126,8 @@ public class CollectionSuite {
     };
   }
 
-  private static Test copyConstructorDoesNotModifyArgument(final Class<?> type) {
-    return new Case("copy constructor does not modify argument") {
+  public static Test instantiatorDoesNotModifyArgument(final Class<?> type) {
+    return new Case("does not modify argument") {
       public void run() throws Throwable {
         ArrayList<Object> original = newArrayList(a);
         ArrayList<Object> argument = copy(original);
@@ -130,8 +137,8 @@ public class CollectionSuite {
     };
   }
 
-  private static Test sizeOfCollectionWithOneElementIsOne(final Class<?> type) {
-    return new Case("size of collection with 1 element is 1") {
+  public static Test sizeReturnsOneIfCollectionHasOneElement(final Class<?> type) {
+    return new Case("returns 1 if collection has 1 element") {
       public void run() throws Throwable {
         Collection<?> collection = assumeCreateCollection(type, newArrayList(a));
         assertThat(collection.size() == 1);
@@ -139,8 +146,8 @@ public class CollectionSuite {
     };
   }
 
-  private static Test sizeOfEmptyCollectionIsZero(final Class<?> type) {
-    return new Case("size of empty collection is 0") {
+  public static Test sizeReturnsZeroIfCollectionIsEmpty(final Class<?> type) {
+    return new Case("returns 0 if collection is empty") {
       public void run() throws Throwable {
         Collection<?> collection = assumeCreateCollection(type, newArrayList());
         assertThat(collection.size() == 0);
@@ -148,8 +155,8 @@ public class CollectionSuite {
     };
   }
 
-  private static Test isEmptyReturnsFalseIfCollectionHasOneElement(final Class<?> type) {
-    return new Case("isEmpty returns false if collection has 1 element") {
+  public static Test isEmptyReturnsFalseIfCollectionHasOneElement(final Class<?> type) {
+    return new Case("returns false if collection has 1 element") {
       public void run() throws Throwable {
         Collection<?> collection = assumeCreateCollection(type, newArrayList(a));
         assertThat(!collection.isEmpty());
@@ -157,8 +164,8 @@ public class CollectionSuite {
     };
   }
 
-  private static Test isEmptyReturnsTrueIfCollectionIsEmpty(final Class<?> type) {
-    return new Case("isEmpty returns true if collection is empty") {
+  public static Test isEmptyReturnsTrueIfCollectionIsEmpty(final Class<?> type) {
+    return new Case("returns true if collection is empty") {
       public void run() throws Throwable {
         Collection<?> collection = assumeCreateCollection(type, newArrayList());
         assertThat(collection.isEmpty());
