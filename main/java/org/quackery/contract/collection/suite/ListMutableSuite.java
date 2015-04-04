@@ -3,9 +3,9 @@ package org.quackery.contract.collection.suite;
 import static org.quackery.AssertionException.assertEquals;
 import static org.quackery.AssertionException.assertThat;
 import static org.quackery.Suite.suite;
-import static org.quackery.contract.Commons.assumeCreateList;
-import static org.quackery.contract.Commons.copy;
-import static org.quackery.contract.Commons.newArrayList;
+import static org.quackery.contract.collection.Assumptions.assumeCreateList;
+import static org.quackery.contract.collection.Collections.copy;
+import static org.quackery.contract.collection.Collections.newArrayList;
 
 import java.util.ArrayList;
 import java.util.List;

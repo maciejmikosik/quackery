@@ -5,10 +5,10 @@ import static org.quackery.AssertionException.assertThat;
 import static org.quackery.AssertionException.fail;
 import static org.quackery.AssumptionException.assume;
 import static org.quackery.Suite.suite;
-import static org.quackery.contract.Commons.assumeConstructor;
-import static org.quackery.contract.Commons.assumeCreateCollection;
-import static org.quackery.contract.Commons.copy;
-import static org.quackery.contract.Commons.newArrayList;
+import static org.quackery.contract.collection.Assumptions.assumeConstructor;
+import static org.quackery.contract.collection.Assumptions.assumeCreateCollection;
+import static org.quackery.contract.collection.Collections.copy;
+import static org.quackery.contract.collection.Collections.newArrayList;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;

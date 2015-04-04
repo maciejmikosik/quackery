@@ -2,8 +2,8 @@ package org.quackery.contract.collection.suite;
 
 import static org.quackery.AssertionException.assertEquals;
 import static org.quackery.Suite.suite;
-import static org.quackery.contract.Commons.assumeCreateCollection;
-import static org.quackery.contract.Commons.newArrayList;
+import static org.quackery.contract.collection.Assumptions.assumeCreateCollection;
+import static org.quackery.contract.collection.Collections.newArrayList;
 
 import java.util.Collection;
 
