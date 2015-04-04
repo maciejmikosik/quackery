@@ -4,6 +4,7 @@ import static org.quackery.AssertionException.assertEquals;
 import static org.quackery.Suite.suite;
 import static org.quackery.contract.collection.Assumptions.assumeCreateCollection;
 import static org.quackery.contract.collection.Collections.newArrayList;
+import static org.quackery.contract.collection.Element.a;
 
 import java.util.Collection;
 
@@ -20,7 +21,7 @@ public class CollectionMutableSuite {
   private static Test clearRemovesElement(final Class<?> type) {
     return new Case("clear empties collection if it has 1 element") {
       public void run() throws Throwable {
-        Collection<?> collection = assumeCreateCollection(type, newArrayList("a"));
+        Collection<?> collection = assumeCreateCollection(type, newArrayList(a));
         collection.clear();
         assertEquals(collection.toArray(), new Object[] {});
       }

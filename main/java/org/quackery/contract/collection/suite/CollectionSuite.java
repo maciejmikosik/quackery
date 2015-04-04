@@ -9,6 +9,7 @@ import static org.quackery.contract.collection.Assumptions.assumeConstructor;
 import static org.quackery.contract.collection.Assumptions.assumeCreateCollection;
 import static org.quackery.contract.collection.Collections.copy;
 import static org.quackery.contract.collection.Collections.newArrayList;
+import static org.quackery.contract.collection.Element.a;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class CollectionSuite {
   private static Test copyConstructorCanCreateCollectionWithOneElement(final Class<?> type) {
     return new Case("copy constructor can create collection with 1 element") {
       public void run() throws Throwable {
-        ArrayList<Object> original = newArrayList("a");
+        ArrayList<Object> original = newArrayList(a);
         Collection<?> collection = assumeCreateCollection(type, copy(original));
         assertEquals(collection.toArray(), original.toArray());
       }
@@ -108,7 +109,7 @@ public class CollectionSuite {
   private static Test copyConstructorMakesDefensiveCopy(final Class<?> type) {
     return new Case("copy constructor makes defensive copy") {
       public void run() throws Throwable {
-        ArrayList<Object> original = newArrayList("a");
+        ArrayList<Object> original = newArrayList(a);
         ArrayList<Object> trojan = copy(original);
         Collection<?> collection = assumeCreateCollection(type, trojan);
         Object[] array = copy(collection.toArray());
@@ -121,7 +122,7 @@ public class CollectionSuite {
   private static Test copyConstructorDoesNotModifyArgument(final Class<?> type) {
     return new Case("copy constructor does not modify argument") {
       public void run() throws Throwable {
-        ArrayList<Object> original = newArrayList("a");
+        ArrayList<Object> original = newArrayList(a);
         ArrayList<Object> argument = copy(original);
         assumeCreateCollection(type, argument);
         assertEquals(argument.toArray(), original.toArray());
@@ -132,7 +133,7 @@ public class CollectionSuite {
   private static Test sizeOfCollectionWithOneElementIsOne(final Class<?> type) {
     return new Case("size of collection with 1 element is 1") {
       public void run() throws Throwable {
-        Collection<?> collection = assumeCreateCollection(type, newArrayList("a"));
+        Collection<?> collection = assumeCreateCollection(type, newArrayList(a));
         assertThat(collection.size() == 1);
       }
     };
@@ -150,7 +151,7 @@ public class CollectionSuite {
   private static Test isEmptyReturnsFalseIfCollectionHasOneElement(final Class<?> type) {
     return new Case("isEmpty returns false if collection has 1 element") {
       public void run() throws Throwable {
-        Collection<?> collection = assumeCreateCollection(type, newArrayList("a"));
+        Collection<?> collection = assumeCreateCollection(type, newArrayList(a));
         assertThat(!collection.isEmpty());
       }
     };

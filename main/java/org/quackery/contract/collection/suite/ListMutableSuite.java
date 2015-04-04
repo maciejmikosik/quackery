@@ -6,6 +6,10 @@ import static org.quackery.Suite.suite;
 import static org.quackery.contract.collection.Assumptions.assumeCreateList;
 import static org.quackery.contract.collection.Collections.copy;
 import static org.quackery.contract.collection.Collections.newArrayList;
+import static org.quackery.contract.collection.Element.a;
+import static org.quackery.contract.collection.Element.b;
+import static org.quackery.contract.collection.Element.c;
+import static org.quackery.contract.collection.Element.d;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +28,10 @@ public class ListMutableSuite {
   private static Test addAddsElementAtTheEnd(final Class<?> type) {
     return new Case("add adds element at the end") {
       public void run() throws Throwable {
-        ArrayList<Object> original = newArrayList("a", "b", "c");
+        ArrayList<Object> original = newArrayList(a, b, c);
         List<Object> list = assumeCreateList(type, copy(original));
-        original.add("d");
-        list.add("d");
+        original.add(d);
+        list.add(d);
         assertEquals(copy(list.toArray()), original.toArray());
       }
     };
@@ -36,8 +40,8 @@ public class ListMutableSuite {
   private static Test addReturnsTrue(final Class<?> type) {
     return new Case("add returns true") {
       public void run() throws Throwable {
-        List<Object> list = assumeCreateList(type, newArrayList("a", "b", "c"));
-        assertThat(list.add("d"));
+        List<Object> list = assumeCreateList(type, newArrayList(a, b, c));
+        assertThat(list.add(d));
       }
     };
   }
