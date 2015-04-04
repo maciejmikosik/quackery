@@ -10,7 +10,9 @@ import static org.quackery.contract.collection.Collections.copy;
 import static org.quackery.contract.collection.Collections.newArrayList;
 import static org.quackery.contract.collection.Element.a;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -18,21 +20,26 @@ import org.quackery.Case;
 import org.quackery.Test;
 
 public class CollectionSuite {
-  public static Test implementsCollectionInterface(final Class<?> type) {
-    return new Case("implements Collection interface") {
-      public void run() throws Throwable {
-        assertThat(Collection.class.isAssignableFrom(type));
-      }
-    };
-  }
-
   public static Test defaultConstructorIsDeclared(final Class<?> type) {
     return new Case("is declared") {
       public void run() {
         try {
-          type.getConstructor();
+          type.getDeclaredConstructor();
         } catch (NoSuchMethodException e) {
           fail();
+        }
+      }
+    };
+  }
+
+  public static Test defaultConstructorIsPublic(final Class<?> type) {
+    return new Case("is public") {
+      public void run() {
+        try {
+          Constructor<?> constructor = type.getDeclaredConstructor();
+          assertThat(Modifier.isPublic(constructor.getModifiers()));
+        } catch (NoSuchMethodException e) {
+          assume(false);
         }
       }
     };
@@ -52,10 +59,31 @@ public class CollectionSuite {
     return new Case("is declared") {
       public void run() {
         try {
-          type.getConstructor(Collection.class);
+          type.getDeclaredConstructor(Collection.class);
         } catch (NoSuchMethodException e) {
           fail();
         }
+      }
+    };
+  }
+
+  public static Test instantiatorIsPublic(final Class<?> type) {
+    return new Case("is public") {
+      public void run() {
+        try {
+          Constructor<?> constructor = type.getDeclaredConstructor(Collection.class);
+          assertThat(Modifier.isPublic(constructor.getModifiers()));
+        } catch (NoSuchMethodException e) {
+          assume(false);
+        }
+      }
+    };
+  }
+
+  public static Test instantiatorReturnsCollection(final Class<?> type) {
+    return new Case("implements Collection interface") {
+      public void run() throws Throwable {
+        assertThat(Collection.class.isAssignableFrom(type));
       }
     };
   }
