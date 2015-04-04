@@ -1,12 +1,13 @@
 package org.quackery.contract.collection;
 
 import static org.quackery.Suite.suite;
+import static org.quackery.contract.collection.Flags.clean;
+import static org.quackery.contract.collection.Flags.onlyIf;
 import static org.quackery.contract.collection.suite.CollectionMutableSuite.collectionMutableSuite;
 import static org.quackery.contract.collection.suite.CollectionSuite.collectionSuite;
 import static org.quackery.contract.collection.suite.ListMutableSuite.listMutableSuite;
 import static org.quackery.contract.collection.suite.ListSuite.listSuite;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -32,18 +33,12 @@ public final class CollectionContract implements Contract<Class<?>> {
   }
 
   public Test test(Class<?> type) {
-    List<Test> suites = new ArrayList<>();
-    suites.add(collectionSuite(type));
-    if (mutable) {
-      suites.add(collectionMutableSuite(type));
-    }
-    if (supertype == List.class) {
-      suites.add(listSuite(type));
-    }
-    if (supertype == List.class && mutable) {
-      suites.add(listMutableSuite(type));
-    }
-    return suite(name(type)).testAll(suites);
+    boolean isList = supertype == List.class;
+    return clean(suite(name(type))
+        .test(collectionSuite(type))
+        .test(onlyIf(mutable, collectionMutableSuite(type)))
+        .test(onlyIf(isList, listSuite(type)))
+        .test(onlyIf(isList && mutable, listMutableSuite(type))));
   }
 
   private String name(Class<?> type) {
