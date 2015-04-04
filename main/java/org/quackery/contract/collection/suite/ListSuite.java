@@ -16,8 +16,8 @@ import org.quackery.Case;
 import org.quackery.Test;
 
 public class ListSuite {
-  public static Test copyConstructorStoresAllElementsInOrder(final Class<?> type) {
-    return new Case("copy constructor stores all elements in order") {
+  public static Test instantiatorStoresAllElementsInOrder(final Class<?> type) {
+    return new Case("stores all elements in order") {
       public void run() throws Throwable {
         run(newArrayList(a, b, c));
         run(newArrayList(a, c, b));
@@ -34,8 +34,8 @@ public class ListSuite {
     };
   }
 
-  public static Test getCanReturnEachElement(final Class<?> type) {
-    return new Case("get can return each element") {
+  public static Test getReturnsEachElement(final Class<?> type) {
+    return new Case("returns each element") {
       public void run() throws Throwable {
         ArrayList<Object> original = newArrayList(a, b, c);
         List<?> list = assumeCreateList(type, copy(original));
@@ -51,7 +51,7 @@ public class ListSuite {
   }
 
   public static Test getFailsForIndexAboveBound(final Class<?> type) {
-    return new Case("get fails for index above bound") {
+    return new Case("fails for index above bound") {
       public void run() throws Throwable {
         ArrayList<Object> original = newArrayList(a, b, c);
         List<?> list = assumeCreateList(type, copy(original));
@@ -64,7 +64,7 @@ public class ListSuite {
   }
 
   public static Test getFailsForIndexBelowBound(final Class<?> type) {
-    return new Case("get fails for index below bound") {
+    return new Case("fails for index below bound") {
       public void run() throws Throwable {
         ArrayList<Object> original = newArrayList(a, b, c);
         List<?> list = assumeCreateList(type, copy(original));

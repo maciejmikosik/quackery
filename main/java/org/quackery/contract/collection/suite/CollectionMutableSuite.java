@@ -12,7 +12,7 @@ import org.quackery.Test;
 
 public class CollectionMutableSuite {
   public static Test clearRemovesElement(final Class<?> type) {
-    return new Case("clear empties collection if it has 1 element") {
+    return new Case("empties collection if it has 1 element") {
       public void run() throws Throwable {
         Collection<?> collection = assumeCreateCollection(type, newArrayList(a));
         collection.clear();

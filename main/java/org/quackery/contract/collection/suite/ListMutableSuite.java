@@ -18,7 +18,7 @@ import org.quackery.Test;
 
 public class ListMutableSuite {
   public static Test addAddsElementAtTheEnd(final Class<?> type) {
-    return new Case("add adds element at the end") {
+    return new Case("adds element at the end") {
       public void run() throws Throwable {
         ArrayList<Object> original = newArrayList(a, b, c);
         List<Object> list = assumeCreateList(type, copy(original));
@@ -30,7 +30,7 @@ public class ListMutableSuite {
   }
 
   public static Test addReturnsTrue(final Class<?> type) {
-    return new Case("add returns true") {
+    return new Case("returns true") {
       public void run() throws Throwable {
         List<Object> list = assumeCreateList(type, newArrayList(a, b, c));
         assertThat(list.add(d));
