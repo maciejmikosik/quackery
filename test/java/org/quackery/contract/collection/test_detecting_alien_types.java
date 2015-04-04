@@ -50,8 +50,7 @@ public class test_detecting_alien_types {
     }
   }
 
-  @SuppressWarnings("unused")
-  private static class HasCollectionConstructors {
+  public static class HasCollectionConstructors {
     public HasCollectionConstructors() {}
 
     public HasCollectionConstructors(Collection<?> collection) {
@@ -61,8 +60,7 @@ public class test_detecting_alien_types {
     }
   }
 
-  @SuppressWarnings("unused")
-  private static class FakeCollection implements Collection {
+  public static class FakeCollection implements Collection {
     public FakeCollection() {}
 
     public FakeCollection(Collection<?> collection) {

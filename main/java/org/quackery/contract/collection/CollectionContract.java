@@ -1,10 +1,10 @@
 package org.quackery.contract.collection;
 
 import static org.quackery.Suite.suite;
-import static org.quackery.contract.collection.CollectionMutableSuite.collectionMutableSuite;
-import static org.quackery.contract.collection.CollectionSuite.collectionSuite;
-import static org.quackery.contract.collection.ListMutableSuite.listMutableSuite;
-import static org.quackery.contract.collection.ListSuite.listSuite;
+import static org.quackery.contract.collection.suite.CollectionMutableSuite.collectionMutableSuite;
+import static org.quackery.contract.collection.suite.CollectionSuite.collectionSuite;
+import static org.quackery.contract.collection.suite.ListMutableSuite.listMutableSuite;
+import static org.quackery.contract.collection.suite.ListSuite.listSuite;
 
 import java.util.ArrayList;
 import java.util.Collection;

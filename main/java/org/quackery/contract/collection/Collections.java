@@ -1,22 +1,11 @@
-package org.quackery.contract;
+package org.quackery.contract.collection;
 
 import static java.util.Arrays.asList;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.quackery.AssumptionException;
-
-public class Commons {
-  public static Constructor<?> assumeConstructor(Class<?> type, Class<?>... parameters) {
-    try {
-      return type.getConstructor(parameters);
-    } catch (NoSuchMethodException e) {
-      throw new AssumptionException(e);
-    }
-  }
-
+public class Collections {
   public static <T, E extends T> ArrayList<T> newArrayList(E... elements) {
     return new ArrayList<T>(asList(elements));
   }
@@ -27,7 +16,7 @@ public class Commons {
         : (ArrayList<E>) list.clone();
   }
 
-  public static <E> E[] copy(E... array) {
+  public static <E> E[] copy(E[] array) {
     return array == null
         ? null
         : Arrays.copyOf(array, array.length);

@@ -1,12 +1,11 @@
-package org.quackery.contract.collection;
+package org.quackery.contract.collection.suite;
 
 import static org.quackery.AssertionException.assertEquals;
-import static org.quackery.AssumptionException.assume;
 import static org.quackery.Suite.suite;
-import static org.quackery.contract.Commons.assumeConstructor;
-import static org.quackery.contract.Commons.newArrayList;
+import static org.quackery.contract.collection.Assumptions.assumeCreateCollection;
+import static org.quackery.contract.collection.Collections.newArrayList;
+import static org.quackery.contract.collection.Element.a;
 
-import java.lang.reflect.Constructor;
 import java.util.Collection;
 
 import org.quackery.Case;
@@ -22,9 +21,7 @@ public class CollectionMutableSuite {
   private static Test clearRemovesElement(final Class<?> type) {
     return new Case("clear empties collection if it has 1 element") {
       public void run() throws Throwable {
-        assume(Collection.class.isAssignableFrom(type));
-        Constructor<?> constructor = assumeConstructor(type, Collection.class);
-        Collection<?> collection = (Collection<?>) constructor.newInstance(newArrayList("a"));
+        Collection<?> collection = assumeCreateCollection(type, newArrayList(a));
         collection.clear();
         assertEquals(collection.toArray(), new Object[] {});
       }
