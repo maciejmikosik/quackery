@@ -16,7 +16,7 @@ public class Collections {
         : (ArrayList<E>) list.clone();
   }
 
-  public static <E> E[] copy(E... array) {
+  public static <E> E[] copy(E[] array) {
     return array == null
         ? null
         : Arrays.copyOf(array, array.length);
