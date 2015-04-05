@@ -2,7 +2,6 @@ package org.quackery.contract.collection;
 
 import static org.quackery.Contracts.quacksLike;
 import static org.quackery.contract.collection.Bugs.bugs;
-import static org.quackery.contract.collection.Bugs.implementations;
 import static org.quackery.testing.Assertions.assertFailure;
 import static org.quackery.testing.Assertions.assertSuccess;
 
@@ -15,9 +14,7 @@ public class test_contract_for_list_mutable {
   private final Contract<Class<?>> contract = quacksLike(List.class).mutable();
 
   public void accepts_mutable_lists() {
-    for (Class<?> implementation : implementations(List.class, Mutable.class)) {
-      assertSuccess(contract.test(implementation));
-    }
+    assertSuccess(contract.test(MutableList.class));
   }
 
   public void detects_collection_bugs() {

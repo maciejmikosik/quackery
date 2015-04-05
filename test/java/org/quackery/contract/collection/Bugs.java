@@ -1,7 +1,6 @@
 package org.quackery.contract.collection;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,24 +8,6 @@ import java.util.List;
 import org.quackery.contract.Bug;
 
 public class Bugs {
-  private static final List<Class<?>> universe = universe();
-
-  private static List<Class<?>> universe() {
-    List<Class<?>> implementations = new ArrayList<>();
-    implementations.add(MutableList.class);
-    return unmodifiableList(implementations);
-  }
-
-  public static List<Class<?>> implementations(Class<?>... contract) {
-    List<Class<?>> implementations = new ArrayList<>();
-    for (Class<?> implementation : universe) {
-      if (isAssignable(implementation, contract)) {
-        implementations.add(implementation);
-      }
-    }
-    return unmodifiableList(implementations);
-  }
-
   public static List<Class<?>> bugs(Class<?> model, Class<?>... contract) {
     List<Class<?>> bugs = new ArrayList<>();
     for (Class<?> bug : model.getDeclaredClasses()) {
@@ -41,14 +22,5 @@ public class Bugs {
     List<T> listA = asList(arrayA);
     List<T> listB = asList(arrayB);
     return listA.containsAll(listB) && listB.containsAll(listA);
-  }
-
-  private static boolean isAssignable(Class<?> subclass, Class<?>... superclasses) {
-    for (Class<?> superclass : superclasses) {
-      if (!superclass.isAssignableFrom(subclass)) {
-        return false;
-      }
-    }
-    return true;
   }
 }
