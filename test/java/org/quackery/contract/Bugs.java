@@ -1,11 +1,9 @@
-package org.quackery.contract.collection;
+package org.quackery.contract;
 
 import static java.util.Arrays.asList;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.quackery.contract.Bug;
 
 public class Bugs {
   public static List<Class<?>> bugs(Class<?> model, Class<?>... contract) {
