@@ -12,7 +12,7 @@ import java.util.ListIterator;
 
 import org.quackery.contract.Bug;
 
-public class MutableList<E> implements Mutable, List<E> {
+public class MutableList<E> implements List<E> {
   protected List<E> delegate;
 
   public MutableList() {
