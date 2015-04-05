@@ -20,7 +20,7 @@ public class test_contract_for_collection {
   }
 
   public void detects_collection_bugs() {
-    for (Class<?> bug : bugs(Collection.class)) {
+    for (Class<?> bug : bugs(MutableList.class, Collection.class)) {
       assertFailure(contract.test(bug));
     }
   }

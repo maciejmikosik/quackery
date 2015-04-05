@@ -27,13 +27,11 @@ public class Bugs {
     return unmodifiableList(implementations);
   }
 
-  public static List<Class<?>> bugs(Class<?>... contract) {
+  public static List<Class<?>> bugs(Class<?> model, Class<?>... contract) {
     List<Class<?>> bugs = new ArrayList<>();
-    for (Class<?> implementation : universe) {
-      for (Class<?> bug : implementation.getDeclaredClasses()) {
-        if (unorderedEquals(bug.getAnnotation(Bug.class).value(), contract)) {
-          bugs.add(bug);
-        }
+    for (Class<?> bug : model.getDeclaredClasses()) {
+      if (unorderedEquals(bug.getAnnotation(Bug.class).value(), contract)) {
+        bugs.add(bug);
       }
     }
     return bugs;

@@ -21,25 +21,25 @@ public class test_contract_for_list_mutable {
   }
 
   public void detects_collection_bugs() {
-    for (Class<?> bug : bugs(Collection.class)) {
+    for (Class<?> bug : bugs(MutableList.class, Collection.class)) {
       assertFailure(contract.test(bug));
     }
   }
 
   public void detects_mutable_collection_bugs() {
-    for (Class<?> bug : bugs(Collection.class, Mutable.class)) {
+    for (Class<?> bug : bugs(MutableList.class, Collection.class, Mutable.class)) {
       assertFailure(contract.test(bug));
     }
   }
 
   public void detects_list_bugs() {
-    for (Class<?> bug : bugs(List.class)) {
+    for (Class<?> bug : bugs(MutableList.class, List.class)) {
       assertFailure(contract.test(bug));
     }
   }
 
   public void detects_mutable_list_bugs() {
-    for (Class<?> bug : bugs(List.class, Mutable.class)) {
+    for (Class<?> bug : bugs(MutableList.class, List.class, Mutable.class)) {
       assertFailure(contract.test(bug));
     }
   }
