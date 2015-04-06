@@ -7,4 +7,7 @@ public class MutableListFactory {
   public static <E> List<E> create(Collection<? extends E> collection) {
     return new MutableList(collection);
   }
+
+  // no constructors
+  private MutableListFactory(Object o) {}
 }
