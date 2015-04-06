@@ -20,10 +20,10 @@ import static org.quackery.contract.collection.suite.CollectionSuite.sizeReturns
 import static org.quackery.contract.collection.suite.CollectionSuite.sizeReturnsZeroIfCollectionIsEmpty;
 import static org.quackery.contract.collection.suite.ListMutableSuite.addAddsElementAtTheEnd;
 import static org.quackery.contract.collection.suite.ListMutableSuite.addReturnsTrue;
+import static org.quackery.contract.collection.suite.ListSuite.cretorStoresAllElementsInOrder;
 import static org.quackery.contract.collection.suite.ListSuite.getFailsForIndexAboveBound;
 import static org.quackery.contract.collection.suite.ListSuite.getFailsForIndexBelowBound;
 import static org.quackery.contract.collection.suite.ListSuite.getReturnsEachElement;
-import static org.quackery.contract.collection.suite.ListSuite.cretorStoresAllElementsInOrder;
 
 import java.util.Collection;
 import java.util.List;
@@ -34,19 +34,27 @@ import org.quackery.Test;
 public final class CollectionContract implements Contract<Class<?>> {
   private final Class<?> supertype;
   private final boolean mutable;
+  private final String factory;
 
-  private CollectionContract(Class<?> supertype, boolean mutable) {
+  private CollectionContract(Class<?> supertype) {
+    this.supertype = supertype;
+    mutable = false;
+    factory = null;
+  }
+
+  private CollectionContract(Class<?> supertype, boolean mutable, String factory) {
     this.supertype = supertype;
     this.mutable = mutable;
+    this.factory = factory;
   }
 
   public static CollectionContract collectionContract(Class<Collection> supertype,
       Collection<?>... erasure) {
-    return new CollectionContract(supertype, false);
+    return new CollectionContract(supertype);
   }
 
   public static CollectionContract collectionContract(Class<List> supertype, List<?>... erasure) {
-    return new CollectionContract(supertype, false);
+    return new CollectionContract(supertype);
   }
 
   public Test test(Class<?> type) {
@@ -98,7 +106,11 @@ public final class CollectionContract implements Contract<Class<?>> {
     return builder.toString();
   }
 
-  public Contract<Class<?>> mutable() {
-    return new CollectionContract(supertype, true);
+  public CollectionContract mutable() {
+    return new CollectionContract(supertype, true, factory);
+  }
+
+  public CollectionContract withFactory(String factoryMethodName) {
+    return new CollectionContract(supertype, mutable, factoryMethodName);
   }
 }
