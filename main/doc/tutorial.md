@@ -1,31 +1,50 @@
 
-### Quick glance
+### Built-in contracts
 
-Quackery contains pre-written test suites for well-known contracts.
-If you are implementing your own collection (let's say `MyList`)
-just use them instead of writing your own.
+Some well-known contracts are already implemented by quackery.
+Best example being contracts for `Collections` like `List` and `Set`.
+Look into `Contracts` class for `quacksLike*` family of methods.
 
-    Test test = quacksLike(Collection.class).test(MyList.class);
+    import static org.quackery.Contracts.quacksLike;
 
-You can run this test by junit test runner.
+Contracts are customizable so you can choose what features you expect from implementation.
+
+    quacksLike(List.class)
+        .mutable()
+        .test(java.util.ArrayList.class);
+
+    quacksLike(List.class)
+        .withFactory("copyOf")
+        .test(com.google.common.collect.ImmutableList.class);
+
+### Junit
+
+You can run quackery tests using junit by using `QuackeryRunner`.
 
     @RunWith(QuackeryRunner.class)
     public class MyListTest {
       @Quackery
       public static Test test() {
-          return quacksLike(Collection.class).test(MyList.class);
+          return quacksLike(List.class).test(MyList.class));
       }
     }
 
+### Building Suites
+
 You can combine tests into bigger test suites.
+
+    import static org.quackery.Suite.suite;
 
     @Quackery
     public static Test test() {
       return suite("MyList ... ")
-          .testThat(MyList.class, quacksLike(Collection.class))
+          .testThat(MyList.class, quacksLike(List.class))
           .testThat(MyList.class, quacksLike( ... ))
           .testThat(MyList.class, quacksLike( ... ));
     }
+
+### Defining you own contracts
+
 
 You can define your own contracts by implementing `org.quackery.Contract` interface.
 
@@ -58,21 +77,3 @@ Or `Test` can combine many tests as `Suite`.
           }
         };
       }
-
-### Built-in contracts
-
-Some well-known contracts are already implemented by quackery.
-Best example being contracts for `Collections` like `List` and `Set`.
-Look into `Contracts` class for `quacksLike*` family of methods.
-
-### Junit
-
-You can run quackery tests using junit by using `QuackeryRunner`.
-
-    @RunWith(QuackeryRunner.class)
-    public class MyListTest {
-      @Quackery
-      public static Test test() {
-          return quacksLike(Collection.class).test(MyList.class));
-      }
-    }
