@@ -8,7 +8,7 @@ Running this example
     public class ArrayListTest {
       @Quackery
       public static Test test() {
-        return quacksLike(Collection.class)
+        return quacksLike(List.class)
             .mutable()
             .test(ArrayList.class);
       }
@@ -18,6 +18,6 @@ with junit test runner produces something like this
 
 ![ArrayListTest.png](main/doc/ArrayListTest.png "ArrayListTest.png")
 
-Obviously this list is going to grow.
+More tests are added with each release.
 
 See [tutorial](main/doc/tutorial.md) for all features.
