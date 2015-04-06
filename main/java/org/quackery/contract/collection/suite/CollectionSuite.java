@@ -4,7 +4,6 @@ import static org.quackery.AssertionException.assertEquals;
 import static org.quackery.AssertionException.assertThat;
 import static org.quackery.AssertionException.fail;
 import static org.quackery.AssumptionException.assume;
-import static org.quackery.contract.collection.Assumptions.assumeConstructor;
 import static org.quackery.contract.collection.Collections.copy;
 import static org.quackery.contract.collection.Collections.newArrayList;
 import static org.quackery.contract.collection.Element.a;
@@ -56,9 +55,13 @@ public class CollectionSuite {
   public static Test defaultConstructorCreatesEmptyCollection(final Class<?> type) {
     return new Case("creates empty collection") {
       public void run() throws Throwable {
-        assume(Collection.class.isAssignableFrom(type));
-        Collection<?> collection = (Collection<?>) assumeConstructor(type).newInstance();
-        assertEquals(collection.toArray(), new Object[0]);
+        try {
+          assume(Collection.class.isAssignableFrom(type));
+          Collection<?> collection = (Collection<?>) type.getConstructor().newInstance();
+          assertEquals(collection.toArray(), new Object[0]);
+        } catch (NoSuchMethodException e) {
+          assume(false);
+        }
       }
     };
   }

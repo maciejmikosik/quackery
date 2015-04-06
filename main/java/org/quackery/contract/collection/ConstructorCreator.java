@@ -1,10 +1,11 @@
 package org.quackery.contract.collection;
 
 import static org.quackery.AssumptionException.assume;
-import static org.quackery.contract.collection.Assumptions.assumeConstructor;
 
 import java.lang.reflect.Constructor;
 import java.util.Collection;
+
+import org.quackery.AssumptionException;
 
 public class ConstructorCreator implements Creator {
   private final Class<?> type;
@@ -15,7 +16,11 @@ public class ConstructorCreator implements Creator {
 
   public <T> T create(Class<T> cast, Object original) throws ReflectiveOperationException {
     assume(cast.isAssignableFrom(type));
-    Constructor<?> constructor = assumeConstructor(type, Collection.class);
-    return cast.cast(constructor.newInstance(original));
+    try {
+      Constructor<?> constructor = type.getConstructor(Collection.class);
+      return cast.cast(constructor.newInstance(original));
+    } catch (NoSuchMethodException e) {
+      throw new AssumptionException();
+    }
   }
 }
