@@ -3,6 +3,7 @@ package org.quackery.contract.collection;
 import static org.quackery.AssumptionException.assume;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 
 import org.quackery.AssumptionException;
@@ -20,6 +21,7 @@ public class FactoryCreator implements Creator {
     try {
       Method method = type.getMethod(methodName, Collection.class);
       assume(cast.isAssignableFrom(method.getReturnType()));
+      assume(Modifier.isStatic(method.getModifiers()));
       return cast.cast(method.invoke(null, original));
     } catch (NoSuchMethodException e) {
       throw new AssumptionException();

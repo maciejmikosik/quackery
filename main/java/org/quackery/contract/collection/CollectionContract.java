@@ -13,6 +13,10 @@ import static org.quackery.contract.collection.suite.CollectionSuite.creatorMake
 import static org.quackery.contract.collection.suite.CollectionSuite.defaultConstructorCreatesEmptyCollection;
 import static org.quackery.contract.collection.suite.CollectionSuite.defaultConstructorIsDeclared;
 import static org.quackery.contract.collection.suite.CollectionSuite.defaultConstructorIsPublic;
+import static org.quackery.contract.collection.suite.CollectionSuite.factoryIsDeclared;
+import static org.quackery.contract.collection.suite.CollectionSuite.factoryIsPublic;
+import static org.quackery.contract.collection.suite.CollectionSuite.factoryIsStatic;
+import static org.quackery.contract.collection.suite.CollectionSuite.factoryReturnsCollection;
 import static org.quackery.contract.collection.suite.CollectionSuite.implementsCollectionInterface;
 import static org.quackery.contract.collection.suite.CollectionSuite.isEmptyReturnsFalseIfCollectionHasOneElement;
 import static org.quackery.contract.collection.suite.CollectionSuite.isEmptyReturnsTrueIfCollectionIsEmpty;
@@ -60,6 +64,7 @@ public final class CollectionContract implements Contract<Class<?>> {
   public Test test(Class<?> type) {
     boolean isList = supertype == List.class;
     boolean hasConstructor = factory == null;
+    boolean hasFactory = factory != null;
     Creator creator = hasConstructor
         ? new ConstructorCreator(type)
         : new FactoryCreator(type, factory);
@@ -73,6 +78,10 @@ public final class CollectionContract implements Contract<Class<?>> {
             .test(suite("provides " + name(creator))
                 .test(onlyIf(hasConstructor, copyConstructorIsDeclared(type)))
                 .test(onlyIf(hasConstructor, copyConstructorIsPublic(type)))
+                .test(onlyIf(hasFactory, factoryIsDeclared(type, factory)))
+                .test(onlyIf(hasFactory, factoryIsPublic(type, factory)))
+                .test(onlyIf(hasFactory, factoryIsStatic(type, factory)))
+                .test(onlyIf(hasFactory, factoryReturnsCollection(type, factory)))
                 .test(creatorCanCreateCollectionWithOneElement(creator))
                 .test(creatorFailsForNullArgument(creator))
                 .test(creatorMakesDefensiveCopy(creator))

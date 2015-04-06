@@ -10,6 +10,7 @@ import static org.quackery.contract.collection.Element.a;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -84,6 +85,57 @@ public class CollectionSuite {
         try {
           Constructor<?> constructor = type.getDeclaredConstructor(Collection.class);
           assertThat(Modifier.isPublic(constructor.getModifiers()));
+        } catch (NoSuchMethodException e) {
+          assume(false);
+        }
+      }
+    };
+  }
+
+  public static Test factoryIsDeclared(final Class<?> type, final String methodName) {
+    return new Case("is declared") {
+      public void run() {
+        try {
+          type.getDeclaredMethod(methodName, Collection.class);
+        } catch (NoSuchMethodException e) {
+          fail();
+        }
+      }
+    };
+  }
+
+  public static Test factoryIsPublic(final Class<?> type, final String methodName) {
+    return new Case("is public") {
+      public void run() {
+        try {
+          Method method = type.getDeclaredMethod(methodName, Collection.class);
+          assertThat(Modifier.isPublic(method.getModifiers()));
+        } catch (NoSuchMethodException e) {
+          assume(false);
+        }
+      }
+    };
+  }
+
+  public static Test factoryIsStatic(final Class<?> type, final String methodName) {
+    return new Case("is static") {
+      public void run() {
+        try {
+          Method method = type.getDeclaredMethod(methodName, Collection.class);
+          assertThat(Modifier.isStatic(method.getModifiers()));
+        } catch (NoSuchMethodException e) {
+          assume(false);
+        }
+      }
+    };
+  }
+
+  public static Test factoryReturnsCollection(final Class<?> type, final String methodName) {
+    return new Case("returns collection") {
+      public void run() {
+        try {
+          Method method = type.getDeclaredMethod(methodName, Collection.class);
+          assertThat(Collection.class.isAssignableFrom(method.getReturnType()));
         } catch (NoSuchMethodException e) {
           assume(false);
         }
