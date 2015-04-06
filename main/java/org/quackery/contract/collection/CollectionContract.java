@@ -59,17 +59,20 @@ public final class CollectionContract implements Contract<Class<?>> {
 
   public Test test(Class<?> type) {
     boolean isList = supertype == List.class;
-    Creator creator = new ConstructorCreator(type);
+    boolean hasConstructor = factory == null;
+    Creator creator = hasConstructor
+        ? new ConstructorCreator(type)
+        : new FactoryCreator(type, factory);
     return clean(suite(name(type))
         .test(suite("quacks like Collection")
-            .test(implementsCollectionInterface(type))
-            .test(suite("provides default constructor")
+            .test(onlyIf(hasConstructor, implementsCollectionInterface(type)))
+            .test(onlyIf(hasConstructor, suite("provides default constructor")
                 .test(defaultConstructorIsDeclared(type))
                 .test(defaultConstructorIsPublic(type))
-                .test(defaultConstructorCreatesEmptyCollection(type)))
-            .test(suite("provides copy constructor")
-                .test(copyConstructorIsDeclared(type))
-                .test(copyConstructorIsPublic(type))
+                .test(defaultConstructorCreatesEmptyCollection(type))))
+            .test(suite("provides " + name(creator))
+                .test(onlyIf(hasConstructor, copyConstructorIsDeclared(type)))
+                .test(onlyIf(hasConstructor, copyConstructorIsPublic(type)))
                 .test(creatorCanCreateCollectionWithOneElement(creator))
                 .test(creatorFailsForNullArgument(creator))
                 .test(creatorMakesDefensiveCopy(creator))
@@ -84,7 +87,7 @@ public final class CollectionContract implements Contract<Class<?>> {
             .test(suite("overrides clear")
                 .test(clearRemovesElement(creator)))))
         .test(onlyIf(isList, suite("quacks like list")
-            .test(suite("provides copy constructor")
+            .test(suite("provides " + name(creator))
                 .test(cretorStoresAllElementsInOrder(creator)))
             .test(suite("overrides get")
                 .test(getReturnsEachElement(creator))
@@ -104,6 +107,12 @@ public final class CollectionContract implements Contract<Class<?>> {
     }
     builder.append(" ").append(supertype.getSimpleName().toLowerCase());
     return builder.toString();
+  }
+
+  private static String name(Creator creator) {
+    return creator instanceof ConstructorCreator
+        ? "copy constructor"
+        : "factory method";
   }
 
   public CollectionContract mutable() {
