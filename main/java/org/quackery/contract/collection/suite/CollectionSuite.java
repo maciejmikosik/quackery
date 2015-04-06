@@ -5,7 +5,6 @@ import static org.quackery.AssertionException.assertThat;
 import static org.quackery.AssertionException.fail;
 import static org.quackery.AssumptionException.assume;
 import static org.quackery.contract.collection.Assumptions.assumeConstructor;
-import static org.quackery.contract.collection.Assumptions.assumeCreateCollection;
 import static org.quackery.contract.collection.Collections.copy;
 import static org.quackery.contract.collection.Collections.newArrayList;
 import static org.quackery.contract.collection.Element.a;
@@ -18,6 +17,7 @@ import java.util.Collection;
 
 import org.quackery.Case;
 import org.quackery.Test;
+import org.quackery.contract.collection.Creator;
 
 public class CollectionSuite {
   public static Test defaultConstructorIsDeclared(final Class<?> type) {
@@ -88,21 +88,21 @@ public class CollectionSuite {
     };
   }
 
-  public static Test instantiatorCanCreateCollectionWithOneElement(final Class<?> type) {
+  public static Test instantiatorCanCreateCollectionWithOneElement(final Creator creator) {
     return new Case("can create collection with 1 element") {
       public void run() throws Throwable {
         ArrayList<Object> original = newArrayList(a);
-        Collection<?> collection = assumeCreateCollection(type, copy(original));
+        Collection<?> collection = creator.create(Collection.class, copy(original));
         assertEquals(collection.toArray(), original.toArray());
       }
     };
   }
 
-  public static Test instantiatorFailsForNullArgument(final Class<?> type) {
+  public static Test instantiatorFailsForNullArgument(final Creator creator) {
     return new Case("fails for null argument") {
       public void run() throws Throwable {
         try {
-          assumeCreateCollection(type, null);
+          creator.create(Object.class, null);
           fail();
         } catch (InvocationTargetException e) {
           try {
@@ -113,12 +113,12 @@ public class CollectionSuite {
     };
   }
 
-  public static Test instantiatorMakesDefensiveCopy(final Class<?> type) {
+  public static Test instantiatorMakesDefensiveCopy(final Creator creator) {
     return new Case("makes defensive copy") {
       public void run() throws Throwable {
         ArrayList<Object> original = newArrayList(a);
         ArrayList<Object> trojan = copy(original);
-        Collection<?> collection = assumeCreateCollection(type, trojan);
+        Collection<?> collection = creator.create(Collection.class, trojan);
         Object[] array = copy(collection.toArray());
         trojan.clear();
         assertEquals(array, collection.toArray());
@@ -126,48 +126,48 @@ public class CollectionSuite {
     };
   }
 
-  public static Test instantiatorDoesNotModifyArgument(final Class<?> type) {
+  public static Test instantiatorDoesNotModifyArgument(final Creator creator) {
     return new Case("does not modify argument") {
       public void run() throws Throwable {
         ArrayList<Object> original = newArrayList(a);
         ArrayList<Object> argument = copy(original);
-        assumeCreateCollection(type, argument);
+        creator.create(Object.class, argument);
         assertEquals(argument.toArray(), original.toArray());
       }
     };
   }
 
-  public static Test sizeReturnsOneIfCollectionHasOneElement(final Class<?> type) {
+  public static Test sizeReturnsOneIfCollectionHasOneElement(final Creator creator) {
     return new Case("returns 1 if collection has 1 element") {
       public void run() throws Throwable {
-        Collection<?> collection = assumeCreateCollection(type, newArrayList(a));
+        Collection<?> collection = creator.create(Collection.class, newArrayList(a));
         assertThat(collection.size() == 1);
       }
     };
   }
 
-  public static Test sizeReturnsZeroIfCollectionIsEmpty(final Class<?> type) {
+  public static Test sizeReturnsZeroIfCollectionIsEmpty(final Creator creator) {
     return new Case("returns 0 if collection is empty") {
       public void run() throws Throwable {
-        Collection<?> collection = assumeCreateCollection(type, newArrayList());
+        Collection<?> collection = creator.create(Collection.class, newArrayList());
         assertThat(collection.size() == 0);
       }
     };
   }
 
-  public static Test isEmptyReturnsFalseIfCollectionHasOneElement(final Class<?> type) {
+  public static Test isEmptyReturnsFalseIfCollectionHasOneElement(final Creator creator) {
     return new Case("returns false if collection has 1 element") {
       public void run() throws Throwable {
-        Collection<?> collection = assumeCreateCollection(type, newArrayList(a));
+        Collection<?> collection = creator.create(Collection.class, newArrayList(a));
         assertThat(!collection.isEmpty());
       }
     };
   }
 
-  public static Test isEmptyReturnsTrueIfCollectionIsEmpty(final Class<?> type) {
+  public static Test isEmptyReturnsTrueIfCollectionIsEmpty(final Creator creator) {
     return new Case("returns true if collection is empty") {
       public void run() throws Throwable {
-        Collection<?> collection = assumeCreateCollection(type, newArrayList());
+        Collection<?> collection = creator.create(Collection.class, newArrayList());
         assertThat(collection.isEmpty());
       }
     };

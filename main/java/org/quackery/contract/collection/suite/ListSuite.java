@@ -2,7 +2,6 @@ package org.quackery.contract.collection.suite;
 
 import static org.quackery.AssertionException.assertEquals;
 import static org.quackery.AssertionException.fail;
-import static org.quackery.contract.collection.Assumptions.assumeCreateList;
 import static org.quackery.contract.collection.Collections.copy;
 import static org.quackery.contract.collection.Collections.newArrayList;
 import static org.quackery.contract.collection.Element.a;
@@ -14,9 +13,10 @@ import java.util.List;
 
 import org.quackery.Case;
 import org.quackery.Test;
+import org.quackery.contract.collection.Creator;
 
 public class ListSuite {
-  public static Test instantiatorStoresAllElementsInOrder(final Class<?> type) {
+  public static Test instantiatorStoresAllElementsInOrder(final Creator creator) {
     return new Case("stores all elements in order") {
       public void run() throws Throwable {
         run(newArrayList(a, b, c));
@@ -28,17 +28,17 @@ public class ListSuite {
       }
 
       private void run(ArrayList<?> order) throws Throwable {
-        List<?> list = assumeCreateList(type, copy(order));
+        List<?> list = creator.create(List.class, copy(order));
         assertEquals(copy(list.toArray()), order.toArray());
       }
     };
   }
 
-  public static Test getReturnsEachElement(final Class<?> type) {
+  public static Test getReturnsEachElement(final Creator creator) {
     return new Case("returns each element") {
       public void run() throws Throwable {
         ArrayList<Object> original = newArrayList(a, b, c);
-        List<?> list = assumeCreateList(type, copy(original));
+        List<?> list = creator.create(List.class, copy(original));
         for (int i = 0; i < original.size(); i++) {
           try {
             assertEquals(list.get(i), original.get(i));
@@ -50,11 +50,11 @@ public class ListSuite {
     };
   }
 
-  public static Test getFailsForIndexAboveBound(final Class<?> type) {
+  public static Test getFailsForIndexAboveBound(final Creator creator) {
     return new Case("fails for index above bound") {
       public void run() throws Throwable {
         ArrayList<Object> original = newArrayList(a, b, c);
-        List<?> list = assumeCreateList(type, copy(original));
+        List<?> list = creator.create(List.class, copy(original));
         try {
           list.get(original.size());
           fail();
@@ -63,11 +63,11 @@ public class ListSuite {
     };
   }
 
-  public static Test getFailsForIndexBelowBound(final Class<?> type) {
+  public static Test getFailsForIndexBelowBound(final Creator creator) {
     return new Case("fails for index below bound") {
       public void run() throws Throwable {
         ArrayList<Object> original = newArrayList(a, b, c);
-        List<?> list = assumeCreateList(type, copy(original));
+        List<?> list = creator.create(List.class, copy(original));
         try {
           list.get(-1);
           fail();
