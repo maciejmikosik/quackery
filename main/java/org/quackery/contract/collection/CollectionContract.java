@@ -4,16 +4,16 @@ import static org.quackery.Suite.suite;
 import static org.quackery.contract.collection.Flags.clean;
 import static org.quackery.contract.collection.Flags.onlyIf;
 import static org.quackery.contract.collection.suite.CollectionMutableSuite.clearRemovesElement;
+import static org.quackery.contract.collection.suite.CollectionSuite.copyConstructorIsDeclared;
+import static org.quackery.contract.collection.suite.CollectionSuite.copyConstructorIsPublic;
+import static org.quackery.contract.collection.suite.CollectionSuite.creatorCanCreateCollectionWithOneElement;
+import static org.quackery.contract.collection.suite.CollectionSuite.creatorDoesNotModifyArgument;
+import static org.quackery.contract.collection.suite.CollectionSuite.creatorFailsForNullArgument;
+import static org.quackery.contract.collection.suite.CollectionSuite.creatorMakesDefensiveCopy;
 import static org.quackery.contract.collection.suite.CollectionSuite.defaultConstructorCreatesEmptyCollection;
 import static org.quackery.contract.collection.suite.CollectionSuite.defaultConstructorIsDeclared;
 import static org.quackery.contract.collection.suite.CollectionSuite.defaultConstructorIsPublic;
-import static org.quackery.contract.collection.suite.CollectionSuite.instantiatorCanCreateCollectionWithOneElement;
-import static org.quackery.contract.collection.suite.CollectionSuite.instantiatorDoesNotModifyArgument;
-import static org.quackery.contract.collection.suite.CollectionSuite.instantiatorFailsForNullArgument;
-import static org.quackery.contract.collection.suite.CollectionSuite.instantiatorIsDeclared;
-import static org.quackery.contract.collection.suite.CollectionSuite.instantiatorIsPublic;
-import static org.quackery.contract.collection.suite.CollectionSuite.instantiatorMakesDefensiveCopy;
-import static org.quackery.contract.collection.suite.CollectionSuite.instantiatorReturnsCollection;
+import static org.quackery.contract.collection.suite.CollectionSuite.implementsCollectionInterface;
 import static org.quackery.contract.collection.suite.CollectionSuite.isEmptyReturnsFalseIfCollectionHasOneElement;
 import static org.quackery.contract.collection.suite.CollectionSuite.isEmptyReturnsTrueIfCollectionIsEmpty;
 import static org.quackery.contract.collection.suite.CollectionSuite.sizeReturnsOneIfCollectionHasOneElement;
@@ -23,7 +23,7 @@ import static org.quackery.contract.collection.suite.ListMutableSuite.addReturns
 import static org.quackery.contract.collection.suite.ListSuite.getFailsForIndexAboveBound;
 import static org.quackery.contract.collection.suite.ListSuite.getFailsForIndexBelowBound;
 import static org.quackery.contract.collection.suite.ListSuite.getReturnsEachElement;
-import static org.quackery.contract.collection.suite.ListSuite.instantiatorStoresAllElementsInOrder;
+import static org.quackery.contract.collection.suite.ListSuite.cretorStoresAllElementsInOrder;
 
 import java.util.Collection;
 import java.util.List;
@@ -54,18 +54,18 @@ public final class CollectionContract implements Contract<Class<?>> {
     Creator creator = new ConstructorCreator(type);
     return clean(suite(name(type))
         .test(suite("quacks like Collection")
+            .test(implementsCollectionInterface(type))
             .test(suite("provides default constructor")
                 .test(defaultConstructorIsDeclared(type))
                 .test(defaultConstructorIsPublic(type))
                 .test(defaultConstructorCreatesEmptyCollection(type)))
             .test(suite("provides copy constructor")
-                .test(instantiatorIsDeclared(type))
-                .test(instantiatorIsPublic(type))
-                .test(instantiatorReturnsCollection(type))
-                .test(instantiatorCanCreateCollectionWithOneElement(creator))
-                .test(instantiatorFailsForNullArgument(creator))
-                .test(instantiatorMakesDefensiveCopy(creator))
-                .test(instantiatorDoesNotModifyArgument(creator)))
+                .test(copyConstructorIsDeclared(type))
+                .test(copyConstructorIsPublic(type))
+                .test(creatorCanCreateCollectionWithOneElement(creator))
+                .test(creatorFailsForNullArgument(creator))
+                .test(creatorMakesDefensiveCopy(creator))
+                .test(creatorDoesNotModifyArgument(creator)))
             .test(suite("overrides size")
                 .test(sizeReturnsZeroIfCollectionIsEmpty(creator))
                 .test(sizeReturnsOneIfCollectionHasOneElement(creator)))
@@ -77,7 +77,7 @@ public final class CollectionContract implements Contract<Class<?>> {
                 .test(clearRemovesElement(creator)))))
         .test(onlyIf(isList, suite("quacks like list")
             .test(suite("provides copy constructor")
-                .test(instantiatorStoresAllElementsInOrder(creator)))
+                .test(cretorStoresAllElementsInOrder(creator)))
             .test(suite("overrides get")
                 .test(getReturnsEachElement(creator))
                 .test(getFailsForIndexAboveBound(creator))

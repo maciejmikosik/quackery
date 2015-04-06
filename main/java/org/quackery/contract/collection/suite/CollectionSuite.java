@@ -20,6 +20,14 @@ import org.quackery.Test;
 import org.quackery.contract.collection.Creator;
 
 public class CollectionSuite {
+  public static Test implementsCollectionInterface(final Class<?> type) {
+    return new Case("implements Collection interface") {
+      public void run() throws Throwable {
+        assertThat(Collection.class.isAssignableFrom(type));
+      }
+    };
+  }
+
   public static Test defaultConstructorIsDeclared(final Class<?> type) {
     return new Case("is declared") {
       public void run() {
@@ -55,7 +63,7 @@ public class CollectionSuite {
     };
   }
 
-  public static Test instantiatorIsDeclared(final Class<?> type) {
+  public static Test copyConstructorIsDeclared(final Class<?> type) {
     return new Case("is declared") {
       public void run() {
         try {
@@ -67,7 +75,7 @@ public class CollectionSuite {
     };
   }
 
-  public static Test instantiatorIsPublic(final Class<?> type) {
+  public static Test copyConstructorIsPublic(final Class<?> type) {
     return new Case("is public") {
       public void run() {
         try {
@@ -80,15 +88,7 @@ public class CollectionSuite {
     };
   }
 
-  public static Test instantiatorReturnsCollection(final Class<?> type) {
-    return new Case("implements Collection interface") {
-      public void run() throws Throwable {
-        assertThat(Collection.class.isAssignableFrom(type));
-      }
-    };
-  }
-
-  public static Test instantiatorCanCreateCollectionWithOneElement(final Creator creator) {
+  public static Test creatorCanCreateCollectionWithOneElement(final Creator creator) {
     return new Case("can create collection with 1 element") {
       public void run() throws Throwable {
         ArrayList<Object> original = newArrayList(a);
@@ -98,7 +98,7 @@ public class CollectionSuite {
     };
   }
 
-  public static Test instantiatorFailsForNullArgument(final Creator creator) {
+  public static Test creatorFailsForNullArgument(final Creator creator) {
     return new Case("fails for null argument") {
       public void run() throws Throwable {
         try {
@@ -113,7 +113,7 @@ public class CollectionSuite {
     };
   }
 
-  public static Test instantiatorMakesDefensiveCopy(final Creator creator) {
+  public static Test creatorMakesDefensiveCopy(final Creator creator) {
     return new Case("makes defensive copy") {
       public void run() throws Throwable {
         ArrayList<Object> original = newArrayList(a);
@@ -126,7 +126,7 @@ public class CollectionSuite {
     };
   }
 
-  public static Test instantiatorDoesNotModifyArgument(final Creator creator) {
+  public static Test creatorDoesNotModifyArgument(final Creator creator) {
     return new Case("does not modify argument") {
       public void run() throws Throwable {
         ArrayList<Object> original = newArrayList(a);

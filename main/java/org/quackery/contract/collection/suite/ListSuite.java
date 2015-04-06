@@ -16,7 +16,7 @@ import org.quackery.Test;
 import org.quackery.contract.collection.Creator;
 
 public class ListSuite {
-  public static Test instantiatorStoresAllElementsInOrder(final Creator creator) {
+  public static Test cretorStoresAllElementsInOrder(final Creator creator) {
     return new Case("stores all elements in order") {
       public void run() throws Throwable {
         run(newArrayList(a, b, c));
