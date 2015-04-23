@@ -7,6 +7,7 @@ import static org.quackery.AssumptionException.assume;
 import static org.quackery.contract.collection.Collections.copy;
 import static org.quackery.contract.collection.Collections.newArrayList;
 import static org.quackery.contract.collection.Element.a;
+import static org.quackery.contract.collection.Element.b;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -14,7 +15,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
+import org.quackery.AssertionException;
+import org.quackery.AssumptionException;
 import org.quackery.Case;
 import org.quackery.Test;
 import org.quackery.contract.collection.Creator;
@@ -224,6 +229,117 @@ public class CollectionSuite {
       public void run() throws Throwable {
         Collection<?> collection = creator.create(Collection.class, newArrayList());
         assertThat(collection.isEmpty());
+      }
+    };
+  }
+
+  public static Test containsReturnsFalseIfCollectionDoesNotContainElement(final Creator creator) {
+    return new Case("returns false if collection does not contain element") {
+      public void run() throws Throwable {
+        Collection<?> collection = creator.create(Collection.class, newArrayList(a));
+        assertThat(!collection.contains(b));
+      }
+    };
+  }
+
+  public static Test containsReturnsTrueIfCollectionContainsElement(final Creator creator) {
+    return new Case("returns true if collection contains element") {
+      public void run() throws Throwable {
+        Collection<?> collection = creator.create(Collection.class, newArrayList(a));
+        assertThat(collection.contains(a));
+      }
+    };
+  }
+
+  public static Test iteratorTraversesEmptyCollection(final Creator creator) {
+    return new Case("traverses empty collection") {
+      public void run() throws Throwable {
+        Collection<?> collection = creator.create(Collection.class, newArrayList());
+        Iterator<?> iterator = collection.iterator();
+        assertThat(iterator != null);
+        assertThat(!iterator.hasNext());
+        try {
+          iterator.next();
+          fail();
+        } catch (NoSuchElementException e) {}
+      }
+    };
+  }
+
+  public static Test iteratorTraversesSingletonCollection(final Creator creator) {
+    return new Case("traverses singleton collection") {
+      public void run() throws Throwable {
+        Collection<?> collection = creator.create(Collection.class, newArrayList(a));
+        Iterator<?> iterator = collection.iterator();
+        assertThat(iterator != null);
+        assertThat(iterator.hasNext());
+        assertEquals(iterator.next(), a);
+        assertThat(!iterator.hasNext());
+        try {
+          iterator.next();
+          fail();
+        } catch (NoSuchElementException e) {}
+      }
+    };
+  }
+
+  public static Test iteratorRemovesNoElementsFromEmptyCollection(final Creator creator) {
+    return new Case("removes no elements from empty collection") {
+      public void run() throws Throwable {
+        Collection<?> collection = creator.create(Collection.class, newArrayList());
+        Iterator<?> iterator = collection.iterator();
+        assume(iterator != null);
+        try {
+          iterator.remove();
+          fail();
+        } catch (IllegalStateException e) {}
+      }
+    };
+  }
+
+  public static Test iteratorRemovesElementFromSingletonCollection(final Creator creator) {
+    return new Case("removes element from singleton collection") {
+      public void run() throws Throwable {
+        Collection<?> collection = creator.create(Collection.class, newArrayList(a));
+        Iterator<?> iterator = collection.iterator();
+        assume(iterator != null);
+        try {
+          iterator.next();
+        } catch (NoSuchElementException e) {
+          throw new AssumptionException(e);
+        }
+        try {
+          iterator.remove();
+        } catch (IllegalStateException e) {
+          throw new AssertionException(e);
+        }
+        Object[] array = collection.toArray();
+        assume(array != null);
+        assertThat(array.length == 0);
+      }
+    };
+  }
+
+  public static Test iteratorRemovesForbidsConsecutiveCalls(final Creator creator) {
+    return new Case("removes forbids consecutive calls") {
+      public void run() throws Throwable {
+        Collection<?> collection = creator.create(Collection.class, newArrayList(a));
+        Iterator<?> iterator = collection.iterator();
+        assume(iterator != null);
+        try {
+          iterator.next();
+        } catch (NoSuchElementException e) {
+          throw new AssumptionException(e);
+        }
+        try {
+          iterator.remove();
+        } catch (IllegalStateException e) {
+          throw new AssumptionException(e);
+        }
+        try {
+          iterator.remove();
+          fail();
+        } catch (IllegalStateException e) {}
       }
     };
   }
