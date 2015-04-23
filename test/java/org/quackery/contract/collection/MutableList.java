@@ -392,6 +392,45 @@ public class MutableList<E> implements List<E> {
     }
   }
 
+  @Bug(Collection.class)
+  public static class ContainsReturnsTrue<E> extends MutableList<E> {
+    public ContainsReturnsTrue() {}
+
+    public ContainsReturnsTrue(Collection<E> collection) {
+      super(collection);
+    }
+
+    public boolean contains(Object o) {
+      return true;
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class ContainsReturnsFalse<E> extends MutableList<E> {
+    public ContainsReturnsFalse() {}
+
+    public ContainsReturnsFalse(Collection<E> collection) {
+      super(collection);
+    }
+
+    public boolean contains(Object o) {
+      return false;
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class ContainsNegates<E> extends MutableList<E> {
+    public ContainsNegates() {}
+
+    public ContainsNegates(Collection<E> collection) {
+      super(collection);
+    }
+
+    public boolean contains(Object o) {
+      return !super.contains(o);
+    }
+  }
+
   @Bug(List.class)
   public static class GetReturnsFirstElement<E> extends MutableList<E> {
     public GetReturnsFirstElement() {}

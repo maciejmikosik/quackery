@@ -7,6 +7,7 @@ import static org.quackery.AssumptionException.assume;
 import static org.quackery.contract.collection.Collections.copy;
 import static org.quackery.contract.collection.Collections.newArrayList;
 import static org.quackery.contract.collection.Element.a;
+import static org.quackery.contract.collection.Element.b;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -224,6 +225,24 @@ public class CollectionSuite {
       public void run() throws Throwable {
         Collection<?> collection = creator.create(Collection.class, newArrayList());
         assertThat(collection.isEmpty());
+      }
+    };
+  }
+
+  public static Test containsReturnsFalseIfCollectionDoesNotContainElement(final Creator creator) {
+    return new Case("returns false if collection does not contain element") {
+      public void run() throws Throwable {
+        Collection<?> collection = creator.create(Collection.class, newArrayList(a));
+        assertThat(!collection.contains(b));
+      }
+    };
+  }
+
+  public static Test containsReturnsTrueIfCollectionContainsElement(final Creator creator) {
+    return new Case("returns true if collection contains element") {
+      public void run() throws Throwable {
+        Collection<?> collection = creator.create(Collection.class, newArrayList(a));
+        assertThat(collection.contains(a));
       }
     };
   }

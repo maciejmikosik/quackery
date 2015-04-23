@@ -4,6 +4,8 @@ import static org.quackery.Suite.suite;
 import static org.quackery.contract.collection.Flags.clean;
 import static org.quackery.contract.collection.Flags.onlyIf;
 import static org.quackery.contract.collection.suite.CollectionMutableSuite.clearRemovesElement;
+import static org.quackery.contract.collection.suite.CollectionSuite.containsReturnsFalseIfCollectionDoesNotContainElement;
+import static org.quackery.contract.collection.suite.CollectionSuite.containsReturnsTrueIfCollectionContainsElement;
 import static org.quackery.contract.collection.suite.CollectionSuite.copyConstructorIsDeclared;
 import static org.quackery.contract.collection.suite.CollectionSuite.copyConstructorIsPublic;
 import static org.quackery.contract.collection.suite.CollectionSuite.creatorCanCreateCollectionWithOneElement;
@@ -91,7 +93,10 @@ public final class CollectionContract implements Contract<Class<?>> {
                 .test(sizeReturnsOneIfCollectionHasOneElement(creator)))
             .test(suite("overrides isEmpty")
                 .test(isEmptyReturnsFalseIfCollectionHasOneElement(creator))
-                .test(isEmptyReturnsTrueIfCollectionIsEmpty(creator))))
+                .test(isEmptyReturnsTrueIfCollectionIsEmpty(creator)))
+            .test(suite("overrides contains")
+                .test(containsReturnsFalseIfCollectionDoesNotContainElement(creator))
+                .test(containsReturnsTrueIfCollectionContainsElement(creator))))
         .test(onlyIf(mutable, suite("quacks like mutable collection")
             .test(suite("overrides clear")
                 .test(clearRemovesElement(creator)))))

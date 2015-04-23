@@ -170,6 +170,27 @@ public class MutableListFactory {
     }
   }
 
+  @Bug(Collection.class)
+  public static class ContainsReturnsTrue {
+    public static <E> List<E> create(Collection<? extends E> collection) {
+      return new MutableList.ContainsReturnsTrue(collection);
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class ContainsReturnsFalse {
+    public static <E> List<E> create(Collection<? extends E> collection) {
+      return new MutableList.ContainsReturnsFalse(collection);
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class ContainsNegates {
+    public static <E> List<E> create(Collection<? extends E> collection) {
+      return new MutableList.ContainsNegates(collection);
+    }
+  }
+
   @Bug(List.class)
   public static class GetReturnsFirstElement {
     public static <E> List<E> create(Collection<? extends E> collection) {
