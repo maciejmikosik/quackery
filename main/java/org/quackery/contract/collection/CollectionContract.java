@@ -22,6 +22,11 @@ import static org.quackery.contract.collection.suite.CollectionSuite.factoryRetu
 import static org.quackery.contract.collection.suite.CollectionSuite.implementsCollectionInterface;
 import static org.quackery.contract.collection.suite.CollectionSuite.isEmptyReturnsFalseIfCollectionHasOneElement;
 import static org.quackery.contract.collection.suite.CollectionSuite.isEmptyReturnsTrueIfCollectionIsEmpty;
+import static org.quackery.contract.collection.suite.CollectionSuite.iteratorRemovesElementFromSingletonCollection;
+import static org.quackery.contract.collection.suite.CollectionSuite.iteratorRemovesForbidsConsecutiveCalls;
+import static org.quackery.contract.collection.suite.CollectionSuite.iteratorRemovesNoElementsFromEmptyCollection;
+import static org.quackery.contract.collection.suite.CollectionSuite.iteratorTraversesEmptyCollection;
+import static org.quackery.contract.collection.suite.CollectionSuite.iteratorTraversesSingletonCollection;
 import static org.quackery.contract.collection.suite.CollectionSuite.sizeReturnsOneIfCollectionHasOneElement;
 import static org.quackery.contract.collection.suite.CollectionSuite.sizeReturnsZeroIfCollectionIsEmpty;
 import static org.quackery.contract.collection.suite.ListMutableSuite.addAddsElementAtTheEnd;
@@ -96,7 +101,13 @@ public final class CollectionContract implements Contract<Class<?>> {
                 .test(isEmptyReturnsTrueIfCollectionIsEmpty(creator)))
             .test(suite("overrides contains")
                 .test(containsReturnsFalseIfCollectionDoesNotContainElement(creator))
-                .test(containsReturnsTrueIfCollectionContainsElement(creator))))
+                .test(containsReturnsTrueIfCollectionContainsElement(creator)))
+            .test(suite("overrides iterator")
+                .test(iteratorTraversesEmptyCollection(creator))
+                .test(iteratorTraversesSingletonCollection(creator))
+                .test(onlyIf(mutable, iteratorRemovesNoElementsFromEmptyCollection(creator)))
+                .test(onlyIf(mutable, iteratorRemovesElementFromSingletonCollection(creator)))
+                .test(onlyIf(mutable, iteratorRemovesForbidsConsecutiveCalls(creator)))))
         .test(onlyIf(mutable, suite("quacks like mutable collection")
             .test(suite("overrides clear")
                 .test(clearRemovesElement(creator)))))

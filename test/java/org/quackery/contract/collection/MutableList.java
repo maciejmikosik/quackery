@@ -431,6 +431,497 @@ public class MutableList<E> implements List<E> {
     }
   }
 
+  @Bug(Collection.class)
+  public static class IteratorReturnsNull<E> extends MutableList<E> {
+    public IteratorReturnsNull() {}
+
+    public IteratorReturnsNull(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Iterator<E> iterator() {
+      return null;
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class IteratorIsEmpty<E> extends MutableList<E> {
+    public IteratorIsEmpty() {}
+
+    public IteratorIsEmpty(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Iterator<E> iterator() {
+      return new ArrayList<E>().iterator();
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class IteratorHasUnknownElement<E> extends MutableList<E> {
+    public IteratorHasUnknownElement() {}
+
+    public IteratorHasUnknownElement(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Iterator<E> iterator() {
+      return new ArrayList<E>(asList((E) newObject("x"))).iterator();
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class IteratorHasUnknownElementIfCollectionIsEmpty<E> extends MutableList<E> {
+    public IteratorHasUnknownElementIfCollectionIsEmpty() {}
+
+    public IteratorHasUnknownElementIfCollectionIsEmpty(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Iterator<E> iterator() {
+      return isEmpty()
+          ? new ArrayList<E>(asList((E) newObject("x"))).iterator()
+          : super.iterator();
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class IteratorRepeatsFirstElementInfinitely<E> extends MutableList<E> {
+    public IteratorRepeatsFirstElementInfinitely() {}
+
+    public IteratorRepeatsFirstElementInfinitely(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Iterator<E> iterator() {
+      return new Iterator<E>() {
+        public boolean hasNext() {
+          return delegate.iterator().hasNext();
+        }
+
+        public E next() {
+          return delegate.iterator().next();
+        }
+
+        public void remove() {
+          delegate.iterator().remove();
+        }
+      };
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class IteratorInsertsFirstElement<E> extends MutableList<E> {
+    public IteratorInsertsFirstElement() {}
+
+    public IteratorInsertsFirstElement(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Iterator<E> iterator() {
+      final Iterator<E> iterator = super.iterator();
+      return new Iterator<E>() {
+        private boolean usedExtra = false;
+
+        public boolean hasNext() {
+          return !usedExtra || iterator.hasNext();
+        }
+
+        public E next() {
+          if (!usedExtra) {
+            usedExtra = true;
+            return (E) newObject("x");
+          } else {
+            return iterator.next();
+          }
+        }
+
+        public void remove() {
+          iterator.remove();
+        }
+      };
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class IteratorInsertsLastElement<E> extends MutableList<E> {
+    public IteratorInsertsLastElement() {}
+
+    public IteratorInsertsLastElement(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Iterator<E> iterator() {
+      final Iterator<E> iterator = super.iterator();
+      return new Iterator<E>() {
+        private boolean usedExtra = false;
+
+        public boolean hasNext() {
+          return iterator.hasNext() || !usedExtra;
+        }
+
+        public E next() {
+          if (iterator.hasNext()) {
+            return iterator.next();
+          } else if (!usedExtra) {
+            usedExtra = true;
+            return (E) newObject("x");
+          } else {
+            return iterator.next();
+          }
+        }
+
+        public void remove() {
+          iterator.remove();
+        }
+      };
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class IteratorSkipsFirstElement<E> extends MutableList<E> {
+    public IteratorSkipsFirstElement() {}
+
+    public IteratorSkipsFirstElement(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Iterator<E> iterator() {
+      final Iterator<E> iterator = super.iterator();
+      if (iterator.hasNext()) {
+        iterator.next();
+      }
+      return iterator;
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class IteratorHasNextAlways<E> extends MutableList<E> {
+    public IteratorHasNextAlways() {}
+
+    public IteratorHasNextAlways(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Iterator<E> iterator() {
+      final Iterator<E> iterator = super.iterator();
+      return new Iterator<E>() {
+        public boolean hasNext() {
+          return true;
+        }
+
+        public E next() {
+          return iterator.next();
+        }
+
+        public void remove() {
+          iterator.remove();
+        }
+      };
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class IteratorHasNextNever<E> extends MutableList<E> {
+    public IteratorHasNextNever() {}
+
+    public IteratorHasNextNever(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Iterator<E> iterator() {
+      final Iterator<E> iterator = super.iterator();
+      return new Iterator<E>() {
+        public boolean hasNext() {
+          return false;
+        }
+
+        public E next() {
+          return iterator.next();
+        }
+
+        public void remove() {
+          iterator.remove();
+        }
+      };
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class IteratorHasNextNegates<E> extends MutableList<E> {
+    public IteratorHasNextNegates() {}
+
+    public IteratorHasNextNegates(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Iterator<E> iterator() {
+      final Iterator<E> iterator = super.iterator();
+      return new Iterator<E>() {
+        public boolean hasNext() {
+          return !iterator.hasNext();
+        }
+
+        public E next() {
+          return iterator.next();
+        }
+
+        public void remove() {
+          iterator.remove();
+        }
+      };
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class IteratorHasNextIfCollectionIsEmpty<E> extends MutableList<E> {
+    public IteratorHasNextIfCollectionIsEmpty() {}
+
+    public IteratorHasNextIfCollectionIsEmpty(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Iterator<E> iterator() {
+      final Iterator<E> iterator = super.iterator();
+      return new Iterator<E>() {
+        public boolean hasNext() {
+          return isEmpty();
+        }
+
+        public E next() {
+          return iterator.next();
+        }
+
+        public void remove() {
+          iterator.remove();
+        }
+      };
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class IteratorHasNextIfCollectionIsNotEmpty<E> extends MutableList<E> {
+    public IteratorHasNextIfCollectionIsNotEmpty() {}
+
+    public IteratorHasNextIfCollectionIsNotEmpty(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Iterator<E> iterator() {
+      final Iterator<E> iterator = super.iterator();
+      return new Iterator<E>() {
+        public boolean hasNext() {
+          return !isEmpty();
+        }
+
+        public E next() {
+          return iterator.next();
+        }
+
+        public void remove() {
+          iterator.remove();
+        }
+      };
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class IteratorNextReturnsUnknownElementAfterTraversing<E> extends MutableList<E> {
+    public IteratorNextReturnsUnknownElementAfterTraversing() {}
+
+    public IteratorNextReturnsUnknownElementAfterTraversing(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Iterator<E> iterator() {
+      final Iterator<E> iterator = super.iterator();
+      return new Iterator<E>() {
+        public boolean hasNext() {
+          return iterator.hasNext();
+        }
+
+        public E next() {
+          return iterator.hasNext()
+              ? iterator.next()
+              : (E) newObject("x");
+        }
+
+        public void remove() {
+          iterator.remove();
+        }
+      };
+    }
+  }
+
+  @Bug(Collection.class)
+  public static class IteratorNextReturnsNullAfterTraversing<E> extends MutableList<E> {
+    public IteratorNextReturnsNullAfterTraversing() {}
+
+    public IteratorNextReturnsNullAfterTraversing(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Iterator<E> iterator() {
+      final Iterator<E> iterator = super.iterator();
+      return new Iterator<E>() {
+        public boolean hasNext() {
+          return iterator.hasNext();
+        }
+
+        public E next() {
+          return iterator.hasNext()
+              ? iterator.next()
+              : null;
+        }
+
+        public void remove() {
+          iterator.remove();
+        }
+      };
+    }
+  }
+
+  @Bug({ Collection.class, Mutable.class })
+  public static class IteratorRemovesHasNoEffect<E> extends MutableList<E> {
+    public IteratorRemovesHasNoEffect() {}
+
+    public IteratorRemovesHasNoEffect(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Iterator<E> iterator() {
+      final Iterator<E> iterator = super.iterator();
+      return new Iterator<E>() {
+        public boolean hasNext() {
+          return iterator.hasNext();
+        }
+
+        public E next() {
+          return iterator.next();
+        }
+
+        public void remove() {}
+      };
+    }
+  }
+
+  @Bug({ Collection.class, Mutable.class })
+  public static class IteratorRemovesSwallowsException<E> extends MutableList<E> {
+    public IteratorRemovesSwallowsException() {}
+
+    public IteratorRemovesSwallowsException(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Iterator<E> iterator() {
+      final Iterator<E> iterator = super.iterator();
+      return new Iterator<E>() {
+        public boolean hasNext() {
+          return iterator.hasNext();
+        }
+
+        public E next() {
+          return iterator.next();
+        }
+
+        public void remove() {
+          try {
+            iterator.remove();
+          } catch (IllegalStateException e) {}
+        }
+      };
+    }
+  }
+
+  @Bug({ Collection.class, Mutable.class })
+  public static class IteratorRemovesThrowsException<E> extends MutableList<E> {
+    public IteratorRemovesThrowsException() {}
+
+    public IteratorRemovesThrowsException(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Iterator<E> iterator() {
+      final Iterator<E> iterator = super.iterator();
+      return new Iterator<E>() {
+        public boolean hasNext() {
+          return iterator.hasNext();
+        }
+
+        public E next() {
+          return iterator.next();
+        }
+
+        public void remove() {
+          throw new IllegalStateException();
+        }
+      };
+    }
+  }
+
+  @Bug({ Collection.class, Mutable.class })
+  public static class IteratorRemovesThrowsInverted<E> extends MutableList<E> {
+    public IteratorRemovesThrowsInverted() {}
+
+    public IteratorRemovesThrowsInverted(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Iterator<E> iterator() {
+      final Iterator<E> iterator = super.iterator();
+      return new Iterator<E>() {
+        public boolean hasNext() {
+          return iterator.hasNext();
+        }
+
+        public E next() {
+          return iterator.next();
+        }
+
+        public void remove() {
+          try {
+            iterator.remove();
+          } catch (IllegalStateException e) {
+            return;
+          }
+          throw new IllegalStateException();
+        }
+      };
+    }
+  }
+
+  @Bug({ Collection.class, Mutable.class })
+  public static class IteratorRemovesIgnoresSecondCall<E> extends MutableList<E> {
+    public IteratorRemovesIgnoresSecondCall() {}
+
+    public IteratorRemovesIgnoresSecondCall(Collection<E> collection) {
+      super(collection);
+    }
+
+    public Iterator<E> iterator() {
+      final Iterator<E> iterator = super.iterator();
+      return new Iterator<E>() {
+        boolean removed = false;
+
+        public boolean hasNext() {
+          return iterator.hasNext();
+        }
+
+        public E next() {
+          removed = false;
+          return iterator.next();
+        }
+
+        public void remove() {
+          if (!removed) {
+            iterator.remove();
+            removed = true;
+          }
+        }
+      };
+    }
+  }
+
   @Bug(List.class)
   public static class GetReturnsFirstElement<E> extends MutableList<E> {
     public GetReturnsFirstElement() {}
