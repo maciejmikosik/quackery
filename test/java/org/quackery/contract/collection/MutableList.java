@@ -1,10 +1,7 @@
 package org.quackery.contract.collection;
 
-import static java.util.Arrays.asList;
-
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -124,53 +121,6 @@ public class MutableList<E> implements List<E> {
 
   public String toString() {
     return delegate.toString();
-  }
-
-  @Bug(List.class)
-  public static class CopyConstructorStoresOneElement<E> extends MutableList<E> {
-    public CopyConstructorStoresOneElement() {}
-
-    public CopyConstructorStoresOneElement(Collection<E> collection) {
-      super(one(collection));
-    }
-
-    private static <E> Collection<E> one(Collection<E> collection) {
-      return collection.isEmpty()
-          ? collection
-          : asList(collection.iterator().next());
-    }
-  }
-
-  @Bug(List.class)
-  public static class CopyConstructorReversesOrder<E> extends MutableList<E> {
-    public CopyConstructorReversesOrder() {}
-
-    public CopyConstructorReversesOrder(Collection<E> collection) {
-      super(reverse(collection));
-    }
-
-    private static <E> Collection<E> reverse(Collection<E> collection) {
-      List<E> list = new ArrayList<>(collection);
-      Collections.reverse(list);
-      return list;
-    }
-  }
-
-  @Bug(List.class)
-  public static class CopyConstructorRemovesLastElement<E> extends MutableList<E> {
-    public CopyConstructorRemovesLastElement() {}
-
-    public CopyConstructorRemovesLastElement(Collection<E> collection) {
-      super(withoutLast(collection));
-    }
-
-    private static <E> Collection<E> withoutLast(Collection<E> collection) {
-      List<E> list = new ArrayList<>(collection);
-      if (!list.isEmpty()) {
-        list.remove(list.size() - 1);
-      }
-      return list;
-    }
   }
 
   @Bug({ Collection.class, Mutable.class })
@@ -311,75 +261,6 @@ public class MutableList<E> implements List<E> {
           }
         }
       };
-    }
-  }
-
-  @Bug(List.class)
-  public static class GetReturnsFirstElement<E> extends MutableList<E> {
-    public GetReturnsFirstElement() {}
-
-    public GetReturnsFirstElement(Collection<E> collection) {
-      super(collection);
-    }
-
-    public E get(int index) {
-      return super.get(0);
-    }
-  }
-
-  @Bug(List.class)
-  public static class GetReturnsLastElement<E> extends MutableList<E> {
-    public GetReturnsLastElement() {}
-
-    public GetReturnsLastElement(Collection<E> collection) {
-      super(collection);
-    }
-
-    public E get(int index) {
-      return super.get(size() - 1);
-    }
-  }
-
-  @Bug(List.class)
-  public static class GetReturnsNull<E> extends MutableList<E> {
-    public GetReturnsNull() {}
-
-    public GetReturnsNull(Collection<E> collection) {
-      super(collection);
-    }
-
-    public E get(int index) {
-      return null;
-    }
-  }
-
-  @Bug(List.class)
-  public static class GetReturnsNullAboveBound<E> extends MutableList<E> {
-    public GetReturnsNullAboveBound() {}
-
-    public GetReturnsNullAboveBound(Collection<E> collection) {
-      super(collection);
-    }
-
-    public E get(int index) {
-      return index >= size()
-          ? null
-          : super.get(index);
-    }
-  }
-
-  @Bug(List.class)
-  public static class GetReturnsNullBelowBound<E> extends MutableList<E> {
-    public GetReturnsNullBelowBound() {}
-
-    public GetReturnsNullBelowBound(Collection<E> collection) {
-      super(collection);
-    }
-
-    public E get(int index) {
-      return index < 0
-          ? null
-          : super.get(index);
     }
   }
 
