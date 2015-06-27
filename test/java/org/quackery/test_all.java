@@ -6,10 +6,9 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.quackery.contract.collection.test_MutableList;
-import org.quackery.contract.collection.test_MutableListFactory;
 import org.quackery.contract.collection.test_collection_contract;
 import org.quackery.contract.collection.test_detecting_alien_types;
+import org.quackery.contract.collection.test_example_collections;
 import org.quackery.contract.collection.test_guava_collections;
 import org.quackery.contract.collection.test_jdk_collections;
 import org.quackery.contract.collection.test_list_contract;
@@ -28,8 +27,7 @@ public class test_all {
     runTestsIn(test_mutable_collection_contract.class);
     runTestsIn(test_list_contract.class);
     runTestsIn(test_mutable_list_contract.class);
-    runTestsIn(test_MutableList.class);
-    runTestsIn(test_MutableListFactory.class);
+    runTestsIn(test_example_collections.class);
     runTestsIn(test_detecting_alien_types.class);
     runTestsIn(test_jdk_collections.class);
     runTestsIn(test_guava_collections.class);
