@@ -6,8 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.quackery.contract.Bug;
-
 public class MutableList<E> implements List<E> {
   protected List<E> delegate;
 
@@ -121,46 +119,5 @@ public class MutableList<E> implements List<E> {
 
   public String toString() {
     return delegate.toString();
-  }
-
-  @Bug({ List.class, Mutable.class })
-  public static class AddHasNoEffect<E> extends MutableList<E> {
-    public AddHasNoEffect() {}
-
-    public AddHasNoEffect(Collection<E> collection) {
-      super(collection);
-    }
-
-    public boolean add(E e) {
-      return true;
-    }
-  }
-
-  @Bug({ List.class, Mutable.class })
-  public static class AddAddsAtTheBegin<E> extends MutableList<E> {
-    public AddAddsAtTheBegin() {}
-
-    public AddAddsAtTheBegin(Collection<E> collection) {
-      super(collection);
-    }
-
-    public boolean add(E e) {
-      super.add(0, e);
-      return true;
-    }
-  }
-
-  @Bug({ List.class, Mutable.class })
-  public static class AddReturnsFalse<E> extends MutableList<E> {
-    public AddReturnsFalse() {}
-
-    public AddReturnsFalse(Collection<E> collection) {
-      super(collection);
-    }
-
-    public boolean add(E e) {
-      super.add(e);
-      return false;
-    }
   }
 }

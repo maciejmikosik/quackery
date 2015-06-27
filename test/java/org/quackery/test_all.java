@@ -14,6 +14,7 @@ import org.quackery.contract.collection.test_guava_collections;
 import org.quackery.contract.collection.test_jdk_collections;
 import org.quackery.contract.collection.test_list_contract;
 import org.quackery.contract.collection.test_mutable_collection_contract;
+import org.quackery.contract.collection.test_mutable_list_contract;
 
 public class test_all {
   private static List<Throwable> failures = new ArrayList<Throwable>();
@@ -26,6 +27,7 @@ public class test_all {
     runTestsIn(test_collection_contract.class);
     runTestsIn(test_mutable_collection_contract.class);
     runTestsIn(test_list_contract.class);
+    runTestsIn(test_mutable_list_contract.class);
     runTestsIn(test_MutableList.class);
     runTestsIn(test_MutableListFactory.class);
     runTestsIn(test_detecting_alien_types.class);
