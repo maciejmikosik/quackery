@@ -6,14 +6,11 @@ import static org.quackery.testing.Assertions.assertSuccess;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.runner.RunWith;
 import org.quackery.Contract;
-import org.quackery.QuackeryRunner;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
-@RunWith(QuackeryRunner.class)
 public class test_guava_collections {
   private Contract<Class<?>> contract;
 
