@@ -11,12 +11,12 @@ public class Factories {
   public static ThreadLocal<Class<?>> target = new ThreadLocal<>();
 
   public static Class<?> asCollectionFactory(Class<?> collectionWithConstructor) {
-    Factories.target.set(collectionWithConstructor);
+    target.set(collectionWithConstructor);
     return CollectionFactory.class;
   }
 
   public static Class<?> asListFactory(Class<?> collectionWithConstructor) {
-    Factories.target.set(collectionWithConstructor);
+    target.set(collectionWithConstructor);
     return ListFactory.class;
   }
 
