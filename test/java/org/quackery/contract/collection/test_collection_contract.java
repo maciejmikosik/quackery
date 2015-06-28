@@ -2,7 +2,7 @@ package org.quackery.contract.collection;
 
 import static java.util.Arrays.asList;
 import static org.quackery.Contracts.quacksLike;
-import static org.quackery.contract.collection.Factories.asFactory;
+import static org.quackery.contract.collection.Factories.asCollectionFactory;
 import static org.quackery.testing.Assertions.assertFailure;
 
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class test_collection_contract {
         IteratorNextReturnsUnknownElementAfterTraversing.class,
         IteratorNextReturnsNullAfterTraversing.class)) {
       assertFailure(contract.test(commonBug));
-      assertFailure(contract.test(asFactory(commonBug)));
+      assertFailure(contract.test(asCollectionFactory(commonBug)));
     }
   }
 

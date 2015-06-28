@@ -2,7 +2,7 @@ package org.quackery.contract.collection;
 
 import static java.util.Arrays.asList;
 import static org.quackery.Contracts.quacksLike;
-import static org.quackery.contract.collection.Factories.asFactory;
+import static org.quackery.contract.collection.Factories.asListFactory;
 import static org.quackery.testing.Assertions.assertFailure;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class test_list_contract {
         GetReturnsNullAboveBound.class,
         GetReturnsNullBelowBound.class)) {
       assertFailure(contract.test(bug));
-      assertFailure(contract.test(asFactory(bug)));
+      assertFailure(contract.test(asListFactory(bug)));
     }
   }
 

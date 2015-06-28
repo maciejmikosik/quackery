@@ -10,7 +10,6 @@ import static org.quackery.contract.collection.Element.a;
 import static org.quackery.contract.collection.Element.b;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -164,11 +163,7 @@ public class CollectionSuite {
         try {
           creator.create(Object.class, null);
           fail();
-        } catch (InvocationTargetException e) {
-          try {
-            throw e.getCause();
-          } catch (NullPointerException f) {}
-        }
+        } catch (NullPointerException e) {}
       }
     };
   }
