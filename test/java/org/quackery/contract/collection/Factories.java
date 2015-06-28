@@ -1,8 +1,11 @@
 package org.quackery.contract.collection;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
+
+import org.quackery.AssumptionException;
 
 public class Factories {
   public static ThreadLocal<Class<?>> target = new ThreadLocal<>();
@@ -33,8 +36,10 @@ public class Factories {
     try {
       Constructor<?> constructor = target.get().getConstructor(Collection.class);
       return constructor.newInstance(collection);
-    } catch (ReflectiveOperationException e) {
-      throw new RuntimeException(e);
+    } catch (NoSuchMethodException | IllegalAccessException | InstantiationException e) {
+      throw new AssumptionException(e);
+    } catch (InvocationTargetException e) {
+      throw e.getCause();
     }
   }
 }
