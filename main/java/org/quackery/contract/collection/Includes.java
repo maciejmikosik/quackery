@@ -9,28 +9,28 @@ import org.quackery.Case;
 import org.quackery.Suite;
 import org.quackery.Test;
 
-public class Flags {
-  public static Test onlyIf(boolean condition, Test test) {
+public class Includes {
+  public static Test includeIf(boolean condition, Test test) {
     return condition
         ? test
         : suite("");
   }
 
-  public static Test clean(Test test) {
+  public static Test included(Test test) {
     return test instanceof Case
         ? test
-        : clean((Suite) test);
+        : included((Suite) test);
   }
 
-  private static Test clean(Suite suite) {
-    List<Test> cleanedChildren = new ArrayList<>();
+  private static Test included(Suite suite) {
+    List<Test> includedChildren = new ArrayList<>();
     for (Test child : suite.tests) {
-      Test cleanChild = clean(child);
-      if (!isEmptySuite(cleanChild)) {
-        cleanedChildren.add(cleanChild);
+      Test includedChild = included(child);
+      if (!isEmptySuite(includedChild)) {
+        includedChildren.add(includedChild);
       }
     }
-    return suite(suite.name).testAll(cleanedChildren);
+    return suite(suite.name).testAll(includedChildren);
   }
 
   private static boolean isEmptySuite(Test test) {

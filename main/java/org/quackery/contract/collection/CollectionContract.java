@@ -1,8 +1,8 @@
 package org.quackery.contract.collection;
 
 import static org.quackery.Suite.suite;
-import static org.quackery.contract.collection.Flags.clean;
-import static org.quackery.contract.collection.Flags.onlyIf;
+import static org.quackery.contract.collection.Includes.includeIf;
+import static org.quackery.contract.collection.Includes.included;
 import static org.quackery.contract.collection.suite.CollectionMutableSuite.clearRemovesElement;
 import static org.quackery.contract.collection.suite.CollectionSuite.containsReturnsFalseIfCollectionDoesNotContainElement;
 import static org.quackery.contract.collection.suite.CollectionSuite.containsReturnsTrueIfCollectionContainsElement;
@@ -75,20 +75,20 @@ public final class CollectionContract implements Contract<Class<?>> {
     Creator creator = hasConstructor
         ? new ConstructorCreator(type)
         : new FactoryCreator(type, factory);
-    return clean(suite(name(type))
+    return included(suite(name(type))
         .test(suite("quacks like Collection")
-            .test(onlyIf(hasConstructor, implementsCollectionInterface(type)))
-            .test(onlyIf(hasConstructor, suite("provides default constructor")
+            .test(includeIf(hasConstructor, implementsCollectionInterface(type)))
+            .test(includeIf(hasConstructor, suite("provides default constructor")
                 .test(defaultConstructorIsDeclared(type))
                 .test(defaultConstructorIsPublic(type))
                 .test(defaultConstructorCreatesEmptyCollection(type))))
             .test(suite("provides " + name(creator))
-                .test(onlyIf(hasConstructor, copyConstructorIsDeclared(type)))
-                .test(onlyIf(hasConstructor, copyConstructorIsPublic(type)))
-                .test(onlyIf(hasFactory, factoryIsDeclared(type, factory)))
-                .test(onlyIf(hasFactory, factoryIsPublic(type, factory)))
-                .test(onlyIf(hasFactory, factoryIsStatic(type, factory)))
-                .test(onlyIf(hasFactory, factoryReturnsCollection(type, factory)))
+                .test(includeIf(hasConstructor, copyConstructorIsDeclared(type)))
+                .test(includeIf(hasConstructor, copyConstructorIsPublic(type)))
+                .test(includeIf(hasFactory, factoryIsDeclared(type, factory)))
+                .test(includeIf(hasFactory, factoryIsPublic(type, factory)))
+                .test(includeIf(hasFactory, factoryIsStatic(type, factory)))
+                .test(includeIf(hasFactory, factoryReturnsCollection(type, factory)))
                 .test(creatorCanCreateCollectionWithOneElement(creator))
                 .test(creatorFailsForNullArgument(creator))
                 .test(creatorMakesDefensiveCopy(creator))
@@ -105,20 +105,20 @@ public final class CollectionContract implements Contract<Class<?>> {
             .test(suite("overrides iterator")
                 .test(iteratorTraversesEmptyCollection(creator))
                 .test(iteratorTraversesSingletonCollection(creator))
-                .test(onlyIf(mutable, iteratorRemovesNoElementsFromEmptyCollection(creator)))
-                .test(onlyIf(mutable, iteratorRemovesElementFromSingletonCollection(creator)))
-                .test(onlyIf(mutable, iteratorRemovesForbidsConsecutiveCalls(creator)))))
-        .test(onlyIf(mutable, suite("quacks like mutable collection")
+                .test(includeIf(mutable, iteratorRemovesNoElementsFromEmptyCollection(creator)))
+                .test(includeIf(mutable, iteratorRemovesElementFromSingletonCollection(creator)))
+                .test(includeIf(mutable, iteratorRemovesForbidsConsecutiveCalls(creator)))))
+        .test(includeIf(mutable, suite("quacks like mutable collection")
             .test(suite("overrides clear")
                 .test(clearRemovesElement(creator)))))
-        .test(onlyIf(isList, suite("quacks like list")
+        .test(includeIf(isList, suite("quacks like list")
             .test(suite("provides " + name(creator))
                 .test(cretorStoresAllElementsInOrder(creator)))
             .test(suite("overrides get")
                 .test(getReturnsEachElement(creator))
                 .test(getFailsForIndexAboveBound(creator))
                 .test(getFailsForIndexBelowBound(creator)))))
-        .test(onlyIf(isList && mutable, suite("quacks like mutable list")
+        .test(includeIf(isList && mutable, suite("quacks like mutable list")
             .test(suite("overrides add")
                 .test(addAddsElementAtTheEnd(creator))
                 .test(addReturnsTrue(creator))))));
