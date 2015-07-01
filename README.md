@@ -8,7 +8,8 @@ Running this example
     public class ArrayListTest {
       @Quackery
       public static Test test() {
-        return quacksLike(List.class)
+        return quacksLike(Collection.class)
+            .implementing(List.class)
             .mutable()
             .test(ArrayList.class);
       }

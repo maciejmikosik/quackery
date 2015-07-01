@@ -15,7 +15,8 @@ public class test_guava_collections {
   private Contract<Class<?>> contract;
 
   public void immutable_list_quacks_like_list() {
-    contract = quacksLike(List.class)
+    contract = quacksLike(Collection.class)
+        .implementing(List.class)
         .withFactory("copyOf");
     assertSuccess(contract.test(ImmutableList.class));
   }

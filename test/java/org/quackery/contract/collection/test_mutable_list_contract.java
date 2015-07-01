@@ -10,7 +10,8 @@ import java.util.List;
 
 public class test_mutable_list_contract {
   public void detects_bugs() {
-    CollectionContract contract = quacksLike(List.class)
+    CollectionContract contract = quacksLike(Collection.class)
+        .implementing(List.class)
         .mutable();
 
     for (Class<?> bug : asList(

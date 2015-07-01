@@ -9,11 +9,13 @@ Look into `Contracts` class for `quacksLike*` family of methods.
 
 Contracts are customizable so you can choose what features you expect from implementation.
 
-    quacksLike(List.class)
+    quacksLike(Collection.class)
+        .implementing(List.class)
         .mutable()
         .test(java.util.ArrayList.class);
 
-    quacksLike(List.class)
+    quacksLike(Collection.class)
+        .implementing(List.class)
         .withFactory("copyOf")
         .test(com.google.common.collect.ImmutableList.class);
 
@@ -25,7 +27,9 @@ You can run quackery tests using junit by using `QuackeryRunner`.
     public class MyListTest {
       @Quackery
       public static Test test() {
-          return quacksLike(List.class).test(MyList.class));
+          return quacksLike(Collection.class)
+              .implementing(List.class)
+              .test(MyList.class));
       }
     }
 
@@ -37,10 +41,10 @@ You can combine tests into bigger test suites.
 
     @Quackery
     public static Test test() {
-      return suite("MyList ... ")
-          .testThat(MyList.class, quacksLike(List.class))
-          .testThat(MyList.class, quacksLike( ... ))
-          .testThat(MyList.class, quacksLike( ... ));
+      return suite("MyCollection ... ")
+          .testThat(MyCollection.class, quacksLike(Collection.class))
+          .testThat(MyCollection.class, quacksLike( ... ))
+          .testThat(MyCollection.class, quacksLike( ... ));
     }
 
 ### Defining you own contracts

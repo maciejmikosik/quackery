@@ -16,13 +16,15 @@ public class test_jdk_collections {
   private Contract<Class<?>> contract;
 
   public void array_list_quacks_like_mutable_list() {
-    contract = quacksLike(List.class)
+    contract = quacksLike(Collection.class)
+        .implementing(List.class)
         .mutable();
     assertSuccess(contract.test(ArrayList.class));
   }
 
   public void linked_list_quacks_like_mutable_list() {
-    contract = quacksLike(List.class)
+    contract = quacksLike(Collection.class)
+        .implementing(List.class)
         .mutable();
     assertSuccess(contract.test(LinkedList.class));
   }
