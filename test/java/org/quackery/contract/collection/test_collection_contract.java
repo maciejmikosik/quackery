@@ -12,25 +12,30 @@ import java.util.Iterator;
 import java.util.List;
 
 public class test_collection_contract {
+
   public void detects_bugs() {
     CollectionContract contract = quacksLike(Collection.class);
 
-    for (Class<?> specificBug : asList(
+    for (Class<?> constructorBug : asList(
         DefaultConstructorIsMissing.class,
         DefaultConstructorIsHidden.class,
         DefaultConstructorAddsElement.class,
         CopyConstructorIsMissing.class,
-        CopyConstructorIsHidden.class,
+        CopyConstructorIsHidden.class)) {
+      assertFailure(contract.test(constructorBug));
+    }
+
+    for (Class<?> factoryBug : asList(
         FactoryIsMissing.class,
         FactoryIsHidden.class,
         FactoryIsNotStatic.class,
         FactoryReturnsObject.class,
         FactoryHasDifferentName.class,
         FactoryAcceptsObject.class)) {
-      assertFailure(contract.test(specificBug));
+      assertFailure(contract.withFactory("create").test(factoryBug));
     }
 
-    for (Class<?> commonBug : asList(
+    for (Class<?> bug : asList(
         CreatorCreatesEmpty.class,
         CreatorAddsElement.class,
         CreatorAcceptsNull.class,
@@ -63,8 +68,8 @@ public class test_collection_contract {
         IteratorHasNextIfCollectionIsNotEmpty.class,
         IteratorNextReturnsUnknownElementAfterTraversing.class,
         IteratorNextReturnsNullAfterTraversing.class)) {
-      assertFailure(contract.test(commonBug));
-      assertFailure(contract.test(asCollectionFactory(commonBug)));
+      assertFailure(contract.test(bug));
+      assertFailure(contract.withFactory("create").test(asCollectionFactory(bug)));
     }
   }
 

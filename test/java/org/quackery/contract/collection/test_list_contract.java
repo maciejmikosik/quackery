@@ -14,7 +14,6 @@ public class test_list_contract {
   public void detects_bugs() {
     CollectionContract contract = quacksLike(Collection.class)
         .implementing(List.class);
-
     for (Class<?> bug : asList(
         CopyConstructorStoresOneElement.class,
         CopyConstructorReversesOrder.class,
@@ -25,7 +24,7 @@ public class test_list_contract {
         GetReturnsNullAboveBound.class,
         GetReturnsNullBelowBound.class)) {
       assertFailure(contract.test(bug));
-      assertFailure(contract.test(asListFactory(bug)));
+      assertFailure(contract.withFactory("create").test(asListFactory(bug)));
     }
   }
 

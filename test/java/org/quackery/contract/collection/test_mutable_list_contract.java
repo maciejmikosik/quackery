@@ -13,13 +13,12 @@ public class test_mutable_list_contract {
     CollectionContract contract = quacksLike(Collection.class)
         .implementing(List.class)
         .mutable();
-
     for (Class<?> bug : asList(
         AddHasNoEffect.class,
         AddAddsAtTheBegin.class,
         AddReturnsFalse.class)) {
       assertFailure(contract.test(bug));
-      assertFailure(contract.test(asListFactory(bug)));
+      assertFailure(contract.withFactory("create").test(asListFactory(bug)));
     }
   }
 

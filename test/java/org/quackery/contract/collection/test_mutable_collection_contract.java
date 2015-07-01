@@ -12,7 +12,6 @@ public class test_mutable_collection_contract {
   public void detects_bugs() {
     CollectionContract contract = quacksLike(Collection.class)
         .mutable();
-
     for (Class<?> bug : asList(
         IteratorRemovesHasNoEffect.class,
         IteratorRemovesSwallowsException.class,
@@ -21,7 +20,7 @@ public class test_mutable_collection_contract {
         IteratorRemovesIgnoresSecondCall.class,
         ClearHasNoEffect.class)) {
       assertFailure(contract.test(bug));
-      assertFailure(contract.test(asCollectionFactory(bug)));
+      assertFailure(contract.withFactory("create").test(asCollectionFactory(bug)));
     }
   }
 
