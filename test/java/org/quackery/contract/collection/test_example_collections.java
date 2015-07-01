@@ -14,7 +14,7 @@ public class test_example_collections {
         .test(MutableList.class));
   }
 
-  public void mutable_list_factory_quacks_list_mutable_list_factory() {
+  public void mutable_list_factory_quacks_like_mutable_list_factory() {
     assertSuccess(quacksLike(Collection.class)
         .implementing(List.class)
         .withFactory("create")
