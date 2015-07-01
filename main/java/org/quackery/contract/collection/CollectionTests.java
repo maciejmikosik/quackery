@@ -74,6 +74,7 @@ public class CollectionTests {
             .test(includeIf(mutable, iteratorRemovesElementFromSingletonCollection(creator)))
             .test(includeIf(mutable, iteratorRemovesForbidsConsecutiveCalls(creator))))
         .test(includeIf(mutable, suite("overrides add")
+            .test(addAddsToEmptyCollection(creator))
             .test(includeIf(isList, addAddsElementAtTheEnd(creator)))
             .test(includeIf(isList, addReturnsTrue(creator)))
             .test(includeIf(isList, addAddsDuplicatedElement(creator)))))
@@ -455,6 +456,16 @@ public class CollectionTests {
           iterator.remove();
           fail();
         } catch (IllegalStateException e) {}
+      }
+    };
+  }
+
+  private static Test addAddsToEmptyCollection(final Creator creator) {
+    return new Case("adds to empty collection") {
+      public void run() throws Throwable {
+        Collection<Object> collection = creator.create(Collection.class, newArrayList());
+        collection.add(a);
+        assertEquals(copy(collection.toArray()), new Object[] { a });
       }
     };
   }

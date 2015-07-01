@@ -14,24 +14,11 @@ public class test_mutable_list_contract {
         .implementing(List.class)
         .mutable();
     for (Class<?> bug : asList(
-        AddHasNoEffect.class,
         AddAddsAtTheBegin.class,
         AddReturnsFalse.class,
         AddNotAddsDuplicatedElement.class)) {
       assertFailure(contract.test(bug));
       assertFailure(contract.withFactory("create").test(asListFactory(bug)));
-    }
-  }
-
-  public static class AddHasNoEffect<E> extends MutableList<E> {
-    public AddHasNoEffect() {}
-
-    public AddHasNoEffect(Collection<E> collection) {
-      super(collection);
-    }
-
-    public boolean add(E e) {
-      return true;
     }
   }
 
