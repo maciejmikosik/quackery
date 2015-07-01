@@ -16,7 +16,8 @@ public class test_mutable_list_contract {
     for (Class<?> bug : asList(
         AddHasNoEffect.class,
         AddAddsAtTheBegin.class,
-        AddReturnsFalse.class)) {
+        AddReturnsFalse.class,
+        AddNotAddsDuplicatedElement.class)) {
       assertFailure(contract.test(bug));
       assertFailure(contract.withFactory("create").test(asListFactory(bug)));
     }
@@ -57,6 +58,21 @@ public class test_mutable_list_contract {
     public boolean add(E e) {
       super.add(e);
       return false;
+    }
+  }
+
+  public static class AddNotAddsDuplicatedElement<E> extends MutableList<E> {
+    public AddNotAddsDuplicatedElement() {}
+
+    public AddNotAddsDuplicatedElement(Collection<E> collection) {
+      super(collection);
+    }
+
+    public boolean add(E e) {
+      if (!contains(e)) {
+        super.add(e);
+      }
+      return true;
     }
   }
 }

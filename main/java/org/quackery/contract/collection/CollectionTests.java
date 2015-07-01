@@ -73,7 +73,8 @@ public class CollectionTests {
             .test(includeIf(mutable, iteratorRemovesForbidsConsecutiveCalls(creator))))
         .test(includeIf(mutable, suite("overrides add")
             .test(includeIf(isList, addAddsElementAtTheEnd(creator)))
-            .test(includeIf(isList, addReturnsTrue(creator)))))
+            .test(includeIf(isList, addReturnsTrue(creator)))
+            .test(includeIf(isList, addAddsDuplicatedElement(creator)))))
         .test(includeIf(mutable, suite("overrides clear")
             .test(clearRemovesElement(creator))))
         .test(includeIf(isList, suite("overrides get")
@@ -448,6 +449,16 @@ public class CollectionTests {
       public void run() throws Throwable {
         List<Object> list = creator.create(List.class, newArrayList(a, b, c));
         assertThat(list.add(d));
+      }
+    };
+  }
+
+  private static Test addAddsDuplicatedElement(final Creator creator) {
+    return new Case("adds duplicated element") {
+      public void run() throws Throwable {
+        List<Object> list = creator.create(List.class, newArrayList(a));
+        list.add(a);
+        assertEquals(copy(list.toArray()), new Object[] { a, a });
       }
     };
   }
