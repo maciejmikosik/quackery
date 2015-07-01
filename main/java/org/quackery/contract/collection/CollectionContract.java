@@ -3,7 +3,7 @@ package org.quackery.contract.collection;
 import org.quackery.Contract;
 import org.quackery.Test;
 
-public final class CollectionContract implements Contract<Class<?>> {
+public class CollectionContract implements Contract<Class<?>> {
   private final Configuration configuration;
 
   public CollectionContract() {
