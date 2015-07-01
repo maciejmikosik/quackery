@@ -76,7 +76,7 @@ public class CollectionTests {
                 .test(clearRemovesElement(creator)))))
         .test(includeIf(isList, suite("quacks like list")
             .test(suite("provides " + name(creator))
-                .test(cretorStoresAllElementsInOrder(creator)))
+                .test(creatorStoresAllElementsInOrder(creator)))
             .test(suite("overrides get")
                 .test(getReturnsEachElement(creator))
                 .test(getFailsForIndexAboveBound(creator))
@@ -428,7 +428,7 @@ public class CollectionTests {
     };
   }
 
-  private static Test cretorStoresAllElementsInOrder(final Creator creator) {
+  private static Test creatorStoresAllElementsInOrder(final Creator creator) {
     return new Case("stores all elements in order") {
       public void run() throws Throwable {
         run(newArrayList(a, b, c));
