@@ -36,33 +36,28 @@ import static org.quackery.contract.collection.suite.ListSuite.getFailsForIndexA
 import static org.quackery.contract.collection.suite.ListSuite.getFailsForIndexBelowBound;
 import static org.quackery.contract.collection.suite.ListSuite.getReturnsEachElement;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.quackery.Contract;
 import org.quackery.Test;
 
 public final class CollectionContract implements Contract<Class<?>> {
-  private final Class<?> supertype;
-  private final boolean mutable;
-  private final String factory;
+  private final Configuration configuration;
 
   public CollectionContract() {
-    supertype = Collection.class;
-    mutable = false;
-    factory = null;
+    configuration = new Configuration();
   }
 
-  private CollectionContract(Class<?> supertype, boolean mutable, String factory) {
-    this.supertype = supertype;
-    this.mutable = mutable;
-    this.factory = factory;
+  private CollectionContract(Configuration configuration) {
+    this.configuration = configuration;
   }
 
   public Test test(Class<?> type) {
-    boolean isList = supertype == List.class;
-    boolean hasConstructor = factory == null;
-    boolean hasFactory = factory != null;
+    boolean isList = configuration.isImplementing(List.class);
+    boolean hasConstructor = configuration.hasConstructor();
+    boolean hasFactory = configuration.hasFactory();
+    boolean mutable = configuration.isMutable();
+    String factory = configuration.getFactoryName();
     Creator creator = hasConstructor
         ? new ConstructorCreator(type)
         : new FactoryCreator(type, factory);
@@ -118,10 +113,10 @@ public final class CollectionContract implements Contract<Class<?>> {
   private String name(Class<?> type) {
     StringBuilder builder = new StringBuilder();
     builder.append(type.getName() + " quacks like");
-    if (mutable) {
+    if (configuration.isMutable()) {
       builder.append(" mutable");
     }
-    builder.append(" ").append(supertype.getSimpleName().toLowerCase());
+    builder.append(" ").append(configuration.getCollectionType().getSimpleName().toLowerCase());
     return builder.toString();
   }
 
@@ -131,15 +126,15 @@ public final class CollectionContract implements Contract<Class<?>> {
         : "factory method";
   }
 
-  public CollectionContract implementing(Class<?> collectionInterface) {
-    return new CollectionContract(collectionInterface, mutable, factory);
+  public CollectionContract implementing(Class<?> type) {
+    return new CollectionContract(configuration.implementing(type));
   }
 
   public CollectionContract mutable() {
-    return new CollectionContract(supertype, true, factory);
+    return new CollectionContract(configuration.mutable());
   }
 
   public CollectionContract withFactory(String factoryMethodName) {
-    return new CollectionContract(supertype, mutable, factoryMethodName);
+    return new CollectionContract(configuration.withFactory(factoryMethodName));
   }
 }
