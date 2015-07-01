@@ -464,7 +464,8 @@ public class CollectionTests {
     return new Case("adds to empty collection") {
       public void run() throws Throwable {
         Collection<Object> collection = creator.create(Collection.class, newArrayList());
-        collection.add(a);
+        boolean added = collection.add(a);
+        assertThat(added);
         assertEquals(copy(collection.toArray()), new Object[] { a });
       }
     };

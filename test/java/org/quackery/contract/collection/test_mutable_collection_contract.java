@@ -19,6 +19,7 @@ public class test_mutable_collection_contract {
         IteratorRemovesThrowsInverted.class,
         IteratorRemovesIgnoresSecondCall.class,
         AddHasNoEffect.class,
+        AddReturnsNegation.class,
         AddAllHasNoEffect.class,
         ClearHasNoEffect.class)) {
       assertFailure(contract.test(bug));
@@ -171,6 +172,18 @@ public class test_mutable_collection_contract {
 
     public boolean add(E e) {
       return true;
+    }
+  }
+
+  public static class AddReturnsNegation<E> extends MutableList<E> {
+    public AddReturnsNegation() {}
+
+    public AddReturnsNegation(Collection<E> collection) {
+      super(collection);
+    }
+
+    public boolean add(E e) {
+      return !super.add(e);
     }
   }
 
