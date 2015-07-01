@@ -77,6 +77,8 @@ public class CollectionTests {
             .test(includeIf(isList, addAddsElementAtTheEnd(creator)))
             .test(includeIf(isList, addReturnsTrue(creator)))
             .test(includeIf(isList, addAddsDuplicatedElement(creator)))))
+        .test(includeIf(mutable, suite("overrides addAll")
+            .test(addAllCanAddOneElement(creator))))
         .test(includeIf(mutable, suite("overrides clear")
             .test(clearRemovesElement(creator))))
         .test(includeIf(isList, suite("overrides get")
@@ -484,6 +486,16 @@ public class CollectionTests {
         List<Object> list = creator.create(List.class, newArrayList(a));
         list.add(a);
         assertEquals(copy(list.toArray()), new Object[] { a, a });
+      }
+    };
+  }
+
+  private static Test addAllCanAddOneElement(final Creator creator) {
+    return new Case("can add one element") {
+      public void run() throws Throwable {
+        Collection<Object> collection = creator.create(Collection.class, newArrayList());
+        collection.addAll(newArrayList(a));
+        assertEquals(collection.toArray(), new Object[] { a });
       }
     };
   }

@@ -18,6 +18,7 @@ public class test_mutable_collection_contract {
         IteratorRemovesThrowsException.class,
         IteratorRemovesThrowsInverted.class,
         IteratorRemovesIgnoresSecondCall.class,
+        AddAllHasNoEffect.class,
         ClearHasNoEffect.class)) {
       assertFailure(contract.test(bug));
       assertFailure(contract.withFactory("create").test(asCollectionFactory(bug)));
@@ -157,6 +158,18 @@ public class test_mutable_collection_contract {
           }
         }
       };
+    }
+  }
+
+  public static class AddAllHasNoEffect<E> extends MutableList<E> {
+    public AddAllHasNoEffect() {}
+
+    public AddAllHasNoEffect(Collection<E> collection) {
+      super(collection);
+    }
+
+    public boolean addAll(Collection<? extends E> collection) {
+      return true;
     }
   }
 
