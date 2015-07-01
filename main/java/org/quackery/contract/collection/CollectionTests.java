@@ -55,7 +55,8 @@ public class CollectionTests {
             .test(creatorFailsForNullArgument(creator))
             .test(creatorMakesDefensiveCopy(creator))
             .test(creatorDoesNotModifyArgument(creator))
-            .test(includeIf(isList, creatorStoresAllElementsInOrder(creator))))
+            .test(includeIf(isList, creatorStoresAllElementsInOrder(creator)))
+            .test(includeIf(isList, creatorAllowsDuplicates(creator))))
         .test(suite("overrides size")
             .test(sizeReturnsZeroIfCollectionIsEmpty(creator))
             .test(sizeReturnsOneIfCollectionHasOneElement(creator)))
@@ -281,6 +282,16 @@ public class CollectionTests {
       private void run(ArrayList<?> order) throws Throwable {
         List<?> list = creator.create(List.class, copy(order));
         assertEquals(copy(list.toArray()), order.toArray());
+      }
+    };
+  }
+
+  private static Test creatorAllowsDuplicates(final Creator creator) {
+    return new Case("allows duplicates") {
+      public void run() throws Throwable {
+        ArrayList<?> original = newArrayList(a, a);
+        List<?> list = creator.create(List.class, copy(original));
+        assertEquals(copy(list.toArray()), original.toArray());
       }
     };
   }
