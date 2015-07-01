@@ -47,8 +47,8 @@ public final class CollectionContract implements Contract<Class<?>> {
   private final boolean mutable;
   private final String factory;
 
-  private CollectionContract(Class<?> supertype) {
-    this.supertype = supertype;
+  public CollectionContract() {
+    supertype = Collection.class;
     mutable = false;
     factory = null;
   }
@@ -57,15 +57,6 @@ public final class CollectionContract implements Contract<Class<?>> {
     this.supertype = supertype;
     this.mutable = mutable;
     this.factory = factory;
-  }
-
-  public static CollectionContract collectionContract(Class<Collection> supertype,
-      Collection<?>... erasure) {
-    return new CollectionContract(supertype);
-  }
-
-  public static CollectionContract collectionContract(Class<List> supertype, List<?>... erasure) {
-    return new CollectionContract(supertype);
   }
 
   public Test test(Class<?> type) {
@@ -138,6 +129,10 @@ public final class CollectionContract implements Contract<Class<?>> {
     return creator instanceof ConstructorCreator
         ? "copy constructor"
         : "factory method";
+  }
+
+  public CollectionContract implementing(Class<?> collectionInterface) {
+    return new CollectionContract(collectionInterface, mutable, factory);
   }
 
   public CollectionContract mutable() {

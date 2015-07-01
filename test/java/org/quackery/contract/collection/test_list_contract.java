@@ -12,7 +12,8 @@ import java.util.List;
 
 public class test_list_contract {
   public void detects_bugs() {
-    CollectionContract contract = quacksLike(List.class);
+    CollectionContract contract = quacksLike(Collection.class)
+        .implementing(List.class);
 
     for (Class<?> bug : asList(
         CopyConstructorStoresOneElement.class,
