@@ -51,6 +51,7 @@ public class CollectionTests {
             .test(includeIf(hasFactory, factoryIsPublic(type, factory)))
             .test(includeIf(hasFactory, factoryIsStatic(type, factory)))
             .test(includeIf(hasFactory, factoryReturnsCollection(type, factory)))
+            .test(includeIf(hasFactory && isList, factoryReturnsList(type, factory)))
             .test(creatorCanCreateCollectionWithOneElement(creator))
             .test(creatorFailsForNullArgument(creator))
             .test(creatorMakesDefensiveCopy(creator))
@@ -218,6 +219,19 @@ public class CollectionTests {
           assertThat(Collection.class.isAssignableFrom(method.getReturnType()));
         } catch (NoSuchMethodException e) {
           assume(false);
+        }
+      }
+    };
+  }
+
+  private static Test factoryReturnsList(final Class<?> type, final String factory) {
+    return new Case("returns List") {
+      public void run() {
+        try {
+          Method method = type.getMethod(factory, Collection.class);
+          assertThat(List.class.isAssignableFrom(method.getReturnType()));
+        } catch (NoSuchMethodException e) {
+          throw new AssumptionException(e);
         }
       }
     };

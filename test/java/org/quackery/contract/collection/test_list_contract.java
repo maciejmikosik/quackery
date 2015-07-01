@@ -14,6 +14,11 @@ public class test_list_contract {
   public void detects_bugs() {
     CollectionContract contract = quacksLike(Collection.class)
         .implementing(List.class);
+
+    for (Class<?> factoryBug : asList(FactoryReturnsCollection.class)) {
+      assertFailure(contract.withFactory("create").test(factoryBug));
+    }
+
     for (Class<?> bug : asList(
         CopyConstructorStoresOneElement.class,
         CopyConstructorReversesOrder.class,
@@ -26,6 +31,12 @@ public class test_list_contract {
         GetReturnsNullBelowBound.class)) {
       assertFailure(contract.test(bug));
       assertFailure(contract.withFactory("create").test(asListFactory(bug)));
+    }
+  }
+
+  public static class FactoryReturnsCollection {
+    public static <E> Collection<E> create(Collection<? extends E> collection) {
+      return new MutableList(collection);
     }
   }
 
