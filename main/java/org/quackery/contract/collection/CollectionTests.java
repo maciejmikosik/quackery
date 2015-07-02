@@ -139,7 +139,7 @@ public class CollectionTests {
           Constructor<?> constructor = type.getDeclaredConstructor();
           assertThat(Modifier.isPublic(constructor.getModifiers()));
         } catch (NoSuchMethodException e) {
-          assume(false);
+          throw new AssumptionException(e);
         }
       }
     };
@@ -153,7 +153,7 @@ public class CollectionTests {
           Collection<?> collection = (Collection<?>) type.getConstructor().newInstance();
           assertEquals(collection.toArray(), new Object[0]);
         } catch (NoSuchMethodException e) {
-          assume(false);
+          throw new AssumptionException(e);
         }
       }
     };
@@ -178,7 +178,7 @@ public class CollectionTests {
           Constructor<?> constructor = type.getDeclaredConstructor(Collection.class);
           assertThat(Modifier.isPublic(constructor.getModifiers()));
         } catch (NoSuchMethodException e) {
-          assume(false);
+          throw new AssumptionException(e);
         }
       }
     };
@@ -203,7 +203,7 @@ public class CollectionTests {
           Method method = type.getDeclaredMethod(methodName, Collection.class);
           assertThat(Modifier.isPublic(method.getModifiers()));
         } catch (NoSuchMethodException e) {
-          assume(false);
+          throw new AssumptionException(e);
         }
       }
     };
@@ -216,7 +216,7 @@ public class CollectionTests {
           Method method = type.getDeclaredMethod(methodName, Collection.class);
           assertThat(Modifier.isStatic(method.getModifiers()));
         } catch (NoSuchMethodException e) {
-          assume(false);
+          throw new AssumptionException(e);
         }
       }
     };
@@ -229,7 +229,7 @@ public class CollectionTests {
           Method method = type.getDeclaredMethod(methodName, Collection.class);
           assertThat(Collection.class.isAssignableFrom(method.getReturnType()));
         } catch (NoSuchMethodException e) {
-          assume(false);
+          throw new AssumptionException(e);
         }
       }
     };
