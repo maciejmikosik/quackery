@@ -18,7 +18,8 @@ public class test_mutable_list_contract {
         AddReturnsFalse.class,
         AddNotAddsDuplicatedElement.class,
         SetAddsElement.class,
-        SetReturnsInsertedElement.class)) {
+        SetReturnsInsertedElement.class,
+        SetIndexesFromEnd.class)) {
       assertFailure(contract.test(bug));
       assertFailure(contract.withFactory("create").test(asListFactory(bug)));
     }
@@ -88,6 +89,18 @@ public class test_mutable_list_contract {
     public E set(int index, E element) {
       super.set(index, element);
       return element;
+    }
+  }
+
+  public static class SetIndexesFromEnd<E> extends MutableList<E> {
+    public SetIndexesFromEnd() {}
+
+    public SetIndexesFromEnd(Collection<E> collection) {
+      super(collection);
+    }
+
+    public E set(int index, E element) {
+      return super.set(size() - 1 - index, element);
     }
   }
 }
