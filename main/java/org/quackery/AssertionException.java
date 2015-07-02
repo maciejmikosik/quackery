@@ -17,7 +17,7 @@ public class AssertionException extends RuntimeException {
     super(cause);
   }
 
-  public static void assertThat(boolean condition) {
+  public static void assertTrue(boolean condition) {
     if (!condition) {
       throw new AssertionException();
     }

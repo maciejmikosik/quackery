@@ -1,7 +1,7 @@
 package org.quackery.contract.collection;
 
 import static org.quackery.AssertionException.assertEquals;
-import static org.quackery.AssertionException.assertThat;
+import static org.quackery.AssertionException.assertTrue;
 import static org.quackery.AssertionException.fail;
 import static org.quackery.AssumptionException.assume;
 import static org.quackery.Suite.suite;
@@ -115,7 +115,7 @@ public class CollectionTests {
   private static Test implementsCollectionInterface(final Class<?> type) {
     return new Case("implements Collection interface") {
       public void run() throws Throwable {
-        assertThat(Collection.class.isAssignableFrom(type));
+        assertTrue(Collection.class.isAssignableFrom(type));
       }
     };
   }
@@ -137,7 +137,7 @@ public class CollectionTests {
       public void run() {
         try {
           Constructor<?> constructor = type.getDeclaredConstructor();
-          assertThat(Modifier.isPublic(constructor.getModifiers()));
+          assertTrue(Modifier.isPublic(constructor.getModifiers()));
         } catch (NoSuchMethodException e) {
           throw new AssumptionException(e);
         }
@@ -176,7 +176,7 @@ public class CollectionTests {
       public void run() {
         try {
           Constructor<?> constructor = type.getDeclaredConstructor(Collection.class);
-          assertThat(Modifier.isPublic(constructor.getModifiers()));
+          assertTrue(Modifier.isPublic(constructor.getModifiers()));
         } catch (NoSuchMethodException e) {
           throw new AssumptionException(e);
         }
@@ -201,7 +201,7 @@ public class CollectionTests {
       public void run() {
         try {
           Method method = type.getDeclaredMethod(methodName, Collection.class);
-          assertThat(Modifier.isPublic(method.getModifiers()));
+          assertTrue(Modifier.isPublic(method.getModifiers()));
         } catch (NoSuchMethodException e) {
           throw new AssumptionException(e);
         }
@@ -214,7 +214,7 @@ public class CollectionTests {
       public void run() {
         try {
           Method method = type.getDeclaredMethod(methodName, Collection.class);
-          assertThat(Modifier.isStatic(method.getModifiers()));
+          assertTrue(Modifier.isStatic(method.getModifiers()));
         } catch (NoSuchMethodException e) {
           throw new AssumptionException(e);
         }
@@ -227,7 +227,7 @@ public class CollectionTests {
       public void run() {
         try {
           Method method = type.getDeclaredMethod(methodName, Collection.class);
-          assertThat(Collection.class.isAssignableFrom(method.getReturnType()));
+          assertTrue(Collection.class.isAssignableFrom(method.getReturnType()));
         } catch (NoSuchMethodException e) {
           throw new AssumptionException(e);
         }
@@ -240,7 +240,7 @@ public class CollectionTests {
       public void run() {
         try {
           Method method = type.getMethod(factory, Collection.class);
-          assertThat(List.class.isAssignableFrom(method.getReturnType()));
+          assertTrue(List.class.isAssignableFrom(method.getReturnType()));
         } catch (NoSuchMethodException e) {
           throw new AssumptionException(e);
         }
@@ -325,7 +325,7 @@ public class CollectionTests {
     return new Case("returns 0 if collection is empty") {
       public void run() throws Throwable {
         Collection<?> collection = creator.create(Collection.class, newArrayList());
-        assertThat(collection.size() == 0);
+        assertTrue(collection.size() == 0);
       }
     };
   }
@@ -334,7 +334,7 @@ public class CollectionTests {
     return new Case("returns 1 if collection has 1 element") {
       public void run() throws Throwable {
         Collection<?> collection = creator.create(Collection.class, newArrayList(a));
-        assertThat(collection.size() == 1);
+        assertTrue(collection.size() == 1);
       }
     };
   }
@@ -343,7 +343,7 @@ public class CollectionTests {
     return new Case("returns false if collection has 1 element") {
       public void run() throws Throwable {
         Collection<?> collection = creator.create(Collection.class, newArrayList(a));
-        assertThat(!collection.isEmpty());
+        assertTrue(!collection.isEmpty());
       }
     };
   }
@@ -352,7 +352,7 @@ public class CollectionTests {
     return new Case("returns true if collection is empty") {
       public void run() throws Throwable {
         Collection<?> collection = creator.create(Collection.class, newArrayList());
-        assertThat(collection.isEmpty());
+        assertTrue(collection.isEmpty());
       }
     };
   }
@@ -361,7 +361,7 @@ public class CollectionTests {
     return new Case("returns false if collection does not contain element") {
       public void run() throws Throwable {
         Collection<?> collection = creator.create(Collection.class, newArrayList(a));
-        assertThat(!collection.contains(b));
+        assertTrue(!collection.contains(b));
       }
     };
   }
@@ -370,7 +370,7 @@ public class CollectionTests {
     return new Case("returns true if collection contains element") {
       public void run() throws Throwable {
         Collection<?> collection = creator.create(Collection.class, newArrayList(a));
-        assertThat(collection.contains(a));
+        assertTrue(collection.contains(a));
       }
     };
   }
@@ -380,8 +380,8 @@ public class CollectionTests {
       public void run() throws Throwable {
         Collection<?> collection = creator.create(Collection.class, newArrayList());
         Iterator<?> iterator = collection.iterator();
-        assertThat(iterator != null);
-        assertThat(!iterator.hasNext());
+        assertTrue(iterator != null);
+        assertTrue(!iterator.hasNext());
         try {
           iterator.next();
           fail();
@@ -395,10 +395,10 @@ public class CollectionTests {
       public void run() throws Throwable {
         Collection<?> collection = creator.create(Collection.class, newArrayList(a));
         Iterator<?> iterator = collection.iterator();
-        assertThat(iterator != null);
-        assertThat(iterator.hasNext());
+        assertTrue(iterator != null);
+        assertTrue(iterator.hasNext());
         assertEquals(iterator.next(), a);
-        assertThat(!iterator.hasNext());
+        assertTrue(!iterator.hasNext());
         try {
           iterator.next();
           fail();
@@ -439,7 +439,7 @@ public class CollectionTests {
         }
         Object[] array = collection.toArray();
         assume(array != null);
-        assertThat(array.length == 0);
+        assertTrue(array.length == 0);
       }
     };
   }
@@ -473,7 +473,7 @@ public class CollectionTests {
       public void run() throws Throwable {
         Collection<Object> collection = creator.create(Collection.class, newArrayList());
         boolean added = collection.add(a);
-        assertThat(added);
+        assertTrue(added);
         assertEquals(copy(collection.toArray()), new Object[] { a });
       }
     };
@@ -495,7 +495,7 @@ public class CollectionTests {
     return new Case("returns true") {
       public void run() throws Throwable {
         List<Object> list = creator.create(List.class, newArrayList(a, b, c));
-        assertThat(list.add(d));
+        assertTrue(list.add(d));
       }
     };
   }

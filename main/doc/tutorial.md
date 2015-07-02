@@ -63,7 +63,7 @@ You can define your own contracts by implementing `org.quackery.Contract` interf
           public Test test(final Class<?> type) {
             return new Case(type.getName() + " is final") {
               public void run() {
-                assertThat(Modifier.isFinal(type.getModifiers()));
+                assertTrue(Modifier.isFinal(type.getModifiers()));
               }
             };
           }
