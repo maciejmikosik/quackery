@@ -39,52 +39,61 @@ public class CollectionTests {
         ? new ConstructorCreator(type)
         : new FactoryCreator(type, factory);
     return included(suite(name(type, configuration))
-        .test(suite("quacks like Collection")
-            .test(includeIf(hasConstructor, implementsCollectionInterface(type)))
-            .test(includeIf(hasConstructor, suite("provides default constructor")
-                .test(defaultConstructorIsDeclared(type))
-                .test(defaultConstructorIsPublic(type))
-                .test(defaultConstructorCreatesEmptyCollection(type))))
-            .test(suite("provides " + name(creator))
-                .test(includeIf(hasConstructor, copyConstructorIsDeclared(type)))
-                .test(includeIf(hasConstructor, copyConstructorIsPublic(type)))
-                .test(includeIf(hasFactory, factoryIsDeclared(type, factory)))
-                .test(includeIf(hasFactory, factoryIsPublic(type, factory)))
-                .test(includeIf(hasFactory, factoryIsStatic(type, factory)))
-                .test(includeIf(hasFactory, factoryReturnsCollection(type, factory)))
-                .test(creatorCanCreateCollectionWithOneElement(creator))
-                .test(creatorFailsForNullArgument(creator))
-                .test(creatorMakesDefensiveCopy(creator))
-                .test(creatorDoesNotModifyArgument(creator)))
-            .test(suite("overrides size")
-                .test(sizeReturnsZeroIfCollectionIsEmpty(creator))
-                .test(sizeReturnsOneIfCollectionHasOneElement(creator)))
-            .test(suite("overrides isEmpty")
-                .test(isEmptyReturnsFalseIfCollectionHasOneElement(creator))
-                .test(isEmptyReturnsTrueIfCollectionIsEmpty(creator)))
-            .test(suite("overrides contains")
-                .test(containsReturnsFalseIfCollectionDoesNotContainElement(creator))
-                .test(containsReturnsTrueIfCollectionContainsElement(creator)))
-            .test(suite("overrides iterator")
-                .test(iteratorTraversesEmptyCollection(creator))
-                .test(iteratorTraversesSingletonCollection(creator))
-                .test(includeIf(mutable, iteratorRemovesNoElementsFromEmptyCollection(creator)))
-                .test(includeIf(mutable, iteratorRemovesElementFromSingletonCollection(creator)))
-                .test(includeIf(mutable, iteratorRemovesForbidsConsecutiveCalls(creator)))))
-        .test(includeIf(mutable, suite("quacks like mutable collection")
-            .test(suite("overrides clear")
-                .test(clearRemovesElement(creator)))))
-        .test(includeIf(isList, suite("quacks like list")
-            .test(suite("provides " + name(creator))
-                .test(creatorStoresAllElementsInOrder(creator)))
-            .test(suite("overrides get")
-                .test(getReturnsEachElement(creator))
-                .test(getFailsForIndexAboveBound(creator))
-                .test(getFailsForIndexBelowBound(creator)))))
-        .test(includeIf(isList && mutable, suite("quacks like mutable list")
-            .test(suite("overrides add")
-                .test(addAddsElementAtTheEnd(creator))
-                .test(addReturnsTrue(creator))))));
+        .test(includeIf(hasConstructor, implementsCollectionInterface(type)))
+        .test(includeIf(hasConstructor, suite("provides default constructor")
+            .test(defaultConstructorIsDeclared(type))
+            .test(defaultConstructorIsPublic(type))
+            .test(defaultConstructorCreatesEmptyCollection(type))))
+        .test(suite("provides " + name(creator))
+            .test(includeIf(hasConstructor, copyConstructorIsDeclared(type)))
+            .test(includeIf(hasConstructor, copyConstructorIsPublic(type)))
+            .test(includeIf(hasFactory, factoryIsDeclared(type, factory)))
+            .test(includeIf(hasFactory, factoryIsPublic(type, factory)))
+            .test(includeIf(hasFactory, factoryIsStatic(type, factory)))
+            .test(includeIf(hasFactory, factoryReturnsCollection(type, factory)))
+            .test(includeIf(hasFactory && isList, factoryReturnsList(type, factory)))
+            .test(creatorCanCreateCollectionWithOneElement(creator))
+            .test(creatorFailsForNullArgument(creator))
+            .test(creatorMakesDefensiveCopy(creator))
+            .test(creatorDoesNotModifyArgument(creator))
+            .test(includeIf(isList, creatorStoresAllElementsInOrder(creator)))
+            .test(includeIf(isList, creatorAllowsDuplicates(creator))))
+        .test(suite("overrides size")
+            .test(sizeReturnsZeroIfCollectionIsEmpty(creator))
+            .test(sizeReturnsOneIfCollectionHasOneElement(creator)))
+        .test(suite("overrides isEmpty")
+            .test(isEmptyReturnsFalseIfCollectionHasOneElement(creator))
+            .test(isEmptyReturnsTrueIfCollectionIsEmpty(creator)))
+        .test(suite("overrides contains")
+            .test(containsReturnsFalseIfCollectionDoesNotContainElement(creator))
+            .test(containsReturnsTrueIfCollectionContainsElement(creator)))
+        .test(suite("overrides iterator")
+            .test(iteratorTraversesEmptyCollection(creator))
+            .test(iteratorTraversesSingletonCollection(creator))
+            .test(includeIf(mutable, iteratorRemovesNoElementsFromEmptyCollection(creator)))
+            .test(includeIf(mutable, iteratorRemovesElementFromSingletonCollection(creator)))
+            .test(includeIf(mutable, iteratorRemovesForbidsConsecutiveCalls(creator))))
+        .test(includeIf(mutable, suite("overrides add")
+            .test(addAddsToEmptyCollection(creator))
+            .test(includeIf(isList, addAddsElementAtTheEnd(creator)))
+            .test(includeIf(isList, addReturnsTrue(creator)))
+            .test(includeIf(isList, addAddsDuplicatedElement(creator)))))
+        .test(includeIf(mutable, suite("overrides remove")
+            .test(removeRemovesSingleElement(creator))))
+        .test(includeIf(mutable, suite("overrides addAll")
+            .test(addAllCanAddOneElement(creator))))
+        .test(includeIf(mutable, suite("overrides clear")
+            .test(clearRemovesElement(creator))))
+        .test(includeIf(isList, suite("overrides get")
+            .test(getReturnsEachElement(creator))
+            .test(getFailsForIndexAboveBound(creator))
+            .test(getFailsForIndexBelowBound(creator))))
+        .test(includeIf(mutable && isList, suite("overrides set")
+            .test(setReplacesSingleElement(creator))
+            .test(setReturnsReplacedElement(creator))
+            .test(setReplacesElementAtIndex(creator))))
+        .test(includeIf(mutable && isList, suite("overrides add at index")
+            .test(addIntAddsAtIndex(creator)))));
   }
 
   private static String name(Class<?> type, Configuration configuration) {
@@ -226,6 +235,19 @@ public class CollectionTests {
     };
   }
 
+  private static Test factoryReturnsList(final Class<?> type, final String factory) {
+    return new Case("returns List") {
+      public void run() {
+        try {
+          Method method = type.getMethod(factory, Collection.class);
+          assertThat(List.class.isAssignableFrom(method.getReturnType()));
+        } catch (NoSuchMethodException e) {
+          throw new AssumptionException(e);
+        }
+      }
+    };
+  }
+
   private static Test creatorCanCreateCollectionWithOneElement(final Creator creator) {
     return new Case("can create collection with 1 element") {
       public void run() throws Throwable {
@@ -267,6 +289,34 @@ public class CollectionTests {
         ArrayList<Object> argument = copy(original);
         creator.create(Object.class, argument);
         assertEquals(argument.toArray(), original.toArray());
+      }
+    };
+  }
+
+  private static Test creatorStoresAllElementsInOrder(final Creator creator) {
+    return new Case("stores all elements in order") {
+      public void run() throws Throwable {
+        run(newArrayList(a, b, c));
+        run(newArrayList(a, c, b));
+        run(newArrayList(b, a, c));
+        run(newArrayList(b, c, a));
+        run(newArrayList(c, a, b));
+        run(newArrayList(c, b, a));
+      }
+
+      private void run(ArrayList<?> order) throws Throwable {
+        List<?> list = creator.create(List.class, copy(order));
+        assertEquals(copy(list.toArray()), order.toArray());
+      }
+    };
+  }
+
+  private static Test creatorAllowsDuplicates(final Creator creator) {
+    return new Case("allows duplicates") {
+      public void run() throws Throwable {
+        ArrayList<?> original = newArrayList(a, a);
+        List<?> list = creator.create(List.class, copy(original));
+        assertEquals(copy(list.toArray()), original.toArray());
       }
     };
   }
@@ -418,30 +468,74 @@ public class CollectionTests {
     };
   }
 
+  private static Test addAddsToEmptyCollection(final Creator creator) {
+    return new Case("adds to empty collection") {
+      public void run() throws Throwable {
+        Collection<Object> collection = creator.create(Collection.class, newArrayList());
+        boolean added = collection.add(a);
+        assertThat(added);
+        assertEquals(copy(collection.toArray()), new Object[] { a });
+      }
+    };
+  }
+
+  private static Test addAddsElementAtTheEnd(final Creator creator) {
+    return new Case("adds element at the end") {
+      public void run() throws Throwable {
+        ArrayList<Object> original = newArrayList(a, b, c);
+        List<Object> list = creator.create(List.class, copy(original));
+        original.add(d);
+        list.add(d);
+        assertEquals(copy(list.toArray()), original.toArray());
+      }
+    };
+  }
+
+  private static Test addReturnsTrue(final Creator creator) {
+    return new Case("returns true") {
+      public void run() throws Throwable {
+        List<Object> list = creator.create(List.class, newArrayList(a, b, c));
+        assertThat(list.add(d));
+      }
+    };
+  }
+
+  private static Test addAddsDuplicatedElement(final Creator creator) {
+    return new Case("adds duplicated element") {
+      public void run() throws Throwable {
+        List<Object> list = creator.create(List.class, newArrayList(a));
+        list.add(a);
+        assertEquals(copy(list.toArray()), new Object[] { a, a });
+      }
+    };
+  }
+
+  private static Test removeRemovesSingleElement(final Creator creator) {
+    return new Case("removes single element") {
+      public void run() throws Throwable {
+        Collection<Object> collection = creator.create(Collection.class, newArrayList(a));
+        collection.remove(a);
+        assertEquals(copy(collection.toArray()), new Object[] {});
+      }
+    };
+  }
+
+  private static Test addAllCanAddOneElement(final Creator creator) {
+    return new Case("can add one element") {
+      public void run() throws Throwable {
+        Collection<Object> collection = creator.create(Collection.class, newArrayList());
+        collection.addAll(newArrayList(a));
+        assertEquals(collection.toArray(), new Object[] { a });
+      }
+    };
+  }
+
   private static Test clearRemovesElement(final Creator creator) {
     return new Case("empties collection if it has 1 element") {
       public void run() throws Throwable {
         Collection<?> collection = creator.create(Collection.class, newArrayList(a));
         collection.clear();
         assertEquals(collection.toArray(), new Object[] {});
-      }
-    };
-  }
-
-  private static Test creatorStoresAllElementsInOrder(final Creator creator) {
-    return new Case("stores all elements in order") {
-      public void run() throws Throwable {
-        run(newArrayList(a, b, c));
-        run(newArrayList(a, c, b));
-        run(newArrayList(b, a, c));
-        run(newArrayList(b, c, a));
-        run(newArrayList(c, a, b));
-        run(newArrayList(c, b, a));
-      }
-
-      private void run(ArrayList<?> order) throws Throwable {
-        List<?> list = creator.create(List.class, copy(order));
-        assertEquals(copy(list.toArray()), order.toArray());
       }
     };
   }
@@ -488,23 +582,46 @@ public class CollectionTests {
     };
   }
 
-  private static Test addAddsElementAtTheEnd(final Creator creator) {
-    return new Case("adds element at the end") {
+  private static Test setReplacesSingleElement(final Creator creator) {
+    return new Case("replaces single element") {
       public void run() throws Throwable {
-        ArrayList<Object> original = newArrayList(a, b, c);
+        ArrayList<Object> original = newArrayList(a);
         List<Object> list = creator.create(List.class, copy(original));
-        original.add(d);
-        list.add(d);
-        assertEquals(copy(list.toArray()), original.toArray());
+        list.set(0, b);
+        assertEquals(copy(list.toArray()), new Object[] { b });
       }
     };
   }
 
-  private static Test addReturnsTrue(final Creator creator) {
-    return new Case("returns true") {
+  private static Test setReturnsReplacedElement(final Creator creator) {
+    return new Case("returns replaced element") {
       public void run() throws Throwable {
-        List<Object> list = creator.create(List.class, newArrayList(a, b, c));
-        assertThat(list.add(d));
+        ArrayList<Object> original = newArrayList(a);
+        List<Object> list = creator.create(List.class, copy(original));
+        Object returned = list.set(0, b);
+        assertEquals(returned, a);
+      }
+    };
+  }
+
+  private static Test setReplacesElementAtIndex(final Creator creator) {
+    return new Case("replaces element at index") {
+      public void run() throws Throwable {
+        ArrayList<Object> original = newArrayList(a, b, c);
+        List<Object> list = creator.create(List.class, copy(original));
+        list.set(2, d);
+        assertEquals(copy(list.toArray()), new Object[] { a, b, d });
+      }
+    };
+  }
+
+  private static Test addIntAddsAtIndex(final Creator creator) {
+    return new Case("adds element at index") {
+      public void run() throws Throwable {
+        ArrayList<Object> original = newArrayList(a, b, c);
+        List<Object> list = creator.create(List.class, copy(original));
+        list.add(1, d);
+        assertEquals(copy(list.toArray()), new Object[] { a, d, b, c });
       }
     };
   }

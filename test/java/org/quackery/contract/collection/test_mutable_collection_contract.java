@@ -18,6 +18,10 @@ public class test_mutable_collection_contract {
         IteratorRemovesThrowsException.class,
         IteratorRemovesThrowsInverted.class,
         IteratorRemovesIgnoresSecondCall.class,
+        AddHasNoEffect.class,
+        AddReturnsNegation.class,
+        AddAllHasNoEffect.class,
+        RemoveHasNoEffect.class,
         ClearHasNoEffect.class)) {
       assertFailure(contract.test(bug));
       assertFailure(contract.withFactory("create").test(asCollectionFactory(bug)));
@@ -157,6 +161,54 @@ public class test_mutable_collection_contract {
           }
         }
       };
+    }
+  }
+
+  public static class AddHasNoEffect<E> extends MutableList<E> {
+    public AddHasNoEffect() {}
+
+    public AddHasNoEffect(Collection<E> collection) {
+      super(collection);
+    }
+
+    public boolean add(E e) {
+      return true;
+    }
+  }
+
+  public static class AddReturnsNegation<E> extends MutableList<E> {
+    public AddReturnsNegation() {}
+
+    public AddReturnsNegation(Collection<E> collection) {
+      super(collection);
+    }
+
+    public boolean add(E e) {
+      return !super.add(e);
+    }
+  }
+
+  public static class AddAllHasNoEffect<E> extends MutableList<E> {
+    public AddAllHasNoEffect() {}
+
+    public AddAllHasNoEffect(Collection<E> collection) {
+      super(collection);
+    }
+
+    public boolean addAll(Collection<? extends E> collection) {
+      return true;
+    }
+  }
+
+  public static class RemoveHasNoEffect<E> extends MutableList<E> {
+    public RemoveHasNoEffect() {}
+
+    public RemoveHasNoEffect(Collection<E> collection) {
+      super(collection);
+    }
+
+    public boolean remove(Object o) {
+      return true;
     }
   }
 

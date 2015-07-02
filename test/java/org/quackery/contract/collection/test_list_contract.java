@@ -14,10 +14,16 @@ public class test_list_contract {
   public void detects_bugs() {
     CollectionContract contract = quacksLike(Collection.class)
         .implementing(List.class);
+
+    for (Class<?> factoryBug : asList(FactoryReturnsCollection.class)) {
+      assertFailure(contract.withFactory("create").test(factoryBug));
+    }
+
     for (Class<?> bug : asList(
         CopyConstructorStoresOneElement.class,
         CopyConstructorReversesOrder.class,
         CopyConstructorRemovesLastElement.class,
+        CopyConstructorRemovesDuplicates.class,
         GetReturnsFirstElement.class,
         GetReturnsLastElement.class,
         GetReturnsNull.class,
@@ -25,6 +31,12 @@ public class test_list_contract {
         GetReturnsNullBelowBound.class)) {
       assertFailure(contract.test(bug));
       assertFailure(contract.withFactory("create").test(asListFactory(bug)));
+    }
+  }
+
+  public static class FactoryReturnsCollection {
+    public static <E> Collection<E> create(Collection<? extends E> collection) {
+      return new MutableList(collection);
     }
   }
 
@@ -67,6 +79,24 @@ public class test_list_contract {
       List<E> list = new ArrayList<>(collection);
       if (!list.isEmpty()) {
         list.remove(list.size() - 1);
+      }
+      return list;
+    }
+  }
+
+  public static class CopyConstructorRemovesDuplicates<E> extends MutableList<E> {
+    public CopyConstructorRemovesDuplicates() {}
+
+    public CopyConstructorRemovesDuplicates(Collection<E> collection) {
+      super(withoutDuplicates(collection));
+    }
+
+    private static <E> Collection<E> withoutDuplicates(Collection<E> collection) {
+      List<E> list = new ArrayList<>();
+      for (E element : collection) {
+        if (!list.contains(element)) {
+          list.add(element);
+        }
       }
       return list;
     }
