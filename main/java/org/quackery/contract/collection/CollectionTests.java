@@ -87,7 +87,8 @@ public class CollectionTests {
             .test(getFailsForIndexAboveBound(creator))
             .test(getFailsForIndexBelowBound(creator))))
         .test(includeIf(mutable && isList, suite("overrides set")
-            .test(setReplacesSingleElement(creator)))));
+            .test(setReplacesSingleElement(creator))
+            .test(setReturnsReplacedElement(creator)))));
   }
 
   private static String name(Class<?> type, Configuration configuration) {
@@ -573,6 +574,17 @@ public class CollectionTests {
         List<Object> list = creator.create(List.class, copy(original));
         list.set(0, b);
         assertEquals(copy(list.toArray()), new Object[] { b });
+      }
+    };
+  }
+
+  private static Test setReturnsReplacedElement(final Creator creator) {
+    return new Case("returns replaced element") {
+      public void run() throws Throwable {
+        ArrayList<Object> original = newArrayList(a);
+        List<Object> list = creator.create(List.class, copy(original));
+        Object returned = list.set(0, b);
+        assertEquals(returned, a);
       }
     };
   }
