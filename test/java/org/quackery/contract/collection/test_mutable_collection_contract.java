@@ -21,6 +21,7 @@ public class test_mutable_collection_contract {
         AddHasNoEffect.class,
         AddReturnsNegation.class,
         AddAllHasNoEffect.class,
+        RemoveHasNoEffect.class,
         ClearHasNoEffect.class)) {
       assertFailure(contract.test(bug));
       assertFailure(contract.withFactory("create").test(asCollectionFactory(bug)));
@@ -195,6 +196,18 @@ public class test_mutable_collection_contract {
     }
 
     public boolean addAll(Collection<? extends E> collection) {
+      return true;
+    }
+  }
+
+  public static class RemoveHasNoEffect<E> extends MutableList<E> {
+    public RemoveHasNoEffect() {}
+
+    public RemoveHasNoEffect(Collection<E> collection) {
+      super(collection);
+    }
+
+    public boolean remove(Object o) {
       return true;
     }
   }
