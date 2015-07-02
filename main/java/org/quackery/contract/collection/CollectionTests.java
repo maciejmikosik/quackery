@@ -89,7 +89,9 @@ public class CollectionTests {
         .test(includeIf(mutable && isList, suite("overrides set")
             .test(setReplacesSingleElement(creator))
             .test(setReturnsReplacedElement(creator))
-            .test(setReplacesElementAtIndex(creator)))));
+            .test(setReplacesElementAtIndex(creator))))
+        .test(includeIf(mutable && isList, suite("overrides add at index")
+            .test(addIntAddsAtIndex(creator)))));
   }
 
   private static String name(Class<?> type, Configuration configuration) {
@@ -597,6 +599,17 @@ public class CollectionTests {
         List<Object> list = creator.create(List.class, copy(original));
         list.set(2, d);
         assertEquals(copy(list.toArray()), new Object[] { a, b, d });
+      }
+    };
+  }
+
+  private static Test addIntAddsAtIndex(final Creator creator) {
+    return new Case("adds element at index") {
+      public void run() throws Throwable {
+        ArrayList<Object> original = newArrayList(a, b, c);
+        List<Object> list = creator.create(List.class, copy(original));
+        list.add(1, d);
+        assertEquals(copy(list.toArray()), new Object[] { a, d, b, c });
       }
     };
   }

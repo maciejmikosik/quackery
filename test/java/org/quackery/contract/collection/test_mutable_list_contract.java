@@ -19,7 +19,8 @@ public class test_mutable_list_contract {
         AddNotAddsDuplicatedElement.class,
         SetAddsElement.class,
         SetReturnsInsertedElement.class,
-        SetIndexesFromEnd.class)) {
+        SetIndexesFromEnd.class,
+        AddIntAddsAtTheEnd.class)) {
       assertFailure(contract.test(bug));
       assertFailure(contract.withFactory("create").test(asListFactory(bug)));
     }
@@ -101,6 +102,18 @@ public class test_mutable_list_contract {
 
     public E set(int index, E element) {
       return super.set(size() - 1 - index, element);
+    }
+  }
+
+  public static class AddIntAddsAtTheEnd<E> extends MutableList<E> {
+    public AddIntAddsAtTheEnd() {}
+
+    public AddIntAddsAtTheEnd(Collection<E> collection) {
+      super(collection);
+    }
+
+    public void add(int index, E element) {
+      super.add(element);
     }
   }
 }
