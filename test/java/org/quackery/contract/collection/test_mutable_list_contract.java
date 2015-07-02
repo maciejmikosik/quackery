@@ -16,7 +16,8 @@ public class test_mutable_list_contract {
     for (Class<?> bug : asList(
         AddAddsAtTheBegin.class,
         AddReturnsFalse.class,
-        AddNotAddsDuplicatedElement.class)) {
+        AddNotAddsDuplicatedElement.class,
+        SetAddsElement.class)) {
       assertFailure(contract.test(bug));
       assertFailure(contract.withFactory("create").test(asListFactory(bug)));
     }
@@ -60,6 +61,19 @@ public class test_mutable_list_contract {
         super.add(e);
       }
       return true;
+    }
+  }
+
+  public static class SetAddsElement<E> extends MutableList<E> {
+    public SetAddsElement() {}
+
+    public SetAddsElement(Collection<E> collection) {
+      super(collection);
+    }
+
+    public E set(int index, E element) {
+      add(element);
+      return element;
     }
   }
 }
