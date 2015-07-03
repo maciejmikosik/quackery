@@ -23,9 +23,14 @@ public class AssertionException extends RuntimeException {
     }
   }
 
-  public static void assertEquals(Object a, Object b) {
-    if (!deepEquals(a, b)) {
-      throw new AssertionException();
+  public static void assertEquals(Object actual, Object expected) {
+    if (!deepEquals(actual, expected)) {
+      throw new AssertionException(""
+          + "\n"
+          + "  expected that\n"
+          + "    " + actual + "\n"
+          + "  is equal to\n"
+          + "    " + expected + "\n");
     }
   }
 
