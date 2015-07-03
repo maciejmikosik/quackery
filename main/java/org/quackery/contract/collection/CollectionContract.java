@@ -1,5 +1,7 @@
 package org.quackery.contract.collection;
 
+import static org.quackery.QuackeryException.check;
+
 import org.quackery.Contract;
 import org.quackery.Test;
 
@@ -15,6 +17,7 @@ public class CollectionContract implements Contract<Class<?>> {
   }
 
   public Test test(Class<?> type) {
+    check(type != null);
     return CollectionTests.test(configuration, type);
   }
 

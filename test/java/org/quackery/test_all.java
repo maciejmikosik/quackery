@@ -10,6 +10,7 @@ import org.quackery.contract.collection.test_collection_contract;
 import org.quackery.contract.collection.test_detecting_alien_types;
 import org.quackery.contract.collection.test_example_collections;
 import org.quackery.contract.collection.test_guava_collections;
+import org.quackery.contract.collection.test_illegal_use;
 import org.quackery.contract.collection.test_jdk_collections;
 import org.quackery.contract.collection.test_list_contract;
 import org.quackery.contract.collection.test_mutable_collection_contract;
@@ -23,6 +24,7 @@ public class test_all {
     runTestsIn(test_Case.class);
     runTestsIn(test_Suite.class);
     runTestsIn(test_QuackeryRunner.class);
+    runTestsIn(test_illegal_use.class);
     runTestsIn(test_collection_contract.class);
     runTestsIn(test_mutable_collection_contract.class);
     runTestsIn(test_list_contract.class);
