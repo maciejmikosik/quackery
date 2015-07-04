@@ -17,15 +17,20 @@ public class AssertionException extends RuntimeException {
     super(cause);
   }
 
-  public static void assertThat(boolean condition) {
+  public static void assertTrue(boolean condition) {
     if (!condition) {
       throw new AssertionException();
     }
   }
 
-  public static void assertEquals(Object a, Object b) {
-    if (!deepEquals(a, b)) {
-      throw new AssertionException();
+  public static void assertEquals(Object actual, Object expected) {
+    if (!deepEquals(actual, expected)) {
+      throw new AssertionException(""
+          + "\n"
+          + "  expected that\n"
+          + "    " + actual + "\n"
+          + "  is equal to\n"
+          + "    " + expected + "\n");
     }
   }
 
