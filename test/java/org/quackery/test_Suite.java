@@ -11,10 +11,10 @@ import static org.quackery.testing.Mocks.mockObject;
 public class test_Suite {
   private String name = "name";
   private final Test
-      testA = new Test() {},
-      testB = new Test() {},
-      testC = new Test() {},
-      testD = new Test() {};
+      testA = newCase("testA"),
+      testB = newCase("testB"),
+      testC = newCase("testC"),
+      testD = newCase("testD");
   private final Object
       itemA = mockObject("itemA"),
       itemB = mockObject("itemB"),
@@ -192,11 +192,18 @@ public class test_Suite {
     }
   }
 
-  private static class MockTest implements Test {
+  private static Case newCase(String name) {
+    return new Case(name) {
+      public void run() {}
+    };
+  }
+
+  private static class MockTest extends Test {
     public final Object item;
     public final Contract<?> contract;
 
     public MockTest(Object item, Contract<?> contract) {
+      super("MockTest(" + item + ", " + contract + ")");
       this.item = item;
       this.contract = contract;
     }
@@ -214,7 +221,7 @@ public class test_Suite {
     }
 
     public String toString() {
-      return "MockTest(" + item + ", " + contract + ")";
+      return name;
     }
   }
 }

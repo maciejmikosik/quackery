@@ -1,13 +1,8 @@
 package org.quackery;
 
-import static org.quackery.QuackeryException.check;
-
-public abstract class Case implements Test {
-  public final String name;
-
+public abstract class Case extends Test {
   protected Case(String name) {
-    check(name != null);
-    this.name = name;
+    super(name);
   }
 
   public abstract void run() throws Throwable;

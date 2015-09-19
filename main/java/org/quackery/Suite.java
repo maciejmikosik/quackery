@@ -8,12 +8,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Suite implements Test {
-  public final String name;
+public class Suite extends Test {
   public final List<Test> tests;
 
   private Suite(String name, List<Test> tests) {
-    this.name = name;
+    super(name);
     this.tests = tests;
   }
 

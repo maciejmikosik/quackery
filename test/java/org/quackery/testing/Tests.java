@@ -5,14 +5,6 @@ import org.quackery.Suite;
 import org.quackery.Test;
 
 public class Tests {
-  public static String name(Test test) {
-    return test instanceof Case
-        ? ((Case) test).name
-        : test instanceof Suite
-            ? ((Suite) test).name
-            : unknown(String.class);
-  }
-
   public static void run(Test test) throws Throwable {
     if (test instanceof Case) {
       ((Case) test).run();
