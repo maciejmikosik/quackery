@@ -6,15 +6,16 @@ import static org.quackery.Suite.suite;
 import static org.quackery.testing.Assertions.assertEquals;
 import static org.quackery.testing.Assertions.assertTrue;
 import static org.quackery.testing.Assertions.fail;
+import static org.quackery.testing.Mocks.mockCase;
 import static org.quackery.testing.Mocks.mockObject;
 
 public class test_Suite {
   private String name = "name";
   private final Test
-      testA = newCase("testA"),
-      testB = newCase("testB"),
-      testC = newCase("testC"),
-      testD = newCase("testD");
+      testA = mockCase("testA"),
+      testB = mockCase("testB"),
+      testC = mockCase("testC"),
+      testD = mockCase("testD");
   private final Object
       itemA = mockObject("itemA"),
       itemB = mockObject("itemB"),
@@ -190,12 +191,6 @@ public class test_Suite {
     public String toString() {
       return "MockContract(" + name + ")";
     }
-  }
-
-  private static Case newCase(String name) {
-    return new Case(name) {
-      public void run() {}
-    };
   }
 
   private static class MockTest extends Test {
