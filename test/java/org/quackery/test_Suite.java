@@ -37,12 +37,12 @@ public class test_Suite {
     assertEquals(suite.tests, asList());
   }
 
-  public void assigns_name() {
+  public void has_name() {
     suite = suite(name);
-    assertEquals(name, suite.name);
+    assertEquals(suite.name, name);
   }
 
-  public void tests_test() {
+  public void adds_test() {
     suite = suite(name)
         .test(testA)
         .test(testB)
@@ -50,21 +50,21 @@ public class test_Suite {
     assertEquals(suite.tests, asList(testA, testB, testC));
   }
 
-  public void tests_all_tests_in_iterable() {
+  public void adds_tests_from_iterable() {
     suite = suite(name)
         .testAll(asList(testA, testB))
         .testAll(asList(testC, testD));
     assertEquals(suite.tests, asList(testA, testB, testC, testD));
   }
 
-  public void tests_all_tests_in_array() {
+  public void adds_tests_from_array() {
     suite = suite(name)
         .testAll(new Test[] { testA, testB })
         .testAll(new Test[] { testC, testD });
     assertEquals(suite.tests, asList(testA, testB, testC, testD));
   }
 
-  public void tests_that_item() {
+  public void adds_test_produced_by_contract_and_item() {
     suite = suite(name)
         .testThat(itemA, contractA)
         .testThat(itemB, contractB)
@@ -75,7 +75,7 @@ public class test_Suite {
         mockTest(itemC, contractC)));
   }
 
-  public void tests_that_all_items_in_iterable() {
+  public void adds_tests_produced_by_contract_and_items_from_iterable() {
     suite = suite(name)
         .testThatAll(asList(itemA, itemB), contractA)
         .testThatAll(asList(itemC, itemD), contractB);
@@ -86,7 +86,7 @@ public class test_Suite {
         mockTest(itemD, contractB)));
   }
 
-  public void tests_that_all_items_in_array() {
+  public void adds_tests_produced_by_contract_and_items_from_array() {
     suite = suite(name)
         .testThatAll(new Object[] { itemA, itemB }, contractA)
         .testThatAll(new Object[] { itemC, itemD }, contractB);
