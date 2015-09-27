@@ -1,29 +1,31 @@
 package org.quackery;
 
 import static java.util.Arrays.asList;
-import static java.util.Objects.hash;
 import static org.quackery.Suite.suite;
 import static org.quackery.testing.Assertions.assertEquals;
 import static org.quackery.testing.Assertions.assertTrue;
 import static org.quackery.testing.Assertions.fail;
+import static org.quackery.testing.Mocks.mockCase;
+import static org.quackery.testing.Mocks.mockContract;
 import static org.quackery.testing.Mocks.mockObject;
+import static org.quackery.testing.Mocks.mockTest;
 
 public class test_Suite {
   private String name = "name";
   private final Test
-      testA = newCase("testA"),
-      testB = newCase("testB"),
-      testC = newCase("testC"),
-      testD = newCase("testD");
+      testA = mockCase("testA"),
+      testB = mockCase("testB"),
+      testC = mockCase("testC"),
+      testD = mockCase("testD");
   private final Object
       itemA = mockObject("itemA"),
       itemB = mockObject("itemB"),
       itemC = mockObject("itemC"),
       itemD = mockObject("itemD");
   private final Contract<Object>
-      contractA = new MockContract<Object>("contractA"),
-      contractB = new MockContract<Object>("contractB"),
-      contractC = new MockContract<Object>("contractC");
+      contractA = mockContract("contractA"),
+      contractB = mockContract("contractB"),
+      contractC = mockContract("contractC");
   private Suite suite;
 
   public void implements_test_interface() {
@@ -35,12 +37,12 @@ public class test_Suite {
     assertEquals(suite.tests, asList());
   }
 
-  public void assigns_name() {
+  public void has_name() {
     suite = suite(name);
-    assertEquals(name, suite.name);
+    assertEquals(suite.name, name);
   }
 
-  public void tests_test() {
+  public void adds_test() {
     suite = suite(name)
         .test(testA)
         .test(testB)
@@ -48,51 +50,51 @@ public class test_Suite {
     assertEquals(suite.tests, asList(testA, testB, testC));
   }
 
-  public void tests_all_tests_in_iterable() {
+  public void adds_tests_from_iterable() {
     suite = suite(name)
         .testAll(asList(testA, testB))
         .testAll(asList(testC, testD));
     assertEquals(suite.tests, asList(testA, testB, testC, testD));
   }
 
-  public void tests_all_tests_in_array() {
+  public void adds_tests_from_array() {
     suite = suite(name)
         .testAll(new Test[] { testA, testB })
         .testAll(new Test[] { testC, testD });
     assertEquals(suite.tests, asList(testA, testB, testC, testD));
   }
 
-  public void tests_that_item() {
+  public void adds_test_produced_by_contract_and_item() {
     suite = suite(name)
         .testThat(itemA, contractA)
         .testThat(itemB, contractB)
         .testThat(itemC, contractC);
     assertEquals(suite.tests, asList(
-        new MockTest(itemA, contractA),
-        new MockTest(itemB, contractB),
-        new MockTest(itemC, contractC)));
+        mockTest(itemA, contractA),
+        mockTest(itemB, contractB),
+        mockTest(itemC, contractC)));
   }
 
-  public void tests_that_all_items_in_iterable() {
+  public void adds_tests_produced_by_contract_and_items_from_iterable() {
     suite = suite(name)
         .testThatAll(asList(itemA, itemB), contractA)
         .testThatAll(asList(itemC, itemD), contractB);
     assertEquals(suite.tests, asList(
-        new MockTest(itemA, contractA),
-        new MockTest(itemB, contractA),
-        new MockTest(itemC, contractB),
-        new MockTest(itemD, contractB)));
+        mockTest(itemA, contractA),
+        mockTest(itemB, contractA),
+        mockTest(itemC, contractB),
+        mockTest(itemD, contractB)));
   }
 
-  public void tests_that_all_items_in_array() {
+  public void adds_tests_produced_by_contract_and_items_from_array() {
     suite = suite(name)
         .testThatAll(new Object[] { itemA, itemB }, contractA)
         .testThatAll(new Object[] { itemC, itemD }, contractB);
     assertEquals(suite.tests, asList(
-        new MockTest(itemA, contractA),
-        new MockTest(itemB, contractA),
-        new MockTest(itemC, contractB),
-        new MockTest(itemD, contractB)));
+        mockTest(itemA, contractA),
+        mockTest(itemB, contractA),
+        mockTest(itemC, contractB),
+        mockTest(itemD, contractB)));
   }
 
   public void lists_are_covariant() {
@@ -174,54 +176,5 @@ public class test_Suite {
       suite.testThatAll(new Object[0], (Contract<Object>) null);
       fail();
     } catch (QuackeryException e) {}
-  }
-
-  private static class MockContract<T> implements Contract<T> {
-    private final String name;
-
-    public MockContract(String name) {
-      this.name = name;
-    }
-
-    public Test test(T item) {
-      return new MockTest(item, this);
-    }
-
-    public String toString() {
-      return "MockContract(" + name + ")";
-    }
-  }
-
-  private static Case newCase(String name) {
-    return new Case(name) {
-      public void run() {}
-    };
-  }
-
-  private static class MockTest extends Test {
-    public final Object item;
-    public final Contract<?> contract;
-
-    public MockTest(Object item, Contract<?> contract) {
-      super("MockTest(" + item + ", " + contract + ")");
-      this.item = item;
-      this.contract = contract;
-    }
-
-    public boolean equals(Object object) {
-      return object instanceof MockTest && equals((MockTest) object);
-    }
-
-    public boolean equals(MockTest that) {
-      return item.equals(that.item) && contract.equals(that.contract);
-    }
-
-    public int hashCode() {
-      return hash(item, contract);
-    }
-
-    public String toString() {
-      return name;
-    }
   }
 }
