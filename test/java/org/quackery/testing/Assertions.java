@@ -1,10 +1,13 @@
 package org.quackery.testing;
 
-import static org.quackery.testing.Tests.runQuietly;
+import static org.quackery.run.Reports.count;
 
 import java.util.Objects;
 
+import org.quackery.AssertionException;
+import org.quackery.AssumptionException;
 import org.quackery.Test;
+import org.quackery.run.Runner;
 
 public class Assertions {
   public static void assertTrue(boolean condition) {
@@ -40,16 +43,23 @@ public class Assertions {
   }
 
   public static void assertSuccess(Test test) {
-    Report report = runQuietly(test);
-    boolean expected = report.problems.size() == 0;
+    Test report = new Runner().run(test);
+    int problems = count(Throwable.class, report);
+    boolean expected = problems == 0;
     if (!expected) {
       throw new AssertionError("expected success: " + test.name + report);
     }
   }
 
   public static void assertFailure(Test test) {
-    Report report = runQuietly(test);
-    boolean expected = report.failures().size() > 0 && report.errors().size() == 0;
+    Test report = new Runner().run(test);
+
+    int failures = count(AssertionException.class, report);
+    int misassumptions = count(AssumptionException.class, report);
+    int problems = count(Throwable.class, report);
+    int errors = problems - failures - misassumptions;
+
+    boolean expected = failures > 0 && errors == 0;
     if (!expected) {
       throw new AssertionError("expected failure: " + test.name + report);
     }
