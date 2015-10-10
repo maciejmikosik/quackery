@@ -15,6 +15,8 @@ import org.quackery.contract.collection.test_jdk_collections;
 import org.quackery.contract.collection.test_list_contract;
 import org.quackery.contract.collection.test_mutable_collection_contract;
 import org.quackery.contract.collection.test_mutable_list_contract;
+import org.quackery.run.test_Runner;
+import org.quackery.run.test_Reports_count_throwables;
 
 public class test_all {
   private static List<Throwable> failures = new ArrayList<Throwable>();
@@ -23,7 +25,11 @@ public class test_all {
   public static void main(String[] args) throws Throwable {
     runTestsIn(test_Case.class);
     runTestsIn(test_Suite.class);
+    runTestsIn(test_Runner.class);
+    runTestsIn(test_Reports_count_throwables.class);
+
     runTestsIn(test_QuackeryRunner.class);
+
     runTestsIn(test_illegal_use.class);
     runTestsIn(test_collection_contract.class);
     runTestsIn(test_mutable_collection_contract.class);
