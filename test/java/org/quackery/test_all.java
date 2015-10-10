@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.quackery.contract.collection.test_failing_alien_types;
 import org.quackery.contract.collection.test_failing_bugs_of_collection;
+import org.quackery.contract.collection.test_failing_bugs_of_immutable_collection;
 import org.quackery.contract.collection.test_failing_bugs_of_list;
 import org.quackery.contract.collection.test_failing_bugs_of_mutable_collection;
 import org.quackery.contract.collection.test_failing_bugs_of_mutable_list;
@@ -35,6 +36,7 @@ public class test_all {
     runTestsIn(test_suite_naming.class);
     runTestsIn(test_failing_bugs_of_collection.class);
     runTestsIn(test_failing_bugs_of_mutable_collection.class);
+    runTestsIn(test_failing_bugs_of_immutable_collection.class);
     runTestsIn(test_failing_bugs_of_list.class);
     runTestsIn(test_failing_bugs_of_mutable_list.class);
     runTestsIn(test_failing_alien_types.class);
