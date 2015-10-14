@@ -15,6 +15,7 @@ import org.quackery.contract.collection.test_jdk_collections;
 import org.quackery.contract.collection.test_list_contract;
 import org.quackery.contract.collection.test_mutable_collection_contract;
 import org.quackery.contract.collection.test_mutable_list_contract;
+import org.quackery.contract.collection.test_suite_naming;
 import org.quackery.run.test_Reports_count_throwables;
 import org.quackery.run.test_Runner;
 
@@ -31,6 +32,7 @@ public class test_all {
     runTestsIn(test_QuackeryRunner.class);
 
     runTestsIn(test_illegal_use.class);
+    runTestsIn(test_suite_naming.class);
     runTestsIn(test_collection_contract.class);
     runTestsIn(test_mutable_collection_contract.class);
     runTestsIn(test_list_contract.class);
