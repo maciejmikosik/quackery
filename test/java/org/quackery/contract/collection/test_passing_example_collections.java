@@ -22,4 +22,19 @@ public class test_passing_example_collections {
         .withFactory("create")
         .test(asListFactory(MutableList.class)));
   }
+
+  public void immutable_list_quacks_like_immutable_list() {
+    assertSuccess(quacksLike(Collection.class)
+        .implementing(List.class)
+        .immutable()
+        .test(ImmutableList.class));
+  }
+
+  public void immutable_list_factory_quacks_like_immutable_list_factory() {
+    assertSuccess(quacksLike(Collection.class)
+        .implementing(List.class)
+        .immutable()
+        .withFactory("create")
+        .test(asListFactory(ImmutableList.class)));
+  }
 }
