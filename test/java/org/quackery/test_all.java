@@ -15,8 +15,8 @@ import org.quackery.contract.collection.test_jdk_collections;
 import org.quackery.contract.collection.test_list_contract;
 import org.quackery.contract.collection.test_mutable_collection_contract;
 import org.quackery.contract.collection.test_mutable_list_contract;
-import org.quackery.run.test_Runner;
 import org.quackery.run.test_Reports_count_throwables;
+import org.quackery.run.test_Runner;
 
 public class test_all {
   private static List<Throwable> failures = new ArrayList<Throwable>();
