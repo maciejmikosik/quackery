@@ -11,7 +11,7 @@ import org.quackery.Contract;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
-public class test_guava_collections {
+public class test_passing_guava_collections {
   private Contract<Class<?>> contract;
 
   public void immutable_list_quacks_like_list() {

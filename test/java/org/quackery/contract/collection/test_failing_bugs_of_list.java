@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class test_list_contract {
+public class test_failing_bugs_of_list {
   public void detects_bugs() {
     CollectionContract contract = quacksLike(Collection.class)
         .implementing(List.class);

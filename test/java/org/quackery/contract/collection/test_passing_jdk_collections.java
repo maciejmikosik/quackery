@@ -12,7 +12,7 @@ import java.util.TreeSet;
 
 import org.quackery.Contract;
 
-public class test_jdk_collections {
+public class test_passing_jdk_collections {
   private Contract<Class<?>> contract;
 
   public void array_list_quacks_like_mutable_list() {

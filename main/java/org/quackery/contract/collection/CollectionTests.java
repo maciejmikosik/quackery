@@ -103,6 +103,9 @@ public class CollectionTests {
       builder.append(" mutable");
     }
     builder.append(" ").append(configuration.getCollectionType().getSimpleName().toLowerCase());
+    if (configuration.hasFactory()) {
+      builder.append(" with factory " + configuration.getFactoryName());
+    }
     return builder.toString();
   }
 
