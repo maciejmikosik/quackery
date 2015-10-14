@@ -106,7 +106,9 @@ public class MutableList<E> implements List<E> {
   }
 
   public List<E> subList(int fromIndex, int toIndex) {
-    return delegate.subList(fromIndex, toIndex);
+    MutableList<E> subList = new MutableList<>();
+    subList.delegate = delegate.subList(fromIndex, toIndex);
+    return subList;
   }
 
   public boolean equals(Object o) {
