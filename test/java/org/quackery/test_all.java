@@ -6,15 +6,15 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.quackery.contract.collection.test_collection_contract;
-import org.quackery.contract.collection.test_detecting_alien_types;
-import org.quackery.contract.collection.test_example_collections;
-import org.quackery.contract.collection.test_guava_collections;
+import org.quackery.contract.collection.test_failing_alien_types;
+import org.quackery.contract.collection.test_failing_bugs_of_collection;
+import org.quackery.contract.collection.test_failing_bugs_of_list;
+import org.quackery.contract.collection.test_failing_bugs_of_mutable_collection;
+import org.quackery.contract.collection.test_failing_bugs_of_mutable_list;
 import org.quackery.contract.collection.test_illegal_use;
-import org.quackery.contract.collection.test_jdk_collections;
-import org.quackery.contract.collection.test_list_contract;
-import org.quackery.contract.collection.test_mutable_collection_contract;
-import org.quackery.contract.collection.test_mutable_list_contract;
+import org.quackery.contract.collection.test_passing_example_collections;
+import org.quackery.contract.collection.test_passing_guava_collections;
+import org.quackery.contract.collection.test_passing_jdk_collections;
 import org.quackery.contract.collection.test_suite_naming;
 import org.quackery.run.test_Reports_count_throwables;
 import org.quackery.run.test_Runner;
@@ -33,14 +33,14 @@ public class test_all {
 
     runTestsIn(test_illegal_use.class);
     runTestsIn(test_suite_naming.class);
-    runTestsIn(test_collection_contract.class);
-    runTestsIn(test_mutable_collection_contract.class);
-    runTestsIn(test_list_contract.class);
-    runTestsIn(test_mutable_list_contract.class);
-    runTestsIn(test_example_collections.class);
-    runTestsIn(test_detecting_alien_types.class);
-    runTestsIn(test_jdk_collections.class);
-    runTestsIn(test_guava_collections.class);
+    runTestsIn(test_failing_bugs_of_collection.class);
+    runTestsIn(test_failing_bugs_of_mutable_collection.class);
+    runTestsIn(test_failing_bugs_of_list.class);
+    runTestsIn(test_failing_bugs_of_mutable_list.class);
+    runTestsIn(test_failing_alien_types.class);
+    runTestsIn(test_passing_example_collections.class);
+    runTestsIn(test_passing_jdk_collections.class);
+    runTestsIn(test_passing_guava_collections.class);
 
     if (failures.size() == 0) {
       System.out.println("no failures");

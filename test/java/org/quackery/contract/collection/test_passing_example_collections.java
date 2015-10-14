@@ -7,7 +7,7 @@ import static org.quackery.testing.Assertions.assertSuccess;
 import java.util.Collection;
 import java.util.List;
 
-public class test_example_collections {
+public class test_passing_example_collections {
   public void mutable_list_quacks_like_mutable_list() {
     assertSuccess(quacksLike(Collection.class)
         .implementing(List.class)

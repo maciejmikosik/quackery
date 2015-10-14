@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.quackery.Contract;
 
-public class test_detecting_alien_types {
+public class test_failing_alien_types {
   private static final List<Class<?>> alienTypes = unmodifiableList(asList(
       Object.class,
       String.class,
