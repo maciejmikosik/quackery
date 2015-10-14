@@ -102,6 +102,9 @@ public class CollectionTests {
     if (configuration.isMutable()) {
       builder.append(" mutable");
     }
+    if (configuration.isImmutable()) {
+      builder.append(" immutable");
+    }
     builder.append(" ").append(configuration.getCollectionType().getSimpleName().toLowerCase());
     if (configuration.hasFactory()) {
       builder.append(" with factory " + configuration.getFactoryName());
