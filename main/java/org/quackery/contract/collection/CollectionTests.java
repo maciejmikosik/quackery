@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 import org.quackery.AssertionException;
@@ -94,6 +95,9 @@ public class CollectionTests {
         .test(includeIf(immutable, suite("overrides addAll")
             .test(addAllThrowsUnsupportedOperationException(creator))
             .test(addAllHasNoSideEffect(creator))))
+        .test(includeIf(immutable && isList, suite("overrides addAll at index")
+            .test(addAllIntThrowsUnsupportedOperationException(creator))
+            .test(addAllIntHasNoSideEffect(creator))))
         .test(includeIf(immutable, suite("overrides removeAll")
             .test(removeAllThrowsUnsupportedOperationException(creator))
             .test(removeAllHasNoSideEffect(creator))))
@@ -113,8 +117,24 @@ public class CollectionTests {
             .test(setReplacesSingleElement(creator))
             .test(setReturnsReplacedElement(creator))
             .test(setReplacesElementAtIndex(creator))))
+        .test(includeIf(immutable && isList, suite("overrides set")
+            .test(setThrowsUnsupportedOperationException(creator))
+            .test(setHasNoSideEffect(creator))))
         .test(includeIf(mutable && isList, suite("overrides add at index")
-            .test(addIntAddsAtIndex(creator)))));
+            .test(addIntAddsAtIndex(creator))))
+        .test(includeIf(immutable && isList, suite("overrides add at index")
+            .test(addIntThrowsUnsupportedOperationException(creator))
+            .test(addIntHasNoSideEffect(creator))))
+        .test(includeIf(immutable && isList, suite("overrides remove at index")
+            .test(removeIntThrowsUnsupportedOperationException(creator))
+            .test(removeIntHasNoSideEffect(creator))))
+        .test(includeIf(isList, suite("overrides listIterator")
+            .test(includeIf(immutable, listIteratorRemoveThrowsUnsupportedOperationException(creator)))
+            .test(includeIf(immutable, listIteratorRemoveHasNoSideEffect(creator)))
+            .test(includeIf(immutable, listIteratorSetThrowsUnsupportedOperationException(creator)))
+            .test(includeIf(immutable, listIteratorSetHasNoSideEffect(creator)))
+            .test(includeIf(immutable, listIteratorAddThrowsUnsupportedOperationException(creator)))
+            .test(includeIf(immutable, listIteratorAddHasNoSideEffect(creator))))));
   }
 
   private static String name(Class<?> type, Configuration configuration) {
@@ -671,6 +691,30 @@ public class CollectionTests {
     };
   }
 
+  private static Test addAllIntThrowsUnsupportedOperationException(final Creator creator) {
+    return new Case("throws UnsupportedOperationException") {
+      public void run() throws Throwable {
+        List<Object> list = creator.create(List.class, newArrayList());
+        try {
+          list.addAll(0, newArrayList(a));
+          fail();
+        } catch (UnsupportedOperationException e) {}
+      }
+    };
+  }
+
+  private static Test addAllIntHasNoSideEffect(final Creator creator) {
+    return new Case("has no side effect") {
+      public void run() throws Throwable {
+        List<Object> list = creator.create(List.class, newArrayList());
+        try {
+          list.addAll(0, newArrayList(a));
+        } catch (UnsupportedOperationException e) {}
+        assertEquals(list.toArray(), new Object[] {});
+      }
+    };
+  }
+
   private static Test removeAllThrowsUnsupportedOperationException(final Creator creator) {
     return new Case("throws UnsupportedOperationException") {
       public void run() throws Throwable {
@@ -828,6 +872,32 @@ public class CollectionTests {
     };
   }
 
+  private static Test setThrowsUnsupportedOperationException(final Creator creator) {
+    return new Case("throws UnsupportedOperationException") {
+      public void run() throws Throwable {
+        ArrayList<Object> original = newArrayList(a, b, c);
+        List<Object> list = creator.create(List.class, copy(original));
+        try {
+          list.set(1, d);
+          fail();
+        } catch (UnsupportedOperationException e) {}
+      }
+    };
+  }
+
+  private static Test setHasNoSideEffect(final Creator creator) {
+    return new Case("has no side effect") {
+      public void run() throws Throwable {
+        ArrayList<Object> original = newArrayList(a, b, c);
+        List<Object> list = creator.create(List.class, copy(original));
+        try {
+          list.set(1, d);
+        } catch (UnsupportedOperationException e) {}
+        assertEquals(copy(list.toArray()), original.toArray());
+      }
+    };
+  }
+
   private static Test addIntAddsAtIndex(final Creator creator) {
     return new Case("adds element at index") {
       public void run() throws Throwable {
@@ -835,6 +905,166 @@ public class CollectionTests {
         List<Object> list = creator.create(List.class, copy(original));
         list.add(1, d);
         assertEquals(copy(list.toArray()), new Object[] { a, d, b, c });
+      }
+    };
+  }
+
+  private static Test addIntThrowsUnsupportedOperationException(final Creator creator) {
+    return new Case("throws UnsupportedOperationException") {
+      public void run() throws Throwable {
+        List<Object> list = creator.create(List.class, newArrayList());
+        try {
+          list.add(0, a);
+          fail();
+        } catch (UnsupportedOperationException e) {}
+      }
+    };
+  }
+
+  private static Test addIntHasNoSideEffect(final Creator creator) {
+    return new Case("has no side effect") {
+      public void run() throws Throwable {
+        List<Object> list = creator.create(List.class, newArrayList());
+        try {
+          list.add(0, a);
+        } catch (UnsupportedOperationException e) {}
+        assertEquals(copy(list.toArray()), new Object[] {});
+      }
+    };
+  }
+
+  private static Test removeIntThrowsUnsupportedOperationException(final Creator creator) {
+    return new Case("throws UnsupportedOperationException") {
+      public void run() throws Throwable {
+        List<Object> list = creator.create(List.class, newArrayList(a));
+        try {
+          list.remove(0);
+          fail();
+        } catch (UnsupportedOperationException e) {}
+      }
+    };
+  }
+
+  private static Test removeIntHasNoSideEffect(final Creator creator) {
+    return new Case("has no side effect") {
+      public void run() throws Throwable {
+        List<Object> list = creator.create(List.class, newArrayList(a));
+        try {
+          list.remove(0);
+        } catch (UnsupportedOperationException e) {}
+        assertEquals(copy(list.toArray()), new Object[] { a });
+      }
+    };
+  }
+
+  private static Test listIteratorRemoveThrowsUnsupportedOperationException(final Creator creator) {
+    return new Case("throws UnsupportedOperationException") {
+      public void run() throws Throwable {
+        List<?> list = creator.create(List.class, newArrayList(a));
+        Iterator<?> iterator = list.listIterator();
+        assume(iterator != null);
+        try {
+          iterator.next();
+        } catch (NoSuchElementException e) {
+          throw new AssumptionException(e);
+        }
+        try {
+          iterator.remove();
+          fail();
+        } catch (IllegalStateException e) {
+          throw new AssumptionException(e);
+        } catch (UnsupportedOperationException e) {}
+      }
+    };
+  }
+
+  private static Test listIteratorRemoveHasNoSideEffect(final Creator creator) {
+    return new Case("has no side effect") {
+      public void run() throws Throwable {
+        List<?> list = creator.create(List.class, newArrayList(a));
+        Iterator<?> iterator = list.listIterator();
+        assume(iterator != null);
+        try {
+          iterator.next();
+        } catch (NoSuchElementException e) {
+          throw new AssumptionException(e);
+        }
+        try {
+          iterator.remove();
+        } catch (IllegalStateException e) {
+          throw new AssumptionException(e);
+        } catch (UnsupportedOperationException e) {}
+        assertEquals(copy(list.toArray()), new Object[] { a });
+      }
+    };
+  }
+
+  private static Test listIteratorSetThrowsUnsupportedOperationException(final Creator creator) {
+    return new Case("throws UnsupportedOperationException") {
+      public void run() throws Throwable {
+        List<Object> list = creator.create(List.class, newArrayList(a));
+        ListIterator<Object> iterator = list.listIterator();
+        assume(iterator != null);
+        try {
+          iterator.next();
+        } catch (NoSuchElementException e) {
+          throw new AssumptionException(e);
+        }
+        try {
+          iterator.set(b);
+          fail();
+        } catch (IllegalStateException e) {
+          throw new AssumptionException(e);
+        } catch (UnsupportedOperationException e) {}
+      }
+    };
+  }
+
+  private static Test listIteratorSetHasNoSideEffect(final Creator creator) {
+    return new Case("has no side effect") {
+      public void run() throws Throwable {
+        List<Object> list = creator.create(List.class, newArrayList(a));
+        ListIterator<Object> iterator = list.listIterator();
+        assume(iterator != null);
+        try {
+          iterator.next();
+        } catch (NoSuchElementException e) {
+          throw new AssumptionException(e);
+        }
+        try {
+          iterator.set(b);
+        } catch (IllegalStateException e) {
+          throw new AssumptionException(e);
+        } catch (UnsupportedOperationException e) {}
+        assertEquals(copy(list.toArray()), new Object[] { a });
+      }
+    };
+  }
+
+  private static Test listIteratorAddThrowsUnsupportedOperationException(final Creator creator) {
+    return new Case("throws UnsupportedOperationException") {
+      public void run() throws Throwable {
+        List<Object> list = creator.create(List.class, newArrayList());
+        ListIterator<Object> iterator = list.listIterator();
+        assume(iterator != null);
+        try {
+          iterator.add(a);
+          fail();
+        } catch (UnsupportedOperationException e) {}
+      }
+    };
+  }
+
+  private static Test listIteratorAddHasNoSideEffect(final Creator creator) {
+    return new Case("has no side effect") {
+      public void run() throws Throwable {
+        List<Object> list = creator.create(List.class, newArrayList());
+        ListIterator<Object> iterator = list.listIterator();
+        assume(iterator != null);
+        try {
+          iterator.add(a);
+        } catch (UnsupportedOperationException e) {}
+        assertEquals(copy(list.toArray()), new Object[] {});
       }
     };
   }
