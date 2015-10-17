@@ -113,18 +113,146 @@ public class test_QuackeryRunner {
     assertEquals(otherInvoked, true);
   }
 
+  public void class_can_have_more_than_one_annotated_method() {
+    result = run(TwoAnnotatedMethods.class);
+
+    assertEquals(result.getRunCount(), 2);
+    assertEquals(result.getFailureCount(), 0);
+  }
+
+  @RunWith(QuackeryRunner.class)
+  public static class TwoAnnotatedMethods {
+    @Quackery
+    public static Test testA() {
+      return mockCase("name");
+    }
+
+    @Quackery
+    public static Test testB() {
+      return mockCase("name");
+    }
+  }
+
+  public void annotated_method_can_return_suite() {
+    result = run(ReturnsSuite.class);
+
+    assertEquals(result.getRunCount(), 1);
+    assertEquals(result.getFailureCount(), 0);
+  }
+
+  @RunWith(QuackeryRunner.class)
+  public static class ReturnsSuite {
+    @Quackery
+    public static Suite test() {
+      return suite("suite")
+          .test(mockCase("case"));
+    }
+  }
+
+  public void annotated_method_can_return_case() {
+    result = run(ReturnsCase.class);
+
+    assertEquals(result.getRunCount(), 1);
+    assertEquals(result.getFailureCount(), 0);
+  }
+
+  @RunWith(QuackeryRunner.class)
+  public static class ReturnsCase {
+    @Quackery
+    public static Case test() {
+      return mockCase("case");
+    }
+  }
+
+  public void class_must_have_annotated_method() {
+    failure = runFailing(NoAnnotatedMethods.class);
+
+    assertEquals(failure.getClass(), QuackeryException.class);
+  }
+
+  @RunWith(QuackeryRunner.class)
+  public static class NoAnnotatedMethods {
+    public static Test test() {
+      return mockCase("name");
+    }
+  }
+
+  public void annotated_method_must_be_public() {
+    failure = runFailing(NotPublic.class);
+
+    assertEquals(failure.getClass(), QuackeryException.class);
+  }
+
+  @RunWith(QuackeryRunner.class)
+  public static class NotPublic {
+    @Quackery
+    static Test test() {
+      return mockCase("name");
+    }
+  }
+
+  public void annotated_method_must_be_static() {
+    failure = runFailing(NotStatic.class);
+
+    assertEquals(failure.getClass(), QuackeryException.class);
+  }
+
+  @RunWith(QuackeryRunner.class)
+  public static class NotStatic {
+    @Quackery
+    public Test test() {
+      return mockCase("name");
+    }
+  }
+
+  public void annotated_method_must_return_test() {
+    failure = runFailing(NotReturnsTest.class);
+
+    assertEquals(failure.getClass(), QuackeryException.class);
+  }
+
+  @RunWith(QuackeryRunner.class)
+  public static class NotReturnsTest {
+    @Quackery
+    public static Object suite() {
+      return mockCase("name");
+    }
+  }
+
+  public void annotated_method_cannot_have_parameters() {
+    failure = runFailing(HasParameters.class);
+
+    assertEquals(failure.getClass(), QuackeryException.class);
+  }
+
+  @RunWith(QuackeryRunner.class)
+  public static class HasParameters {
+    @Quackery
+    public static Test test(Object parameter) {
+      return mockCase("name");
+    }
+  }
+
+  private static Result run(Class<?> type) {
+    return new JUnitCore().run(type);
+  }
+
+  private static Throwable runFailing(Class<?> type) {
+    return run(type).getFailures().get(0).getException();
+  }
+
   private static Result run(Test test) {
-    RunnableClass.delegate.set(test);
-    return new JUnitCore().run(RunnableClass.class);
+    RunnableClass.localTest.set(test);
+    return run(RunnableClass.class);
   }
 
   @RunWith(QuackeryRunner.class)
   public static class RunnableClass {
-    private static final ThreadLocal<Test> delegate = new ThreadLocal<>();
+    private static final ThreadLocal<Test> localTest = new ThreadLocal<>();
 
     @Quackery
-    public static Test suite() {
-      return delegate.get();
+    public static Test test() {
+      return localTest.get();
     }
   }
 }

@@ -4,6 +4,8 @@ import static java.lang.reflect.Modifier.isPublic;
 import static java.lang.reflect.Modifier.isStatic;
 import static org.junit.runner.Description.createSuiteDescription;
 import static org.junit.runner.Description.createTestDescription;
+import static org.quackery.QuackeryException.check;
+import static org.quackery.Suite.suite;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -15,37 +17,42 @@ import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
-import org.junit.runners.model.InitializationError;
 
 public class QuackeryRunner extends Runner {
   private final Test test;
 
-  public QuackeryRunner(Class<?> testClass) throws InitializationError {
+  public QuackeryRunner(Class<?> testClass) {
     test = instantiateTest(testClass);
   }
 
-  private static Test instantiateTest(Class<?> testClass) throws InitializationError {
+  private static Test instantiateTest(Class<?> testClass) {
     List<Method> methods = new ArrayList<>();
     for (Method method : testClass.getDeclaredMethods()) {
       if (method.isAnnotationPresent(Quackery.class)) {
-        checkInitialization(isPublic(method.getModifiers()));
-        checkInitialization(isStatic(method.getModifiers()));
-        checkInitialization(Test.class.isAssignableFrom(method.getReturnType()));
-        checkInitialization(method.getParameterTypes().length == 0);
+        check(isPublic(method.getModifiers()));
+        check(isStatic(method.getModifiers()));
+        check(Test.class.isAssignableFrom(method.getReturnType()));
+        check(method.getParameterTypes().length == 0);
         methods.add(method);
       }
     }
-    checkInitialization(methods.size() == 1);
-    try {
-      return (Test) methods.get(0).invoke(null);
-    } catch (ReflectiveOperationException e) {
-      throw new InitializationError(e);
+    check(methods.size() > 0);
+    if (methods.size() == 1) {
+      return testReturnedFrom(methods.get(0));
+    } else {
+      Suite suite = suite(testClass.getName());
+      for (Method method : methods) {
+        suite = suite.test(testReturnedFrom(method));
+      }
+      return suite;
     }
   }
 
-  private static void checkInitialization(boolean condition) throws InitializationError {
-    if (!condition) {
-      throw new InitializationError("");
+  private static Test testReturnedFrom(Method method) {
+    try {
+      return (Test) method.invoke(null);
+    } catch (ReflectiveOperationException e) {
+      throw new QuackeryException(e);
     }
   }
 
