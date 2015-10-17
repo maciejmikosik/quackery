@@ -69,6 +69,30 @@ public class test_illegal_use {
     } catch (QuackeryException e) {}
   }
 
+  public void cannot_declare_immutable_twice() {
+    try {
+      quacksLike(Collection.class)
+          .immutable()
+          .immutable();
+      fail();
+    } catch (QuackeryException e) {}
+  }
+
+  public void cannot_mix_mutable_and_immutable() {
+    try {
+      quacksLike(Collection.class)
+          .mutable()
+          .immutable();
+      fail();
+    } catch (QuackeryException e) {}
+    try {
+      quacksLike(Collection.class)
+          .immutable()
+          .mutable();
+      fail();
+    } catch (QuackeryException e) {}
+  }
+
   public void cannot_declare_factory_twice() {
     try {
       quacksLike(Collection.class)

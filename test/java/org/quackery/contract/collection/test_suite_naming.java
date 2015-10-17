@@ -21,28 +21,35 @@ public class test_suite_naming {
   public void includes_collection() {
     test = quacksLike(Collection.class)
         .test(Object.class);
-    assertTrue(test.name.contains("collection"));
+    assertTrue(test.name.contains(" collection"));
   }
 
   public void includes_mutable() {
     test = quacksLike(Collection.class)
         .mutable()
         .test(Object.class);
-    assertTrue(test.name.contains("mutable"));
+    assertTrue(test.name.contains(" mutable"));
+  }
+
+  public void includes_immutable() {
+    test = quacksLike(Collection.class)
+        .immutable()
+        .test(Object.class);
+    assertTrue(test.name.contains(" immutable"));
   }
 
   public void includes_factory() {
     test = quacksLike(Collection.class)
         .withFactory("method_name")
         .test(Object.class);
-    assertTrue(test.name.contains("factory"));
-    assertTrue(test.name.contains("method_name"));
+    assertTrue(test.name.contains(" factory"));
+    assertTrue(test.name.contains(" method_name"));
   }
 
   public void includes_list() {
     test = quacksLike(Collection.class)
         .implementing(List.class)
         .test(Object.class);
-    assertTrue(test.name.contains("list"));
+    assertTrue(test.name.contains(" list"));
   }
 }

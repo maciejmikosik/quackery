@@ -29,6 +29,10 @@ public class CollectionContract implements Contract<Class<?>> {
     return new CollectionContract(configuration.mutable());
   }
 
+  public CollectionContract immutable() {
+    return new CollectionContract(configuration.immutable());
+  }
+
   public CollectionContract withFactory(String factoryMethodName) {
     return new CollectionContract(configuration.withFactory(factoryMethodName));
   }
