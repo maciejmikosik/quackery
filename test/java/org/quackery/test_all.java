@@ -9,15 +9,16 @@ import java.util.List;
 import org.quackery.contract.collection.test_failing_alien_types;
 import org.quackery.contract.collection.test_failing_bugs_of_collection;
 import org.quackery.contract.collection.test_failing_bugs_of_immutable_collection;
+import org.quackery.contract.collection.test_failing_bugs_of_immutable_list;
 import org.quackery.contract.collection.test_failing_bugs_of_list;
 import org.quackery.contract.collection.test_failing_bugs_of_mutable_collection;
 import org.quackery.contract.collection.test_failing_bugs_of_mutable_list;
 import org.quackery.contract.collection.test_illegal_use;
-import org.quackery.contract.collection.test_failing_bugs_of_immutable_list;
 import org.quackery.contract.collection.test_passing_example_collections;
 import org.quackery.contract.collection.test_passing_guava_collections;
 import org.quackery.contract.collection.test_passing_jdk_collections;
 import org.quackery.contract.collection.test_suite_naming;
+import org.quackery.junit.test_QuackeryRunner;
 import org.quackery.run.test_Reports_count_throwables;
 import org.quackery.run.test_Runner;
 
