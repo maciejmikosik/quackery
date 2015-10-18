@@ -113,6 +113,15 @@ public class test_QuackeryRunner {
     assertEquals(otherInvoked, true);
   }
 
+  public void empty_suite_does_not_confuse_runner() {
+    test = suite("suite");
+
+    result = run(test);
+
+    assertEquals(result.getRunCount(), 1);
+    assertEquals(result.getFailureCount(), 0);
+  }
+
   public void class_can_have_more_than_one_annotated_method() {
     result = run(TwoAnnotatedMethods.class);
 

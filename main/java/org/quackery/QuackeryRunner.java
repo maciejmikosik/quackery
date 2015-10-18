@@ -22,7 +22,7 @@ public class QuackeryRunner extends Runner {
   private final Test test;
 
   public QuackeryRunner(Class<?> testClass) {
-    test = instantiateTest(testClass);
+    test = fix(instantiateTest(testClass));
   }
 
   private static Test instantiateTest(Class<?> testClass) {
@@ -54,6 +54,32 @@ public class QuackeryRunner extends Runner {
     } catch (ReflectiveOperationException e) {
       throw new QuackeryException(e);
     }
+  }
+
+  private static Test fix(Test test) {
+    return test instanceof Suite
+        ? fix((Suite) test)
+        : test;
+  }
+
+  private static Test fix(Suite suite) {
+    return suite.tests.isEmpty()
+        ? fixEmptySuite(suite)
+        : fixChildren(suite);
+  }
+
+  private static Case fixEmptySuite(Suite suite) {
+    return new Case(suite.name) {
+      public void run() {}
+    };
+  }
+
+  private static Test fixChildren(Suite suite) {
+    Suite fixedSuite = suite(suite.name);
+    for (Test test : suite.tests) {
+      fixedSuite = fixedSuite.test(fix(test));
+    }
+    return fixedSuite;
   }
 
   public Description getDescription() {
