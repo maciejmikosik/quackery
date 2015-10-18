@@ -1,4 +1,4 @@
-package org.quackery;
+package org.quackery.junit;
 
 import static java.lang.reflect.Modifier.isPublic;
 import static java.lang.reflect.Modifier.isStatic;
@@ -17,6 +17,13 @@ import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
+import org.quackery.AssertionException;
+import org.quackery.AssumptionException;
+import org.quackery.Case;
+import org.quackery.Quackery;
+import org.quackery.QuackeryException;
+import org.quackery.Suite;
+import org.quackery.Test;
 
 public class QuackeryRunner extends Runner {
   private final Test test;

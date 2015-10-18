@@ -1,4 +1,4 @@
-package org.quackery;
+package org.quackery.junit;
 
 import static org.quackery.Suite.suite;
 import static org.quackery.testing.Assertions.assertEquals;
@@ -7,6 +7,13 @@ import static org.quackery.testing.Mocks.mockCase;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.RunWith;
+import org.quackery.AssertionException;
+import org.quackery.AssumptionException;
+import org.quackery.Case;
+import org.quackery.Quackery;
+import org.quackery.QuackeryException;
+import org.quackery.Suite;
+import org.quackery.Test;
 
 public class test_QuackeryRunner {
   private final String name = "name " + hashCode();
