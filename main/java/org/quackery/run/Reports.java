@@ -33,4 +33,46 @@ public class Reports {
     }
     return count;
   }
+
+  public static String print(Test test) {
+    check(test != null);
+    return append(0, test, new StringBuilder()).toString();
+  }
+
+  private static StringBuilder append(int indentation, Test test, StringBuilder builder) {
+    return test instanceof Case
+        ? append(indentation, (Case) test, builder)
+        : append(indentation, (Suite) test, builder);
+  }
+
+  private static StringBuilder append(int indentation, Case cas, StringBuilder builder) {
+    indent(indentation, builder);
+    appendThrowable(cas, builder);
+    return builder.append(cas.name).append("\n");
+  }
+
+  private static StringBuilder append(int indentation, Suite suite, StringBuilder builder) {
+    indent(indentation, builder);
+    builder.append(suite.name).append("\n");
+    for (Test test : suite.tests) {
+      append(indentation + 1, test, builder);
+    }
+    return builder;
+  }
+
+  private static StringBuilder appendThrowable(Case cas, StringBuilder builder) {
+    try {
+      cas.run();
+    } catch (Throwable e) {
+      builder.append("[").append(e.getClass().getSimpleName()).append("] ");
+    }
+    return builder;
+  }
+
+  private static StringBuilder indent(int size, StringBuilder builder) {
+    for (int i = 0; i < size; i++) {
+      builder.append("  ");
+    }
+    return builder;
+  }
 }

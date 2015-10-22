@@ -20,6 +20,7 @@ import org.quackery.contract.collection.test_passing_jdk_collections;
 import org.quackery.contract.collection.test_suite_naming;
 import org.quackery.junit.test_QuackeryRunner;
 import org.quackery.run.test_Reports_count_throwables;
+import org.quackery.run.test_Reports_print;
 import org.quackery.run.test_Runner;
 
 public class test_all {
@@ -31,6 +32,7 @@ public class test_all {
     runTestsIn(test_Suite.class);
     runTestsIn(test_Runner.class);
     runTestsIn(test_Reports_count_throwables.class);
+    runTestsIn(test_Reports_print.class);
 
     runTestsIn(test_QuackeryRunner.class);
 

@@ -3,6 +3,7 @@ package org.quackery;
 import static java.util.Arrays.asList;
 
 import org.quackery.junit.QuackeryRunner;
+import org.quackery.run.Reports;
 
 class Build {
   Object core = asList(Test.class, Case.class, Suite.class, Contract.class);
@@ -10,4 +11,5 @@ class Build {
   Object exceptions = asList(AssertionException.class, AssumptionException.class,
       QuackeryException.class);
   Object integration = asList(Quackery.class, QuackeryRunner.class);
+  Object run = asList(Reports.class);
 }
