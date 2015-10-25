@@ -26,4 +26,35 @@ public class Runners {
       public void run() {}
     };
   }
+
+  public static Test threadScoped(Test test) {
+    return new Visitor() {
+      protected Case visit(final Case visiting) {
+        return threadScoped(visiting);
+      }
+    }.visit(test);
+  }
+
+  private static Case threadScoped(final Case visiting) {
+    return new Case(visiting.name) {
+      private Throwable throwable;
+
+      public void run() throws Throwable {
+        Thread thread = new Thread(new Runnable() {
+          public void run() {
+            try {
+              visiting.run();
+            } catch (Throwable t) {
+              throwable = t;
+            }
+          }
+        });
+        thread.start();
+        thread.join();
+        if (throwable != null) {
+          throw throwable;
+        }
+      }
+    };
+  }
 }
