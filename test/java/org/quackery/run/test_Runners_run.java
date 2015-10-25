@@ -1,6 +1,7 @@
 package org.quackery.run;
 
 import static org.quackery.Suite.suite;
+import static org.quackery.run.Runners.run;
 import static org.quackery.testing.Assertions.assertEquals;
 import static org.quackery.testing.Assertions.fail;
 import static org.quackery.testing.Mocks.mockCase;
@@ -10,10 +11,9 @@ import org.quackery.QuackeryException;
 import org.quackery.Suite;
 import org.quackery.Test;
 
-public class test_Runner {
+public class test_Runners_run {
   private final String name = "name", nameA = "nameA", nameB = "nameB", nameC = "nameC",
       nameD = "nameD", nameE = "nameE", nameF = "nameF";
-  private final Runner runner = new Runner();
   private Test test, report;
   private Throwable throwable = new Throwable();
   private int invoked;
@@ -22,7 +22,7 @@ public class test_Runner {
     test = mockCase(name);
 
     // when
-    report = runner.run(test);
+    report = run(test);
 
     // then
     assertEquals(report.name, name);
@@ -32,7 +32,7 @@ public class test_Runner {
     test = mockCase(name, throwable);
 
     // when
-    report = runner.run(test);
+    report = run(test);
 
     // then
     assertEquals(report.name, name);
@@ -43,7 +43,7 @@ public class test_Runner {
         .test(mockCase(name));
 
     // when
-    report = runner.run(test);
+    report = run(test);
 
     // then
     assertEquals(navigate(report, 0).name, name);
@@ -51,7 +51,7 @@ public class test_Runner {
 
   public void report_imitates_successful_case() throws Throwable {
     test = mockCase(name);
-    report = runner.run(test);
+    report = run(test);
 
     // when
     ((Case) report).run();
@@ -63,7 +63,7 @@ public class test_Runner {
     class SomeThrowable extends Throwable {}
     throwable = new SomeThrowable();
     test = mockCase(name, throwable);
-    report = runner.run(test);
+    report = run(test);
 
     try {
       // when
@@ -83,7 +83,7 @@ public class test_Runner {
     };
 
     // when
-    runner.run(test);
+    run(test);
 
     // then
     assertEquals(invoked, 1);
@@ -98,7 +98,7 @@ public class test_Runner {
         });
 
     // when
-    runner.run(test);
+    run(test);
 
     // then
     assertEquals(invoked, 1);
@@ -110,7 +110,7 @@ public class test_Runner {
         invoked++;
       }
     };
-    report = runner.run(test);
+    report = run(test);
     invoked = 0;
 
     // when
@@ -127,7 +127,7 @@ public class test_Runner {
         throw new RuntimeException();
       }
     };
-    report = runner.run(test);
+    report = run(test);
     invoked = 0;
 
     // when
@@ -143,7 +143,7 @@ public class test_Runner {
     test = suite(name);
 
     // when
-    report = runner.run(test);
+    report = run(test);
 
     // then
     assertEquals(report.name, name);
@@ -159,7 +159,7 @@ public class test_Runner {
             .test(mockCase(nameF)));
 
     // when
-    report = runner.run(test);
+    report = run(test);
 
     // then
     assertEquals(report.name, name);
@@ -178,7 +178,7 @@ public class test_Runner {
 
   public void cannot_run_null() {
     try {
-      runner.run(null);
+      run(null);
       fail();
     } catch (QuackeryException e) {}
   }
