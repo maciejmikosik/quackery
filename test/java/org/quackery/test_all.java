@@ -65,8 +65,8 @@ public class test_all {
 
   private static void runTestsIn(Class<?> type) throws Throwable {
     int count = 0;
-    for (Method method : type.getDeclaredMethods()) {
-      if (isPublic(method) && !isStatic(method) && hasNoParameters(method)) {
+    for (Method method : type.getMethods()) {
+      if (!isJdkMethod(method) && isPublic(method) && !isStatic(method) && hasNoParameters(method)) {
         count++;
         try {
           method.invoke(type.newInstance());
@@ -76,6 +76,10 @@ public class test_all {
       }
     }
     statistics.add(type.getSimpleName() + " : " + count);
+  }
+
+  private static boolean isJdkMethod(Method method) {
+    return method.getDeclaringClass().getClassLoader() == null;
   }
 
   private static boolean isPublic(Method method) {
