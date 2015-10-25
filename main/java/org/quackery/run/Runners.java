@@ -1,5 +1,9 @@
 package org.quackery.run;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executor;
+import java.util.concurrent.FutureTask;
+
 import org.quackery.Case;
 import org.quackery.Test;
 
@@ -24,6 +28,29 @@ public class Runners {
     }
     return new Case(visiting.name) {
       public void run() {}
+    };
+  }
+
+  public static Test runIn(final Executor executor, Test test) {
+    Test futureTest = new Visitor() {
+      protected Case visit(Case visiting) {
+        return futureCase(executor, visiting);
+      }
+    }.visit(test);
+    return run(futureTest);
+  }
+
+  private static Case futureCase(final Executor executor, final Case test) {
+    final FutureTask<Case> future = new FutureTask<Case>(new Callable<Case>() {
+      public Case call() {
+        return run(test);
+      }
+    });
+    executor.execute(future);
+    return new Case(test.name) {
+      public void run() throws Throwable {
+        future.get().run();
+      }
     };
   }
 

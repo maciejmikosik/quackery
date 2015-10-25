@@ -23,6 +23,7 @@ import org.quackery.run.test_Reports_count_throwables;
 import org.quackery.run.test_Reports_print;
 import org.quackery.run.test_Runners_classLoaderScoped;
 import org.quackery.run.test_Runners_run;
+import org.quackery.run.test_Runners_runIn;
 import org.quackery.run.test_Runners_threadScoped;
 
 public class test_all {
@@ -33,6 +34,7 @@ public class test_all {
     runTestsIn(test_Case.class);
     runTestsIn(test_Suite.class);
     runTestsIn(test_Runners_run.class);
+    runTestsIn(test_Runners_runIn.class);
     runTestsIn(test_Runners_threadScoped.class);
     runTestsIn(test_Runners_classLoaderScoped.class);
     runTestsIn(test_Reports_count_throwables.class);
