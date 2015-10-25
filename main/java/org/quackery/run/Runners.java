@@ -57,4 +57,27 @@ public class Runners {
       }
     };
   }
+
+  public static Test classLoaderScoped(Test test) {
+    return new Visitor() {
+      protected Case visit(Case visiting) {
+        return classLoaderScoped(visiting);
+      }
+    }.visit(test);
+  }
+
+  private static Case classLoaderScoped(final Case visiting) {
+    return new Case(visiting.name) {
+      public void run() throws Throwable {
+        Thread thread = Thread.currentThread();
+        ClassLoader original = thread.getContextClassLoader();
+        thread.setContextClassLoader(new ClassLoader(original) {});
+        try {
+          visiting.run();
+        } finally {
+          thread.setContextClassLoader(original);
+        }
+      }
+    };
+  }
 }
