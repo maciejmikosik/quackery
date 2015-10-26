@@ -21,7 +21,10 @@ import org.quackery.contract.collection.test_suite_naming;
 import org.quackery.junit.test_QuackeryRunner;
 import org.quackery.run.test_Reports_count_throwables;
 import org.quackery.run.test_Reports_print;
-import org.quackery.run.test_Runner;
+import org.quackery.run.test_Runners_classLoaderScoped;
+import org.quackery.run.test_Runners_run;
+import org.quackery.run.test_Runners_runIn;
+import org.quackery.run.test_Runners_threadScoped;
 
 public class test_all {
   private static List<Throwable> failures = new ArrayList<Throwable>();
@@ -30,7 +33,10 @@ public class test_all {
   public static void main(String[] args) throws Throwable {
     runTestsIn(test_Case.class);
     runTestsIn(test_Suite.class);
-    runTestsIn(test_Runner.class);
+    runTestsIn(test_Runners_run.class);
+    runTestsIn(test_Runners_runIn.class);
+    runTestsIn(test_Runners_threadScoped.class);
+    runTestsIn(test_Runners_classLoaderScoped.class);
     runTestsIn(test_Reports_count_throwables.class);
     runTestsIn(test_Reports_print.class);
 
@@ -65,8 +71,8 @@ public class test_all {
 
   private static void runTestsIn(Class<?> type) throws Throwable {
     int count = 0;
-    for (Method method : type.getDeclaredMethods()) {
-      if (isPublic(method) && !isStatic(method) && hasNoParameters(method)) {
+    for (Method method : type.getMethods()) {
+      if (!isJdkMethod(method) && isPublic(method) && !isStatic(method) && hasNoParameters(method)) {
         count++;
         try {
           method.invoke(type.newInstance());
@@ -76,6 +82,10 @@ public class test_all {
       }
     }
     statistics.add(type.getSimpleName() + " : " + count);
+  }
+
+  private static boolean isJdkMethod(Method method) {
+    return method.getDeclaringClass().getClassLoader() == null;
   }
 
   private static boolean isPublic(Method method) {
