@@ -15,11 +15,21 @@ public class test_Runner {
       nameD = "nameD", nameE = "nameE", nameF = "nameF";
   private final Runner runner = new Runner();
   private Test test, report;
-  private Throwable throwable;
+  private Throwable throwable = new Throwable();
   private int invoked;
 
-  public void report_keeps_case_name() {
+  public void report_keeps_successful_case_name() {
     test = mockCase(name);
+
+    // when
+    report = runner.run(test);
+
+    // then
+    assertEquals(report.name, name);
+  }
+
+  public void report_keeps_failed_case_name() {
+    test = mockCase(name, throwable);
 
     // when
     report = runner.run(test);

@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.quackery.Quackery;
 import org.quackery.QuackeryException;
-import org.quackery.Suite;
 import org.quackery.Test;
 
 public class Instantiate {
@@ -20,7 +19,7 @@ public class Instantiate {
     check(tests.size() > 0);
     return tests.size() == 1
         ? tests.get(0)
-        : bundle(testClass.getName(), tests);
+        : suite(testClass.getName()).testAll(tests);
   }
 
   private static List<Method> annotatedMethods(Class<?> testClass) {
@@ -51,13 +50,5 @@ public class Instantiate {
     } catch (ReflectiveOperationException e) {
       throw new QuackeryException(e);
     }
-  }
-
-  private static Test bundle(String name, List<Test> tests) {
-    Suite suite = suite(name);
-    for (Test test : tests) {
-      suite = suite.test(test);
-    }
-    return suite;
   }
 }
