@@ -1,8 +1,12 @@
 package org.quackery;
 
+import static java.math.RoundingMode.HALF_UP;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +35,8 @@ public class test_all {
   private static List<String> statistics = new ArrayList<String>();
 
   public static void main(String[] args) throws Throwable {
+    long start = System.nanoTime();
+
     runTestsIn(test_Case.class);
     runTestsIn(test_Suite.class);
     runTestsIn(test_Runners_run.class);
@@ -54,6 +60,10 @@ public class test_all {
     runTestsIn(test_passing_example_collections.class);
     runTestsIn(test_passing_jdk_collections.class);
     runTestsIn(test_passing_guava_collections.class);
+
+    long stop = System.nanoTime();
+    BigDecimal time = new BigDecimal(BigInteger.valueOf(stop - start), 9).setScale(3, HALF_UP);
+    System.out.println("finished in " + time + " seconds");
 
     if (failures.size() == 0) {
       System.out.println("no failures");
