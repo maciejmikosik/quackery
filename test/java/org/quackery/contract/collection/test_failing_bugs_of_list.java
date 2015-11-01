@@ -5,10 +5,19 @@ import static org.quackery.Contracts.quacksLike;
 import static org.quackery.contract.collection.Factories.asListFactory;
 import static org.quackery.testing.Assertions.assertFailure;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+
+import org.quackery.contract.collection.bug.list.CopyConstructorRemovesDuplicates;
+import org.quackery.contract.collection.bug.list.CopyConstructorRemovesLastElement;
+import org.quackery.contract.collection.bug.list.CopyConstructorReversesOrder;
+import org.quackery.contract.collection.bug.list.CopyConstructorStoresOneElement;
+import org.quackery.contract.collection.bug.list.GetReturnsFirstElement;
+import org.quackery.contract.collection.bug.list.GetReturnsLastElement;
+import org.quackery.contract.collection.bug.list.GetReturnsNull;
+import org.quackery.contract.collection.bug.list.GetReturnsNullAboveBound;
+import org.quackery.contract.collection.bug.list.GetReturnsNullBelowBound;
+import org.quackery.contract.collection.bug.list.factory.FactoryReturnsCollection;
 
 public class test_failing_bugs_of_list {
   public void detects_bugs() {
@@ -31,138 +40,6 @@ public class test_failing_bugs_of_list {
         GetReturnsNullBelowBound.class)) {
       assertFailure(contract.test(bug));
       assertFailure(contract.withFactory("create").test(asListFactory(bug)));
-    }
-  }
-
-  public static class FactoryReturnsCollection {
-    public static <E> Collection<E> create(Collection<? extends E> collection) {
-      return new MutableList(collection);
-    }
-  }
-
-  public static class CopyConstructorStoresOneElement<E> extends MutableList<E> {
-    public CopyConstructorStoresOneElement() {}
-
-    public CopyConstructorStoresOneElement(Collection<E> collection) {
-      super(one(collection));
-    }
-
-    private static <E> Collection<E> one(Collection<E> collection) {
-      return collection.isEmpty()
-          ? collection
-          : asList(collection.iterator().next());
-    }
-  }
-
-  public static class CopyConstructorReversesOrder<E> extends MutableList<E> {
-    public CopyConstructorReversesOrder() {}
-
-    public CopyConstructorReversesOrder(Collection<E> collection) {
-      super(reverse(collection));
-    }
-
-    private static <E> Collection<E> reverse(Collection<E> collection) {
-      List<E> list = new ArrayList<>(collection);
-      Collections.reverse(list);
-      return list;
-    }
-  }
-
-  public static class CopyConstructorRemovesLastElement<E> extends MutableList<E> {
-    public CopyConstructorRemovesLastElement() {}
-
-    public CopyConstructorRemovesLastElement(Collection<E> collection) {
-      super(withoutLast(collection));
-    }
-
-    private static <E> Collection<E> withoutLast(Collection<E> collection) {
-      List<E> list = new ArrayList<>(collection);
-      if (!list.isEmpty()) {
-        list.remove(list.size() - 1);
-      }
-      return list;
-    }
-  }
-
-  public static class CopyConstructorRemovesDuplicates<E> extends MutableList<E> {
-    public CopyConstructorRemovesDuplicates() {}
-
-    public CopyConstructorRemovesDuplicates(Collection<E> collection) {
-      super(withoutDuplicates(collection));
-    }
-
-    private static <E> Collection<E> withoutDuplicates(Collection<E> collection) {
-      List<E> list = new ArrayList<>();
-      for (E element : collection) {
-        if (!list.contains(element)) {
-          list.add(element);
-        }
-      }
-      return list;
-    }
-  }
-
-  public static class GetReturnsFirstElement<E> extends MutableList<E> {
-    public GetReturnsFirstElement() {}
-
-    public GetReturnsFirstElement(Collection<E> collection) {
-      super(collection);
-    }
-
-    public E get(int index) {
-      return super.get(0);
-    }
-  }
-
-  public static class GetReturnsLastElement<E> extends MutableList<E> {
-    public GetReturnsLastElement() {}
-
-    public GetReturnsLastElement(Collection<E> collection) {
-      super(collection);
-    }
-
-    public E get(int index) {
-      return super.get(size() - 1);
-    }
-  }
-
-  public static class GetReturnsNull<E> extends MutableList<E> {
-    public GetReturnsNull() {}
-
-    public GetReturnsNull(Collection<E> collection) {
-      super(collection);
-    }
-
-    public E get(int index) {
-      return null;
-    }
-  }
-
-  public static class GetReturnsNullAboveBound<E> extends MutableList<E> {
-    public GetReturnsNullAboveBound() {}
-
-    public GetReturnsNullAboveBound(Collection<E> collection) {
-      super(collection);
-    }
-
-    public E get(int index) {
-      return index >= size()
-          ? null
-          : super.get(index);
-    }
-  }
-
-  public static class GetReturnsNullBelowBound<E> extends MutableList<E> {
-    public GetReturnsNullBelowBound() {}
-
-    public GetReturnsNullBelowBound(Collection<E> collection) {
-      super(collection);
-    }
-
-    public E get(int index) {
-      return index < 0
-          ? null
-          : super.get(index);
     }
   }
 }
