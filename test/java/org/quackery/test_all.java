@@ -1,18 +1,16 @@
 package org.quackery;
 
+import static java.math.RoundingMode.HALF_UP;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.quackery.contract.collection.test_failing_alien_types;
-import org.quackery.contract.collection.test_failing_bugs_of_collection;
-import org.quackery.contract.collection.test_failing_bugs_of_immutable_collection;
-import org.quackery.contract.collection.test_failing_bugs_of_immutable_list;
-import org.quackery.contract.collection.test_failing_bugs_of_list;
-import org.quackery.contract.collection.test_failing_bugs_of_mutable_collection;
-import org.quackery.contract.collection.test_failing_bugs_of_mutable_list;
+import org.quackery.contract.collection.test_detecting_bugs;
 import org.quackery.contract.collection.test_illegal_use;
 import org.quackery.contract.collection.test_passing_example_collections;
 import org.quackery.contract.collection.test_passing_guava_collections;
@@ -31,6 +29,8 @@ public class test_all {
   private static List<String> statistics = new ArrayList<String>();
 
   public static void main(String[] args) throws Throwable {
+    long start = System.nanoTime();
+
     runTestsIn(test_Case.class);
     runTestsIn(test_Suite.class);
     runTestsIn(test_Runners_run.class);
@@ -44,16 +44,14 @@ public class test_all {
 
     runTestsIn(test_illegal_use.class);
     runTestsIn(test_suite_naming.class);
-    runTestsIn(test_failing_bugs_of_collection.class);
-    runTestsIn(test_failing_bugs_of_mutable_collection.class);
-    runTestsIn(test_failing_bugs_of_immutable_collection.class);
-    runTestsIn(test_failing_bugs_of_list.class);
-    runTestsIn(test_failing_bugs_of_mutable_list.class);
-    runTestsIn(test_failing_bugs_of_immutable_list.class);
-    runTestsIn(test_failing_alien_types.class);
+    runTestsIn(test_detecting_bugs.class);
     runTestsIn(test_passing_example_collections.class);
     runTestsIn(test_passing_jdk_collections.class);
     runTestsIn(test_passing_guava_collections.class);
+
+    long stop = System.nanoTime();
+    BigDecimal time = new BigDecimal(BigInteger.valueOf(stop - start), 9).setScale(3, HALF_UP);
+    System.out.println("finished in " + time + " seconds");
 
     if (failures.size() == 0) {
       System.out.println("no failures");

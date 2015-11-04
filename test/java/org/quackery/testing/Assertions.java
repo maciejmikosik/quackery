@@ -1,6 +1,7 @@
 package org.quackery.testing;
 
 import static org.quackery.run.Reports.count;
+import static org.quackery.run.Reports.print;
 import static org.quackery.run.Runners.run;
 
 import java.util.Objects;
@@ -47,7 +48,7 @@ public class Assertions {
     int problems = count(Throwable.class, report);
     boolean expected = problems == 0;
     if (!expected) {
-      throw new AssertionError("expected success: " + test.name + report);
+      throw new AssertionError("expected success but was\n\n" + print(report));
     }
   }
 
@@ -61,7 +62,7 @@ public class Assertions {
 
     boolean expected = failures > 0 && errors == 0;
     if (!expected) {
-      throw new AssertionError("expected failure: " + test.name + report);
+      throw new AssertionError("expected failure but was\n\n" + print(report));
     }
   }
 }
