@@ -10,13 +10,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.quackery.contract.collection.test_failing_alien_types;
-import org.quackery.contract.collection.test_failing_bugs_of_collection;
-import org.quackery.contract.collection.test_failing_bugs_of_immutable_collection;
-import org.quackery.contract.collection.test_failing_bugs_of_immutable_list;
-import org.quackery.contract.collection.test_failing_bugs_of_list;
-import org.quackery.contract.collection.test_failing_bugs_of_mutable_collection;
-import org.quackery.contract.collection.test_failing_bugs_of_mutable_list;
+import org.quackery.contract.collection.test_detecting_bugs;
 import org.quackery.contract.collection.test_illegal_use;
 import org.quackery.contract.collection.test_passing_example_collections;
 import org.quackery.contract.collection.test_passing_guava_collections;
@@ -50,13 +44,7 @@ public class test_all {
 
     runTestsIn(test_illegal_use.class);
     runTestsIn(test_suite_naming.class);
-    runTestsIn(test_failing_bugs_of_collection.class);
-    runTestsIn(test_failing_bugs_of_mutable_collection.class);
-    runTestsIn(test_failing_bugs_of_immutable_collection.class);
-    runTestsIn(test_failing_bugs_of_list.class);
-    runTestsIn(test_failing_bugs_of_mutable_list.class);
-    runTestsIn(test_failing_bugs_of_immutable_list.class);
-    runTestsIn(test_failing_alien_types.class);
+    runTestsIn(test_detecting_bugs.class);
     runTestsIn(test_passing_example_collections.class);
     runTestsIn(test_passing_jdk_collections.class);
     runTestsIn(test_passing_guava_collections.class);

@@ -844,7 +844,11 @@ public class CollectionTests {
       public void run() throws Throwable {
         ArrayList<Object> original = newArrayList(a);
         List<Object> list = creator.create(List.class, copy(original));
-        list.set(0, b);
+        try {
+          list.set(0, b);
+        } catch (IndexOutOfBoundsException e) {
+          throw new AssumptionException(e);
+        }
         assertEquals(copy(list.toArray()), new Object[] { b });
       }
     };
@@ -855,7 +859,12 @@ public class CollectionTests {
       public void run() throws Throwable {
         ArrayList<Object> original = newArrayList(a);
         List<Object> list = creator.create(List.class, copy(original));
-        Object returned = list.set(0, b);
+        Object returned;
+        try {
+          returned = list.set(0, b);
+        } catch (IndexOutOfBoundsException e) {
+          throw new AssumptionException(e);
+        }
         assertEquals(returned, a);
       }
     };
@@ -866,7 +875,11 @@ public class CollectionTests {
       public void run() throws Throwable {
         ArrayList<Object> original = newArrayList(a, b, c);
         List<Object> list = creator.create(List.class, copy(original));
-        list.set(2, d);
+        try {
+          list.set(2, d);
+        } catch (IndexOutOfBoundsException e) {
+          throw new AssumptionException(e);
+        }
         assertEquals(copy(list.toArray()), new Object[] { a, b, d });
       }
     };
@@ -880,7 +893,11 @@ public class CollectionTests {
         try {
           list.set(1, d);
           fail();
-        } catch (UnsupportedOperationException e) {}
+        } catch (UnsupportedOperationException e) {
+
+        } catch (IndexOutOfBoundsException e) {
+          throw new AssumptionException(e);
+        }
       }
     };
   }
@@ -892,7 +909,11 @@ public class CollectionTests {
         List<Object> list = creator.create(List.class, copy(original));
         try {
           list.set(1, d);
-        } catch (UnsupportedOperationException e) {}
+        } catch (UnsupportedOperationException e) {
+
+        } catch (IndexOutOfBoundsException e) {
+          throw new AssumptionException(e);
+        }
         assertEquals(copy(list.toArray()), original.toArray());
       }
     };
@@ -903,7 +924,11 @@ public class CollectionTests {
       public void run() throws Throwable {
         ArrayList<Object> original = newArrayList(a, b, c);
         List<Object> list = creator.create(List.class, copy(original));
-        list.add(1, d);
+        try {
+          list.add(1, d);
+        } catch (IndexOutOfBoundsException e) {
+          throw new AssumptionException(e);
+        }
         assertEquals(copy(list.toArray()), new Object[] { a, d, b, c });
       }
     };
@@ -940,7 +965,11 @@ public class CollectionTests {
         try {
           list.remove(0);
           fail();
-        } catch (UnsupportedOperationException e) {}
+        } catch (UnsupportedOperationException e) {
+
+        } catch (IndexOutOfBoundsException e) {
+          throw new AssumptionException(e);
+        }
       }
     };
   }
@@ -951,7 +980,11 @@ public class CollectionTests {
         List<Object> list = creator.create(List.class, newArrayList(a));
         try {
           list.remove(0);
-        } catch (UnsupportedOperationException e) {}
+        } catch (UnsupportedOperationException e) {
+
+        } catch (IndexOutOfBoundsException e) {
+          throw new AssumptionException(e);
+        }
         assertEquals(copy(list.toArray()), new Object[] { a });
       }
     };

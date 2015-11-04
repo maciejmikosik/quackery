@@ -1,26 +1,104 @@
 package org.quackery.contract.collection;
 
 import static java.util.Collections.unmodifiableList;
+import static org.quackery.contract.collection.Factories.asCollectionFactory;
+import static org.quackery.contract.collection.Factories.asListFactory;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Bugs {
-  public static final List<Class<?>> alienTypes = classes(
+  private final boolean isList, hasFactory, isMutable, isImmutable;
+
+  private Bugs(boolean isList, boolean hasFactory, boolean isMutable, boolean isImmutable) {
+    this.isList = isList;
+    this.hasFactory = hasFactory;
+    this.isMutable = isMutable;
+    this.isImmutable = isImmutable;
+  }
+
+  public Bugs() {
+    this(false, false, false, false);
+  }
+
+  public Bugs list() {
+    return new Bugs(true, hasFactory, isMutable, isImmutable);
+  }
+
+  public Bugs factory() {
+    return new Bugs(isList, true, isMutable, isImmutable);
+  }
+
+  public Bugs mutable() {
+    return new Bugs(isList, hasFactory, true, isImmutable);
+  }
+
+  public Bugs immutable() {
+    return new Bugs(isList, hasFactory, isMutable, true);
+  }
+
+  public List<Class<?>> get() {
+    List<Class<?>> bugs = new LinkedList<>();
+
+    bugs.addAll(alienTypes);
+    bugs.addAll(hasFactory
+        ? collectionFactoryBugs
+        : collectionConstructorBugs);
+    bugs.addAll(asFactoriesIf(hasFactory, collectionBugs));
+    if (isMutable) {
+      bugs.addAll(asFactoriesIf(hasFactory, collectionMutableBugs));
+    }
+    if (isImmutable) {
+      bugs.addAll(asFactoriesIf(hasFactory, collectionImmutableBugs));
+    }
+    if (isList) {
+      if (hasFactory) {
+        bugs.addAll(listFactoryBugs);
+      }
+      bugs.addAll(asFactoriesIf(hasFactory, listBugs));
+      if (isMutable) {
+        bugs.addAll(asFactoriesIf(hasFactory, listMutableBugs));
+      }
+      if (isImmutable) {
+        bugs.addAll(asFactoriesIf(hasFactory, listImmutableBugs));
+      }
+    }
+
+    return unmodifiableList(bugs);
+  }
+
+  private static List<Class<?>> asFactoriesIf(boolean hasFactory, List<Class<?>> bugs) {
+    return hasFactory
+        ? asFactories(bugs)
+        : bugs;
+  }
+
+  private static List<Class<?>> asFactories(List<Class<?>> bugs) {
+    List<Class<?>> factoryBugs = new LinkedList<>();
+    for (Class<?> bug : bugs) {
+      factoryBugs.add(bug.isInstance(List.class)
+          ? asListFactory(bug)
+          : asCollectionFactory(bug));
+    }
+    return factoryBugs;
+  }
+
+  private static final List<Class<?>> alienTypes = classes(
       Object.class,
       String.class,
       Integer.class,
       org.quackery.contract.collection.bug.alien.HasCollectionConstructors.class,
       org.quackery.contract.collection.bug.alien.FakeCollection.class);
 
-  public static List<Class<?>> collectionConstructorBugs = classes(
+  private static final List<Class<?>> collectionConstructorBugs = classes(
       org.quackery.contract.collection.bug.collection.constructor.DefaultConstructorIsMissing.class,
       org.quackery.contract.collection.bug.collection.constructor.DefaultConstructorIsHidden.class,
       org.quackery.contract.collection.bug.collection.constructor.DefaultConstructorAddsElement.class,
       org.quackery.contract.collection.bug.collection.constructor.CopyConstructorIsMissing.class,
       org.quackery.contract.collection.bug.collection.constructor.CopyConstructorIsHidden.class);
 
-  public static List<Class<?>> collectionFactoryBugs = classes(
+  private static final List<Class<?>> collectionFactoryBugs = classes(
       org.quackery.contract.collection.bug.collection.factory.FactoryIsMissing.class,
       org.quackery.contract.collection.bug.collection.factory.FactoryIsHidden.class,
       org.quackery.contract.collection.bug.collection.factory.FactoryIsNotStatic.class,
@@ -28,7 +106,7 @@ public class Bugs {
       org.quackery.contract.collection.bug.collection.factory.FactoryHasDifferentName.class,
       org.quackery.contract.collection.bug.collection.factory.FactoryAcceptsObject.class);
 
-  public static List<Class<?>> collectionBugs = classes(
+  private static final List<Class<?>> collectionBugs = classes(
       org.quackery.contract.collection.bug.collection.CreatorCreatesEmpty.class,
       org.quackery.contract.collection.bug.collection.CreatorAddsElement.class,
       org.quackery.contract.collection.bug.collection.CreatorAcceptsNull.class,
@@ -62,7 +140,7 @@ public class Bugs {
       org.quackery.contract.collection.bug.collection.IteratorNextReturnsUnknownElementAfterTraversing.class,
       org.quackery.contract.collection.bug.collection.IteratorNextReturnsNullAfterTraversing.class);
 
-  public static List<Class<?>> collectionImmutableBugs = classes(
+  private static final List<Class<?>> collectionImmutableBugs = classes(
       org.quackery.contract.collection.bug.collection.immutable.IteratorRemovesElement.class,
       org.quackery.contract.collection.bug.collection.immutable.IteratorDoesNotThrowException.class,
       org.quackery.contract.collection.bug.collection.immutable.AddAddsElement.class,
@@ -78,7 +156,7 @@ public class Bugs {
       org.quackery.contract.collection.bug.collection.immutable.ClearClearsElements.class,
       org.quackery.contract.collection.bug.collection.immutable.ClearDoesNotThrowException.class);
 
-  public static List<Class<?>> listImmutableBugs = classes(
+  private static final List<Class<?>> listImmutableBugs = classes(
       org.quackery.contract.collection.bug.list.immutable.AddAllIntAddsElements.class,
       org.quackery.contract.collection.bug.list.immutable.AddAllIntDoesNotThrowException.class,
       org.quackery.contract.collection.bug.list.immutable.SetSetsElement.class,
@@ -94,10 +172,10 @@ public class Bugs {
       org.quackery.contract.collection.bug.list.immutable.ListIteratorAddsElement.class,
       org.quackery.contract.collection.bug.list.immutable.ListIteratorAddDoesNotThrowException.class);
 
-  public static List<Class<?>> listFactoryBugs = classes(
+  private static final List<Class<?>> listFactoryBugs = classes(
       org.quackery.contract.collection.bug.list.factory.FactoryReturnsCollection.class);
 
-  public static List<Class<?>> listBugs = classes(
+  private static final List<Class<?>> listBugs = classes(
       org.quackery.contract.collection.bug.list.CopyConstructorStoresOneElement.class,
       org.quackery.contract.collection.bug.list.CopyConstructorReversesOrder.class,
       org.quackery.contract.collection.bug.list.CopyConstructorRemovesLastElement.class,
@@ -108,7 +186,7 @@ public class Bugs {
       org.quackery.contract.collection.bug.list.GetReturnsNullAboveBound.class,
       org.quackery.contract.collection.bug.list.GetReturnsNullBelowBound.class);
 
-  public static List<Class<?>> collectionMutableBugs = classes(
+  private static final List<Class<?>> collectionMutableBugs = classes(
       org.quackery.contract.collection.bug.collection.mutable.IteratorRemovesHasNoEffect.class,
       org.quackery.contract.collection.bug.collection.mutable.IteratorRemovesSwallowsException.class,
       org.quackery.contract.collection.bug.collection.mutable.IteratorRemovesThrowsException.class,
@@ -120,7 +198,7 @@ public class Bugs {
       org.quackery.contract.collection.bug.collection.mutable.RemoveHasNoEffect.class,
       org.quackery.contract.collection.bug.collection.mutable.ClearHasNoEffect.class);
 
-  public static List<Class<?>> listMutableBugs = classes(
+  private static final List<Class<?>> listMutableBugs = classes(
       org.quackery.contract.collection.bug.list.mutable.AddAddsAtTheBegin.class,
       org.quackery.contract.collection.bug.list.mutable.AddReturnsFalse.class,
       org.quackery.contract.collection.bug.list.mutable.AddNotAddsDuplicatedElement.class,
