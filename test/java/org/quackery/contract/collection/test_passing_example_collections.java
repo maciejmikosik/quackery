@@ -8,14 +8,14 @@ import java.util.Collection;
 import java.util.List;
 
 public class test_passing_example_collections {
-  public void mutable_list_quacks_like_mutable_list() {
+  public void mutable_list_passes() {
     assertSuccess(quacksLike(Collection.class)
         .implementing(List.class)
         .mutable()
         .test(MutableList.class));
   }
 
-  public void mutable_list_factory_quacks_like_mutable_list_factory() {
+  public void mutable_list_factory_passes() {
     assertSuccess(quacksLike(Collection.class)
         .implementing(List.class)
         .mutable()
@@ -23,14 +23,14 @@ public class test_passing_example_collections {
         .test(asListFactory(MutableList.class)));
   }
 
-  public void immutable_list_quacks_like_immutable_list() {
+  public void immutable_list_passes() {
     assertSuccess(quacksLike(Collection.class)
         .implementing(List.class)
         .immutable()
         .test(ImmutableList.class));
   }
 
-  public void immutable_list_factory_quacks_like_immutable_list_factory() {
+  public void immutable_list_factory_passes() {
     assertSuccess(quacksLike(Collection.class)
         .implementing(List.class)
         .immutable()
