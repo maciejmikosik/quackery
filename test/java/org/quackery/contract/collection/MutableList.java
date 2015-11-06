@@ -9,12 +9,16 @@ import java.util.ListIterator;
 public class MutableList<E> implements List<E> {
   protected List<E> delegate;
 
+  MutableList(List<E> delegate) {
+    this.delegate = delegate;
+  }
+
   public MutableList() {
-    delegate = new ArrayList<>();
+    this(new ArrayList<E>());
   }
 
   public MutableList(Collection<E> collection) {
-    delegate = new ArrayList<>(collection);
+    this(new ArrayList<>(collection));
   }
 
   public int size() {
@@ -106,9 +110,7 @@ public class MutableList<E> implements List<E> {
   }
 
   public List<E> subList(int fromIndex, int toIndex) {
-    MutableList<E> subList = new MutableList<>();
-    subList.delegate = delegate.subList(fromIndex, toIndex);
-    return subList;
+    return new MutableList(delegate.subList(fromIndex, toIndex));
   }
 
   public boolean equals(Object o) {

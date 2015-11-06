@@ -37,4 +37,34 @@ public class test_passing_example_collections {
         .withFactory("create")
         .test(asListFactory(ImmutableList.class)));
   }
+
+  public void mutable_list_forbidding_null_nicely_passes() {
+    assertSuccess(quacksLike(Collection.class)
+        .implementing(List.class)
+        .mutable()
+        .test(MutableListForbiddingNullNicely.class));
+  }
+
+  public void mutable_list_factory_forbidding_null_nicely_passes() {
+    assertSuccess(quacksLike(Collection.class)
+        .implementing(List.class)
+        .mutable()
+        .withFactory("create")
+        .test(asListFactory(MutableListForbiddingNullNicely.class)));
+  }
+
+  public void mutable_list_forbidding_null_strictly_passes() {
+    assertSuccess(quacksLike(Collection.class)
+        .implementing(List.class)
+        .mutable()
+        .test(MutableListForbiddingNullStrictly.class));
+  }
+
+  public void mutable_list_factory_forbidding_null_strictly_passes() {
+    assertSuccess(quacksLike(Collection.class)
+        .implementing(List.class)
+        .mutable()
+        .withFactory("create")
+        .test(asListFactory(MutableListForbiddingNullStrictly.class)));
+  }
 }
