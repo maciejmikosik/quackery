@@ -146,6 +146,9 @@ public class CollectionTests {
     if (configuration.isImmutable()) {
       builder.append(" immutable");
     }
+    if (configuration.isForbiddingNull()) {
+      builder.append(" forbidding null");
+    }
     builder.append(" ").append(configuration.getCollectionType().getSimpleName().toLowerCase());
     if (configuration.hasFactory()) {
       builder.append(" with factory " + configuration.getFactoryName());

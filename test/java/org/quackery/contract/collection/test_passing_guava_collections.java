@@ -18,6 +18,7 @@ public class test_passing_guava_collections {
     contract = quacksLike(Collection.class)
         .implementing(List.class)
         .immutable()
+        .forbidding(null)
         .withFactory("copyOf");
     assertSuccess(contract.test(ImmutableList.class));
   }
@@ -25,6 +26,7 @@ public class test_passing_guava_collections {
   public void immutable_set_passes() {
     contract = quacksLike(Collection.class)
         .immutable()
+        .forbidding(null)
         .withFactory("copyOf");
     assertSuccess(contract.test(ImmutableSet.class));
   }

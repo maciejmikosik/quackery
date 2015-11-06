@@ -33,6 +33,10 @@ public class CollectionContract implements Contract<Class<?>> {
     return new CollectionContract(configuration.immutable());
   }
 
+  public CollectionContract forbidding(Void object) {
+    return new CollectionContract(configuration.forbidding(null));
+  }
+
   public CollectionContract withFactory(String factoryMethodName) {
     return new CollectionContract(configuration.withFactory(factoryMethodName));
   }
