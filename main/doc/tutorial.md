@@ -56,7 +56,7 @@ Generated tests can be run using junit runner.
 
 Or you can run them with quackery native mechanism.
 
-    import static org.quackery.run.Reports.print;
+    import static org.quackery.report.Reports.print;
     import static org.quackery.run.Runners.run;
     ....
     Test test = quacksLike(Collection.class)
@@ -219,7 +219,7 @@ Invoking `run(Test)` on report returns/throws immediately.
  - `Test threadScoped(Test)` - wraps test, so each `Case` is run in separate `Thread`, thus isolating `ThreadLocal` variables
  - `Test classLoaderScoped(Test)` - wraps test, so each `Case` is run in separate `ClassLoader`, thus isolating dynamically loaded bytecode
 
-`org.quackery.run.Reports` contains methods related to reports of ran tests
+`org.quackery.report.Reports` contains methods related to reports of ran tests
 
  - `int count(Class<? extends Throwable>, Test)` - counts how many cases thrown specified throwable or its subclass
  - `String print(Test)` - turns test result into `String` including test names and throwables thrown from them

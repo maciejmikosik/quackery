@@ -1,7 +1,7 @@
 package org.quackery.testing;
 
-import static org.quackery.run.Reports.count;
-import static org.quackery.run.Reports.print;
+import static org.quackery.report.Reports.count;
+import static org.quackery.report.Reports.print;
 import static org.quackery.run.Runners.run;
 
 import java.util.Objects;

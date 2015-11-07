@@ -1,15 +1,13 @@
-package org.quackery.run;
+package org.quackery.report;
 
 import static org.quackery.Suite.suite;
-import static org.quackery.run.Reports.print;
+import static org.quackery.report.Reports.print;
 import static org.quackery.testing.Assertions.assertTrue;
 import static org.quackery.testing.Assertions.fail;
 import static org.quackery.testing.Mocks.mockCase;
 
 import org.quackery.QuackeryException;
 import org.quackery.Test;
-import org.quackery.report.AssertException;
-import org.quackery.report.AssumeException;
 
 public class test_Reports_print {
   private final String name = "name";
