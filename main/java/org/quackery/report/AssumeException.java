@@ -1,6 +1,6 @@
 package org.quackery.report;
 
-public class AssumeException extends RuntimeException {
+public class AssumeException extends ReportException {
   public AssumeException() {}
 
   public AssumeException(String message) {

@@ -2,7 +2,7 @@ package org.quackery.report;
 
 import static java.util.Objects.deepEquals;
 
-public class AssertException extends RuntimeException {
+public class AssertException extends ReportException {
   public AssertException() {}
 
   public AssertException(String message) {
