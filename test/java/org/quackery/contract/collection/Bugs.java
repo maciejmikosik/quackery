@@ -9,39 +9,34 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Bugs {
-  private final boolean isList, hasFactory, isMutable, isImmutable, isForbiddingNull;
+  private final boolean isList, hasFactory, isImmutable, isForbiddingNull;
 
   private Bugs(boolean isList, boolean hasFactory,
-      boolean isMutable, boolean isImmutable, boolean isForbiddingNull) {
+      boolean isImmutable, boolean isForbiddingNull) {
     this.isList = isList;
     this.hasFactory = hasFactory;
-    this.isMutable = isMutable;
     this.isImmutable = isImmutable;
     this.isForbiddingNull = isForbiddingNull;
   }
 
   public Bugs() {
-    this(false, false, false, false, false);
+    this(false, false, false, false);
   }
 
   public Bugs list() {
-    return new Bugs(true, hasFactory, isMutable, isImmutable, isForbiddingNull);
+    return new Bugs(true, hasFactory, isImmutable, isForbiddingNull);
   }
 
   public Bugs factory() {
-    return new Bugs(isList, true, isMutable, isImmutable, isForbiddingNull);
-  }
-
-  public Bugs mutable() {
-    return new Bugs(isList, hasFactory, true, isImmutable, isForbiddingNull);
+    return new Bugs(isList, true, isImmutable, isForbiddingNull);
   }
 
   public Bugs immutable() {
-    return new Bugs(isList, hasFactory, isMutable, true, isForbiddingNull);
+    return new Bugs(isList, hasFactory, true, isForbiddingNull);
   }
 
   public Bugs forbiddingNull() {
-    return new Bugs(isList, hasFactory, isMutable, isImmutable, true);
+    return new Bugs(isList, hasFactory, isImmutable, true);
   }
 
   public List<Class<?>> get() {
@@ -52,20 +47,19 @@ public class Bugs {
         ? collectionFactoryBugs
         : collectionConstructorBugs);
     bugs.addAll(asFactoriesIf(hasFactory, collectionBugs));
-    if (isMutable) {
-      bugs.addAll(asFactoriesIf(hasFactory, collectionMutableBugs));
-    }
     if (isImmutable) {
       bugs.addAll(asFactoriesIf(hasFactory, collectionImmutableBugs));
+    } else {
+      bugs.addAll(asFactoriesIf(hasFactory, collectionMutableBugs));
     }
     if (isForbiddingNull) {
       bugs.addAll(asFactoriesIf(hasFactory, collectionForbiddingNullBugs));
-      if (isMutable) {
+      if (!isImmutable) {
         bugs.addAll(asFactoriesIf(hasFactory, collectionMutableForbiddingNullBugs));
       }
     } else {
       bugs.addAll(asFactoriesIf(hasFactory, collectionAllowingNullBugs));
-      if (isMutable) {
+      if (!isImmutable) {
         bugs.addAll(asFactoriesIf(hasFactory, collectionMutableAllowingNullBugs));
       }
     }
@@ -74,11 +68,10 @@ public class Bugs {
         bugs.addAll(listFactoryBugs);
       }
       bugs.addAll(asFactoriesIf(hasFactory, listBugs));
-      if (isMutable) {
-        bugs.addAll(asFactoriesIf(hasFactory, listMutableBugs));
-      }
       if (isImmutable) {
         bugs.addAll(asFactoriesIf(hasFactory, listImmutableBugs));
+      } else {
+        bugs.addAll(asFactoriesIf(hasFactory, listMutableBugs));
       }
     }
 

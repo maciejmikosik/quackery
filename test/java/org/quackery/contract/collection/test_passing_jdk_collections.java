@@ -17,27 +17,23 @@ public class test_passing_jdk_collections {
 
   public void array_list_passes() {
     contract = quacksLike(Collection.class)
-        .implementing(List.class)
-        .mutable();
+        .implementing(List.class);
     assertSuccess(contract.test(ArrayList.class));
   }
 
   public void linked_list_passes() {
     contract = quacksLike(Collection.class)
-        .implementing(List.class)
-        .mutable();
+        .implementing(List.class);
     assertSuccess(contract.test(LinkedList.class));
   }
 
   public void hash_set_passes() {
-    contract = quacksLike(Collection.class)
-        .mutable();
+    contract = quacksLike(Collection.class);
     assertSuccess(contract.test(HashSet.class));
   }
 
   public void tree_set_passes() {
     contract = quacksLike(Collection.class)
-        .mutable()
         .forbidding(null);
     assertSuccess(contract.test(TreeSet.class));
   }

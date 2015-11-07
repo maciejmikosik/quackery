@@ -25,10 +25,6 @@ public class CollectionContract implements Contract<Class<?>> {
     return new CollectionContract(configuration.implementing(type));
   }
 
-  public CollectionContract mutable() {
-    return new CollectionContract(configuration.mutable());
-  }
-
   public CollectionContract immutable() {
     return new CollectionContract(configuration.immutable());
   }

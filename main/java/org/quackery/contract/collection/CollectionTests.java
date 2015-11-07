@@ -34,7 +34,6 @@ public class CollectionTests {
     boolean isList = configuration.isImplementing(List.class);
     boolean hasConstructor = configuration.hasConstructor();
     boolean hasFactory = configuration.hasFactory();
-    boolean mutable = configuration.isMutable();
     boolean immutable = configuration.isImmutable();
     boolean forbiddingNull = configuration.isForbiddingNull();
     String factory = configuration.getFactoryName();
@@ -75,12 +74,12 @@ public class CollectionTests {
         .add(suite("overrides iterator")
             .add(iteratorTraversesEmptyCollection(creator))
             .add(iteratorTraversesSingletonCollection(creator))
-            .add(includeIf(mutable, iteratorRemovesNoElementsFromEmptyCollection(creator)))
-            .add(includeIf(mutable, iteratorRemovesElementFromSingletonCollection(creator)))
-            .add(includeIf(mutable, iteratorRemovesForbidsConsecutiveCalls(creator)))
+            .add(includeIf(!immutable, iteratorRemovesNoElementsFromEmptyCollection(creator)))
+            .add(includeIf(!immutable, iteratorRemovesElementFromSingletonCollection(creator)))
+            .add(includeIf(!immutable, iteratorRemovesForbidsConsecutiveCalls(creator)))
             .add(includeIf(immutable, iteratorRemoveThrowsUnsupportedOperationException(creator)))
             .add(includeIf(immutable, iteratorRemoveHasNoSideEffect(creator))))
-        .add(includeIf(mutable, suite("overrides add")
+        .add(includeIf(!immutable, suite("overrides add")
             .add(addAddsToEmptyCollection(creator))
             .add(includeIf(forbiddingNull, addForbidsNullElements(creator)))
             .add(includeIf(!forbiddingNull, addAllowsNullElements(creator)))
@@ -90,12 +89,12 @@ public class CollectionTests {
         .add(includeIf(immutable, suite("overrides add")
             .add(addThrowsUnsupportedOperationException(creator))
             .add(addHasNoSideEffect(creator))))
-        .add(includeIf(mutable, suite("overrides remove")
+        .add(includeIf(!immutable, suite("overrides remove")
             .add(removeRemovesSingleElement(creator))))
         .add(includeIf(immutable, suite("overrides remove")
             .add(removeThrowsUnsupportedOperationException(creator))
             .add(removeHasNoSideEffect(creator))))
-        .add(includeIf(mutable, suite("overrides addAll")
+        .add(includeIf(!immutable, suite("overrides addAll")
             .add(addAllCanAddOneElement(creator))))
         .add(includeIf(immutable, suite("overrides addAll")
             .add(addAllThrowsUnsupportedOperationException(creator))
@@ -109,7 +108,7 @@ public class CollectionTests {
         .add(includeIf(immutable, suite("overrides retainAll")
             .add(retainAllThrowsUnsupportedOperationException(creator))
             .add(retainAllHasNoSideEffect(creator))))
-        .add(includeIf(mutable, suite("overrides clear")
+        .add(includeIf(!immutable, suite("overrides clear")
             .add(clearRemovesElement(creator))))
         .add(includeIf(immutable, suite("overrides clear")
             .add(clearThrowsUnsupportedOperationException(creator))
@@ -118,14 +117,14 @@ public class CollectionTests {
             .add(getReturnsEachElement(creator))
             .add(getFailsForIndexAboveBound(creator))
             .add(getFailsForIndexBelowBound(creator))))
-        .add(includeIf(mutable && isList, suite("overrides set")
+        .add(includeIf(!immutable && isList, suite("overrides set")
             .add(setReplacesSingleElement(creator))
             .add(setReturnsReplacedElement(creator))
             .add(setReplacesElementAtIndex(creator))))
         .add(includeIf(immutable && isList, suite("overrides set")
             .add(setThrowsUnsupportedOperationException(creator))
             .add(setHasNoSideEffect(creator))))
-        .add(includeIf(mutable && isList, suite("overrides add at index")
+        .add(includeIf(!immutable && isList, suite("overrides add at index")
             .add(addIntAddsAtIndex(creator))))
         .add(includeIf(immutable && isList, suite("overrides add at index")
             .add(addIntThrowsUnsupportedOperationException(creator))
@@ -145,9 +144,6 @@ public class CollectionTests {
   private static String name(Class<?> type, Configuration configuration) {
     StringBuilder builder = new StringBuilder();
     builder.append(type.getName() + " quacks like");
-    if (configuration.isMutable()) {
-      builder.append(" mutable");
-    }
     if (configuration.isImmutable()) {
       builder.append(" immutable");
     }

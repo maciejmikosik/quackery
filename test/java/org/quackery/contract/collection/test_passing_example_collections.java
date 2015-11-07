@@ -11,14 +11,12 @@ public class test_passing_example_collections {
   public void mutable_list_passes() {
     assertSuccess(quacksLike(Collection.class)
         .implementing(List.class)
-        .mutable()
         .test(MutableList.class));
   }
 
   public void mutable_list_factory_passes() {
     assertSuccess(quacksLike(Collection.class)
         .implementing(List.class)
-        .mutable()
         .withFactory("create")
         .test(asListFactory(MutableList.class)));
   }
@@ -41,7 +39,6 @@ public class test_passing_example_collections {
   public void mutable_list_forbidding_null_nicely_passes() {
     assertSuccess(quacksLike(Collection.class)
         .implementing(List.class)
-        .mutable()
         .forbidding(null)
         .test(MutableListForbiddingNullNicely.class));
   }
@@ -49,7 +46,6 @@ public class test_passing_example_collections {
   public void mutable_list_factory_forbidding_null_nicely_passes() {
     assertSuccess(quacksLike(Collection.class)
         .implementing(List.class)
-        .mutable()
         .forbidding(null)
         .withFactory("create")
         .test(asListFactory(MutableListForbiddingNullNicely.class)));
@@ -58,7 +54,6 @@ public class test_passing_example_collections {
   public void mutable_list_forbidding_null_strictly_passes() {
     assertSuccess(quacksLike(Collection.class)
         .implementing(List.class)
-        .mutable()
         .forbidding(null)
         .test(MutableListForbiddingNullStrictly.class));
   }
@@ -66,7 +61,6 @@ public class test_passing_example_collections {
   public void mutable_list_factory_forbidding_null_strictly_passes() {
     assertSuccess(quacksLike(Collection.class)
         .implementing(List.class)
-        .mutable()
         .forbidding(null)
         .withFactory("create")
         .test(asListFactory(MutableListForbiddingNullStrictly.class)));

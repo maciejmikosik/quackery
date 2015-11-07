@@ -24,13 +24,6 @@ public class test_suite_naming {
     assertTrue(test.name.contains(" collection"));
   }
 
-  public void includes_mutable() {
-    test = quacksLike(Collection.class)
-        .mutable()
-        .test(Object.class);
-    assertTrue(test.name.contains(" mutable"));
-  }
-
   public void includes_immutable() {
     test = quacksLike(Collection.class)
         .immutable()

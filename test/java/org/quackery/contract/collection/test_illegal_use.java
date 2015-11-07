@@ -60,15 +60,6 @@ public class test_illegal_use {
     } catch (QuackeryException e) {}
   }
 
-  public void cannot_declare_mutable_twice() {
-    try {
-      quacksLike(Collection.class)
-          .mutable()
-          .mutable();
-      fail();
-    } catch (QuackeryException e) {}
-  }
-
   public void cannot_declare_immutable_twice() {
     try {
       quacksLike(Collection.class)
@@ -83,21 +74,6 @@ public class test_illegal_use {
       quacksLike(Collection.class)
           .forbidding(null)
           .forbidding(null);
-      fail();
-    } catch (QuackeryException e) {}
-  }
-
-  public void cannot_mix_mutable_and_immutable() {
-    try {
-      quacksLike(Collection.class)
-          .mutable()
-          .immutable();
-      fail();
-    } catch (QuackeryException e) {}
-    try {
-      quacksLike(Collection.class)
-          .immutable()
-          .mutable();
       fail();
     } catch (QuackeryException e) {}
   }

@@ -13,9 +13,8 @@ public class test_detecting_bugs {
   }
 
   public void detects_collection_mutable_bugs() {
-    CollectionContract contract = quacksLike(Collection.class)
-        .mutable();
-    assertFailures(new Bugs().mutable(), contract);
+    CollectionContract contract = quacksLike(Collection.class);
+    assertFailures(new Bugs(), contract);
   }
 
   public void detects_collection_immutable_bugs() {
@@ -32,9 +31,8 @@ public class test_detecting_bugs {
 
   public void detects_collection_mutable_forbidding_null_bugs() {
     CollectionContract contract = quacksLike(Collection.class)
-        .mutable()
         .forbidding(null);
-    assertFailures(new Bugs().mutable().forbiddingNull(), contract);
+    assertFailures(new Bugs().forbiddingNull(), contract);
   }
 
   public void detects_list_bugs() {
@@ -45,9 +43,8 @@ public class test_detecting_bugs {
 
   public void detects_list_mutable_bugs() {
     CollectionContract contract = quacksLike(Collection.class)
-        .implementing(List.class)
-        .mutable();
-    assertFailures(new Bugs().list().mutable(), contract);
+        .implementing(List.class);
+    assertFailures(new Bugs().list(), contract);
   }
 
   public void detects_list_immutable_bugs() {
