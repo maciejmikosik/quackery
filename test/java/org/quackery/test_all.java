@@ -18,7 +18,7 @@ import org.quackery.contract.collection.test_passing_jdk_collections;
 import org.quackery.contract.collection.test_suite_naming;
 import org.quackery.junit.test_QuackeryRunner;
 import org.quackery.report.test_Reports_count_throwables;
-import org.quackery.report.test_Reports_print;
+import org.quackery.report.test_Reports_format;
 import org.quackery.run.test_Runners_classLoaderScoped;
 import org.quackery.run.test_Runners_run;
 import org.quackery.run.test_Runners_runIn;
@@ -38,7 +38,7 @@ public class test_all {
     runTestsIn(test_Runners_threadScoped.class);
     runTestsIn(test_Runners_classLoaderScoped.class);
     runTestsIn(test_Reports_count_throwables.class);
-    runTestsIn(test_Reports_print.class);
+    runTestsIn(test_Reports_format.class);
 
     runTestsIn(test_QuackeryRunner.class);
 

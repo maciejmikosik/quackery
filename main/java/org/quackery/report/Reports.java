@@ -34,7 +34,7 @@ public class Reports {
     return count;
   }
 
-  public static String print(Test test) {
+  public static String format(Test test) {
     check(test != null);
     return append(0, test, new StringBuilder()).toString();
   }

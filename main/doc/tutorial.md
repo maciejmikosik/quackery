@@ -56,14 +56,14 @@ Generated tests can be run using junit runner.
 
 Or you can run them with quackery native mechanism.
 
-    import static org.quackery.report.Reports.print;
+    import static org.quackery.report.Reports.format;
     import static org.quackery.run.Runners.run;
     ....
     Test test = quacksLike(Collection.class)
         .test(ArrayList.class);
-    System.out.println(print(run(test)));
+    System.out.println(format(run(test)));
 
-This would print test hierarchy similar to junit's runner.
+This would print test hierarchy formatted similar to junit's runner.
 
 ```
 java.util.ArrayList quacks like collection
@@ -100,7 +100,7 @@ In case of failure, test names are preceded by name of `Throwable` thrown from t
     Test test = quacksLike(Collection.class)
         .forbidding(null)
         .test(ArrayList.class);
-    System.out.println(print(run(test)));
+    System.out.println(format(run(test)));
 
 prints this
 
@@ -222,7 +222,7 @@ Invoking `run(Test)` on report returns/throws immediately.
 `org.quackery.report.Reports` contains methods related to reports of ran tests
 
  - `int count(Class<? extends Throwable>, Test)` - counts how many cases thrown specified throwable or its subclass
- - `String print(Test)` - turns test result into `String` including test names and throwables thrown from them
+ - `String format(Test)` - turns test result into `String` including test names and throwables thrown from them
 
 Trying to use `Reports` on `Test` that was not run, will invoke testing logic every time.
 
