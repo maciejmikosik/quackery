@@ -12,12 +12,12 @@ import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
-import org.quackery.AssertionException;
-import org.quackery.AssumptionException;
 import org.quackery.Case;
 import org.quackery.QuackeryException;
 import org.quackery.Suite;
 import org.quackery.Test;
+import org.quackery.report.AssertException;
+import org.quackery.report.AssumeException;
 
 public class QuackeryRunner extends Runner {
   private final Test test;
@@ -77,10 +77,10 @@ public class QuackeryRunner extends Runner {
     notifier.fireTestStarted(description);
     try {
       cas.run();
-    } catch (AssertionException e) {
+    } catch (AssertException e) {
       Throwable wrapper = new AssertionError(e.getMessage(), e);
       notifier.fireTestFailure(new Failure(description, wrapper));
-    } catch (AssumptionException e) {
+    } catch (AssumeException e) {
       Throwable wrapper = new AssumptionViolatedException(e.getMessage(), e);
       notifier.fireTestAssumptionFailed(new Failure(description, wrapper));
     } catch (Throwable throwable) {

@@ -1,12 +1,12 @@
 package org.quackery.contract.collection;
 
-import static org.quackery.AssumptionException.assume;
+import static org.quackery.report.AssumeException.assume;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
-import org.quackery.AssumptionException;
+import org.quackery.report.AssumeException;
 
 public class ConstructorCreator implements Creator {
   private final Class<?> type;
@@ -21,7 +21,7 @@ public class ConstructorCreator implements Creator {
       Constructor<?> constructor = type.getConstructor(Collection.class);
       return cast.cast(constructor.newInstance(original));
     } catch (NoSuchMethodException | IllegalAccessException | InstantiationException e) {
-      throw new AssumptionException(e);
+      throw new AssumeException(e);
     } catch (InvocationTargetException e) {
       throw e.getCause();
     }

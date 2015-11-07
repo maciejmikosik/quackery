@@ -1,13 +1,11 @@
-package org.quackery.run;
+package org.quackery.report;
 
 import static org.quackery.Suite.suite;
-import static org.quackery.run.Reports.print;
+import static org.quackery.report.Reports.print;
 import static org.quackery.testing.Assertions.assertTrue;
 import static org.quackery.testing.Assertions.fail;
 import static org.quackery.testing.Mocks.mockCase;
 
-import org.quackery.AssertionException;
-import org.quackery.AssumptionException;
 import org.quackery.QuackeryException;
 import org.quackery.Test;
 
@@ -43,11 +41,11 @@ public class test_Reports_print {
   }
 
   public void failure_is_marked() {
-    report = mockCase(name, new AssertionException());
+    report = mockCase(name, new AssertException());
 
     printed = print(report);
 
-    assertTrue(printed.contains("[AssertionException] " + name));
+    assertTrue(printed.contains("[AssertException] " + name));
   }
 
   public void error_is_marked() {
@@ -59,11 +57,11 @@ public class test_Reports_print {
   }
 
   public void misassumption_is_marked() {
-    report = mockCase(name, new AssumptionException());
+    report = mockCase(name, new AssumeException());
 
     printed = print(report);
 
-    assertTrue(printed.contains("[AssumptionException] " + name));
+    assertTrue(printed.contains("[AssumeException] " + name));
   }
 
   public void success_is_not_marked() {

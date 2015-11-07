@@ -56,7 +56,7 @@ Generated tests can be run using junit runner.
 
 Or you can run them with quackery native mechanism.
 
-    import static org.quackery.run.Reports.print;
+    import static org.quackery.report.Reports.print;
     import static org.quackery.run.Runners.run;
     ....
     Test test = quacksLike(Collection.class)
@@ -118,7 +118,7 @@ java.util.ArrayList quacks like forbidding null collection
     fails for null argument
     makes defensive copy
     does not modify argument
-    [AssertionException] forbids null elements
+    [AssertException] forbids null elements
   overrides size
     returns 0 if collection is empty
     returns 1 if collection has 1 element
@@ -133,7 +133,7 @@ java.util.ArrayList quacks like forbidding null collection
     traverses singleton collection
 ```
 
-which shows failed test `[AssertionException] forbids null elements`.
+which shows failed test `[AssertException] forbids null elements`.
 
 Tests list is definitely not complete, but it grows with each release.
 
@@ -155,7 +155,7 @@ This way you can organize your cases into hierarchical tree.
 
 Let's define contract for class that tests only one thing: that class has `final` modifier.
 
-    import static org.quackery.AssertionException.assertTrue;
+    import static org.quackery.report.AssertException.assertTrue;
     ....
     public static Contract<Class<?>> quacksLikeFinalClass() {
       return new Contract<Class<?>>() {
@@ -175,11 +175,11 @@ And you need to override `run` method, that contains testing logic.
 `Case` is considered successful if `run` method ends without throwing `Throwable`.
 Any throwable indicates failed tests. However there are different ways `Case` can fail.
 
- - `org.quackery.AssertionException` - feature does not work
- - `org.quackery.AssumptionException` - feature depends on some other feature that does not work
+ - `org.quackery.report.AssertException` - feature does not work
+ - `org.quackery.report.AssumeException` - feature depends on some other feature that does not work
  - other `Throwable` - any unexpected situation
 
-`AssertionException` and `AssumptionException` contain methods that throw those exceptions on various conditions.
+`AssertException` and `AssumeException` contain methods that throw those exceptions on various conditions.
 If you use other assertions library then read [integration section](#integration).
 
 If you want your contract to produce more than single `Case` then aggregate them in `Suite` object.
@@ -219,7 +219,7 @@ Invoking `run(Test)` on report returns/throws immediately.
  - `Test threadScoped(Test)` - wraps test, so each `Case` is run in separate `Thread`, thus isolating `ThreadLocal` variables
  - `Test classLoaderScoped(Test)` - wraps test, so each `Case` is run in separate `ClassLoader`, thus isolating dynamically loaded bytecode
 
-`org.quackery.run.Reports` contains methods related to reports of ran tests
+`org.quackery.report.Reports` contains methods related to reports of ran tests
 
  - `int count(Class<? extends Throwable>, Test)` - counts how many cases thrown specified throwable or its subclass
  - `String print(Test)` - turns test result into `String` including test names and throwables thrown from them
@@ -249,8 +249,8 @@ If test throws one of quackery exceptions (like tests from built-in contracts do
 and you run this test using junit,
 then those exceptions are translated to junit's native exceptions.
 
- - `org.quackery.AssertionException` is translated to `java.lang.AssertionError`
- - `org.quackery.AssumptionException` is translated to `org.junit.AssumptionViolatedExcetpion`
+ - `org.quackery.report.AssertException` is translated to `java.lang.AssertionError`
+ - `org.quackery.report.AssumeException` is translated to `org.junit.AssumptionViolatedExcetpion`
  - any other `Throwable` passes through
 
  If test throws non-quackery exception (like `AssertionError` thrown by `org.junit.Assert`),

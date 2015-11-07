@@ -1,4 +1,4 @@
-package org.quackery.run;
+package org.quackery.report;
 
 import static org.quackery.QuackeryException.check;
 
