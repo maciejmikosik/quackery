@@ -37,7 +37,8 @@ public class test_passing_jdk_collections {
 
   public void tree_set_passes() {
     contract = quacksLike(Collection.class)
-        .mutable();
+        .mutable()
+        .forbidding(null);
     assertSuccess(contract.test(TreeSet.class));
   }
 }

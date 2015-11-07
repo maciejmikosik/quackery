@@ -24,6 +24,19 @@ public class test_detecting_bugs {
     assertFailures(new Bugs().immutable(), contract);
   }
 
+  public void detects_collection_forbidding_null_bugs() {
+    CollectionContract contract = quacksLike(Collection.class)
+        .forbidding(null);
+    assertFailures(new Bugs().forbiddingNull(), contract);
+  }
+
+  public void detects_collection_mutable_forbidding_null_bugs() {
+    CollectionContract contract = quacksLike(Collection.class)
+        .mutable()
+        .forbidding(null);
+    assertFailures(new Bugs().mutable().forbiddingNull(), contract);
+  }
+
   public void detects_list_bugs() {
     CollectionContract contract = quacksLike(Collection.class)
         .implementing(List.class);

@@ -36,6 +36,7 @@ public class CollectionTests {
     boolean hasFactory = configuration.hasFactory();
     boolean mutable = configuration.isMutable();
     boolean immutable = configuration.isImmutable();
+    boolean forbiddingNull = configuration.isForbiddingNull();
     String factory = configuration.getFactoryName();
     Creator creator = hasConstructor
         ? new ConstructorCreator(type)
@@ -58,6 +59,8 @@ public class CollectionTests {
             .test(creatorFailsForNullArgument(creator))
             .test(creatorMakesDefensiveCopy(creator))
             .test(creatorDoesNotModifyArgument(creator))
+            .test(includeIf(forbiddingNull, creatorForbidsNullElements(creator)))
+            .test(includeIf(!forbiddingNull, creatorAllowsNullElements(creator)))
             .test(includeIf(isList, creatorStoresAllElementsInOrder(creator)))
             .test(includeIf(isList, creatorAllowsDuplicates(creator))))
         .test(suite("overrides size")
@@ -79,6 +82,8 @@ public class CollectionTests {
             .test(includeIf(immutable, iteratorRemoveHasNoSideEffect(creator))))
         .test(includeIf(mutable, suite("overrides add")
             .test(addAddsToEmptyCollection(creator))
+            .test(includeIf(forbiddingNull, addForbidsNullElements(creator)))
+            .test(includeIf(!forbiddingNull, addAllowsNullElements(creator)))
             .test(includeIf(isList, addAddsElementAtTheEnd(creator)))
             .test(includeIf(isList, addReturnsTrue(creator)))
             .test(includeIf(isList, addAddsDuplicatedElement(creator)))))
@@ -371,6 +376,31 @@ public class CollectionTests {
     };
   }
 
+  private static Test creatorForbidsNullElements(final Creator creator) {
+    return new Case("forbids null elements") {
+      public void run() throws Throwable {
+        ArrayList<?> original = newArrayList((Object) null);
+        try {
+          creator.create(Collection.class, copy(original));
+          fail();
+        } catch (NullPointerException e) {}
+      }
+    };
+  }
+
+  private static Test creatorAllowsNullElements(final Creator creator) {
+    return new Case("allows null elements") {
+      public void run() throws Throwable {
+        ArrayList<?> original = newArrayList((Object) null);
+        try {
+          creator.create(Collection.class, copy(original));
+        } catch (NullPointerException e) {
+          throw new AssertionException(e);
+        }
+      }
+    };
+  }
+
   private static Test sizeReturnsZeroIfCollectionIsEmpty(final Creator creator) {
     return new Case("returns 0 if collection is empty") {
       public void run() throws Throwable {
@@ -598,6 +628,31 @@ public class CollectionTests {
         List<Object> list = creator.create(List.class, newArrayList(a));
         list.add(a);
         assertEquals(copy(list.toArray()), new Object[] { a, a });
+      }
+    };
+  }
+
+  private static Test addForbidsNullElements(final Creator creator) {
+    return new Case("forbids null elements") {
+      public void run() throws Throwable {
+        Collection<Object> collection = creator.create(Collection.class, newArrayList());
+        try {
+          collection.add(null);
+          fail();
+        } catch (NullPointerException e) {}
+      }
+    };
+  }
+
+  private static Test addAllowsNullElements(final Creator creator) {
+    return new Case("allows null elements") {
+      public void run() throws Throwable {
+        Collection<Object> collection = creator.create(Collection.class, newArrayList());
+        try {
+          collection.add(null);
+        } catch (NullPointerException e) {
+          throw new AssertionException(e);
+        }
       }
     };
   }
