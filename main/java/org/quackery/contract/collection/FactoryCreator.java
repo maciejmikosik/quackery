@@ -1,13 +1,13 @@
 package org.quackery.contract.collection;
 
-import static org.quackery.AssumptionException.assume;
+import static org.quackery.report.AssumeException.assume;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 
-import org.quackery.AssumptionException;
+import org.quackery.report.AssumeException;
 
 public class FactoryCreator implements Creator {
   private final Class<?> type;
@@ -25,7 +25,7 @@ public class FactoryCreator implements Creator {
       assume(Modifier.isStatic(method.getModifiers()));
       return cast.cast(method.invoke(null, original));
     } catch (NoSuchMethodException | IllegalAccessException e) {
-      throw new AssumptionException(e);
+      throw new AssumeException(e);
     } catch (InvocationTargetException e) {
       throw e.getCause();
     }

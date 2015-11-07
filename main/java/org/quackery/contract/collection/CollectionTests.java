@@ -1,9 +1,5 @@
 package org.quackery.contract.collection;
 
-import static org.quackery.AssertionException.assertEquals;
-import static org.quackery.AssertionException.assertTrue;
-import static org.quackery.AssertionException.fail;
-import static org.quackery.AssumptionException.assume;
 import static org.quackery.Suite.suite;
 import static org.quackery.contract.collection.Collections.copy;
 import static org.quackery.contract.collection.Collections.newArrayList;
@@ -13,6 +9,10 @@ import static org.quackery.contract.collection.Element.c;
 import static org.quackery.contract.collection.Element.d;
 import static org.quackery.contract.collection.Includes.includeIf;
 import static org.quackery.contract.collection.Includes.included;
+import static org.quackery.report.AssertException.assertEquals;
+import static org.quackery.report.AssertException.assertTrue;
+import static org.quackery.report.AssertException.fail;
+import static org.quackery.report.AssumeException.assume;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
-import org.quackery.AssertionException;
-import org.quackery.AssumptionException;
 import org.quackery.Case;
 import org.quackery.Test;
+import org.quackery.report.AssertException;
+import org.quackery.report.AssumeException;
 
 public class CollectionTests {
   public static Test test(Configuration configuration, Class<?> type) {
@@ -194,7 +194,7 @@ public class CollectionTests {
           Constructor<?> constructor = type.getDeclaredConstructor();
           assertTrue(Modifier.isPublic(constructor.getModifiers()));
         } catch (NoSuchMethodException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
       }
     };
@@ -208,7 +208,7 @@ public class CollectionTests {
           Collection<?> collection = (Collection<?>) type.getConstructor().newInstance();
           assertEquals(collection.toArray(), new Object[0]);
         } catch (NoSuchMethodException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
       }
     };
@@ -233,7 +233,7 @@ public class CollectionTests {
           Constructor<?> constructor = type.getDeclaredConstructor(Collection.class);
           assertTrue(Modifier.isPublic(constructor.getModifiers()));
         } catch (NoSuchMethodException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
       }
     };
@@ -258,7 +258,7 @@ public class CollectionTests {
           Method method = type.getDeclaredMethod(methodName, Collection.class);
           assertTrue(Modifier.isPublic(method.getModifiers()));
         } catch (NoSuchMethodException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
       }
     };
@@ -271,7 +271,7 @@ public class CollectionTests {
           Method method = type.getDeclaredMethod(methodName, Collection.class);
           assertTrue(Modifier.isStatic(method.getModifiers()));
         } catch (NoSuchMethodException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
       }
     };
@@ -284,7 +284,7 @@ public class CollectionTests {
           Method method = type.getDeclaredMethod(methodName, Collection.class);
           assertTrue(Collection.class.isAssignableFrom(method.getReturnType()));
         } catch (NoSuchMethodException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
       }
     };
@@ -297,7 +297,7 @@ public class CollectionTests {
           Method method = type.getMethod(factory, Collection.class);
           assertTrue(List.class.isAssignableFrom(method.getReturnType()));
         } catch (NoSuchMethodException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
       }
     };
@@ -395,7 +395,7 @@ public class CollectionTests {
         try {
           creator.create(Collection.class, copy(original));
         } catch (NullPointerException e) {
-          throw new AssertionException(e);
+          throw new AssertException(e);
         }
       }
     };
@@ -510,12 +510,12 @@ public class CollectionTests {
         try {
           iterator.next();
         } catch (NoSuchElementException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
         try {
           iterator.remove();
         } catch (IllegalStateException e) {
-          throw new AssertionException(e);
+          throw new AssertException(e);
         }
         Object[] array = collection.toArray();
         assume(array != null);
@@ -533,12 +533,12 @@ public class CollectionTests {
         try {
           iterator.next();
         } catch (NoSuchElementException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
         try {
           iterator.remove();
         } catch (IllegalStateException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
         try {
           iterator.remove();
@@ -557,13 +557,13 @@ public class CollectionTests {
         try {
           iterator.next();
         } catch (NoSuchElementException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
         try {
           iterator.remove();
           fail();
         } catch (IllegalStateException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         } catch (UnsupportedOperationException e) {}
       }
     };
@@ -578,12 +578,12 @@ public class CollectionTests {
         try {
           iterator.next();
         } catch (NoSuchElementException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
         try {
           iterator.remove();
         } catch (IllegalStateException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         } catch (UnsupportedOperationException e) {}
         assertEquals(copy(collection.toArray()), new Object[] { a });
       }
@@ -651,7 +651,7 @@ public class CollectionTests {
         try {
           collection.add(null);
         } catch (NullPointerException e) {
-          throw new AssertionException(e);
+          throw new AssertException(e);
         }
       }
     };
@@ -905,7 +905,7 @@ public class CollectionTests {
         try {
           list.set(0, b);
         } catch (IndexOutOfBoundsException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
         assertEquals(copy(list.toArray()), new Object[] { b });
       }
@@ -921,7 +921,7 @@ public class CollectionTests {
         try {
           returned = list.set(0, b);
         } catch (IndexOutOfBoundsException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
         assertEquals(returned, a);
       }
@@ -936,7 +936,7 @@ public class CollectionTests {
         try {
           list.set(2, d);
         } catch (IndexOutOfBoundsException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
         assertEquals(copy(list.toArray()), new Object[] { a, b, d });
       }
@@ -954,7 +954,7 @@ public class CollectionTests {
         } catch (UnsupportedOperationException e) {
 
         } catch (IndexOutOfBoundsException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
       }
     };
@@ -970,7 +970,7 @@ public class CollectionTests {
         } catch (UnsupportedOperationException e) {
 
         } catch (IndexOutOfBoundsException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
         assertEquals(copy(list.toArray()), original.toArray());
       }
@@ -985,7 +985,7 @@ public class CollectionTests {
         try {
           list.add(1, d);
         } catch (IndexOutOfBoundsException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
         assertEquals(copy(list.toArray()), new Object[] { a, d, b, c });
       }
@@ -1026,7 +1026,7 @@ public class CollectionTests {
         } catch (UnsupportedOperationException e) {
 
         } catch (IndexOutOfBoundsException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
       }
     };
@@ -1041,7 +1041,7 @@ public class CollectionTests {
         } catch (UnsupportedOperationException e) {
 
         } catch (IndexOutOfBoundsException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
         assertEquals(copy(list.toArray()), new Object[] { a });
       }
@@ -1057,13 +1057,13 @@ public class CollectionTests {
         try {
           iterator.next();
         } catch (NoSuchElementException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
         try {
           iterator.remove();
           fail();
         } catch (IllegalStateException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         } catch (UnsupportedOperationException e) {}
       }
     };
@@ -1078,12 +1078,12 @@ public class CollectionTests {
         try {
           iterator.next();
         } catch (NoSuchElementException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
         try {
           iterator.remove();
         } catch (IllegalStateException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         } catch (UnsupportedOperationException e) {}
         assertEquals(copy(list.toArray()), new Object[] { a });
       }
@@ -1099,13 +1099,13 @@ public class CollectionTests {
         try {
           iterator.next();
         } catch (NoSuchElementException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
         try {
           iterator.set(b);
           fail();
         } catch (IllegalStateException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         } catch (UnsupportedOperationException e) {}
       }
     };
@@ -1120,12 +1120,12 @@ public class CollectionTests {
         try {
           iterator.next();
         } catch (NoSuchElementException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         }
         try {
           iterator.set(b);
         } catch (IllegalStateException e) {
-          throw new AssumptionException(e);
+          throw new AssumeException(e);
         } catch (UnsupportedOperationException e) {}
         assertEquals(copy(list.toArray()), new Object[] { a });
       }

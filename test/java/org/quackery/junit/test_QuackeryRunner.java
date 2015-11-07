@@ -7,13 +7,13 @@ import static org.quackery.testing.Mocks.mockCase;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.RunWith;
-import org.quackery.AssertionException;
-import org.quackery.AssumptionException;
 import org.quackery.Case;
 import org.quackery.Quackery;
 import org.quackery.QuackeryException;
 import org.quackery.Suite;
 import org.quackery.Test;
+import org.quackery.report.AssertException;
+import org.quackery.report.AssumeException;
 
 public class test_QuackeryRunner {
   private final String name = "name " + hashCode();
@@ -76,7 +76,7 @@ public class test_QuackeryRunner {
   }
 
   public void case_fails_if_quackery_assertion_exception_is_thrown() {
-    throwable = new AssertionException(message);
+    throwable = new AssertException(message);
     test = mockCase(name, throwable);
 
     result = run(test);
@@ -91,7 +91,7 @@ public class test_QuackeryRunner {
   }
 
   public void case_is_skipped_if_quackery_assumption_exception_is_thrown() {
-    throwable = new AssumptionException(message);
+    throwable = new AssumeException(message);
     test = mockCase(name, throwable);
 
     result = run(test);

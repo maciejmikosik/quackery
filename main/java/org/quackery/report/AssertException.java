@@ -1,31 +1,31 @@
-package org.quackery;
+package org.quackery.report;
 
 import static java.util.Objects.deepEquals;
 
-public class AssertionException extends RuntimeException {
-  public AssertionException() {}
+public class AssertException extends RuntimeException {
+  public AssertException() {}
 
-  public AssertionException(String message) {
+  public AssertException(String message) {
     super(message);
   }
 
-  public AssertionException(String message, Throwable cause) {
+  public AssertException(String message, Throwable cause) {
     super(message, cause);
   }
 
-  public AssertionException(Throwable cause) {
+  public AssertException(Throwable cause) {
     super(cause);
   }
 
   public static void assertTrue(boolean condition) {
     if (!condition) {
-      throw new AssertionException();
+      throw new AssertException();
     }
   }
 
   public static void assertEquals(Object actual, Object expected) {
     if (!deepEquals(actual, expected)) {
-      throw new AssertionException(""
+      throw new AssertException(""
           + "\n"
           + "  expected that\n"
           + "    " + actual + "\n"
@@ -35,6 +35,6 @@ public class AssertionException extends RuntimeException {
   }
 
   public static void fail() {
-    throw new AssertionException();
+    throw new AssertException();
   }
 }

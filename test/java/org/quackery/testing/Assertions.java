@@ -6,9 +6,9 @@ import static org.quackery.run.Runners.run;
 
 import java.util.Objects;
 
-import org.quackery.AssertionException;
-import org.quackery.AssumptionException;
 import org.quackery.Test;
+import org.quackery.report.AssertException;
+import org.quackery.report.AssumeException;
 
 public class Assertions {
   public static void assertTrue(boolean condition) {
@@ -55,8 +55,8 @@ public class Assertions {
   public static void assertFailure(Test test) {
     Test report = run(test);
 
-    int failures = count(AssertionException.class, report);
-    int misassumptions = count(AssumptionException.class, report);
+    int failures = count(AssertException.class, report);
+    int misassumptions = count(AssumeException.class, report);
     int problems = count(Throwable.class, report);
     int errors = problems - failures - misassumptions;
 
