@@ -9,33 +9,39 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Bugs {
-  private final boolean isList, hasFactory, isMutable, isImmutable;
+  private final boolean isList, hasFactory, isMutable, isImmutable, isForbiddingNull;
 
-  private Bugs(boolean isList, boolean hasFactory, boolean isMutable, boolean isImmutable) {
+  private Bugs(boolean isList, boolean hasFactory,
+      boolean isMutable, boolean isImmutable, boolean isForbiddingNull) {
     this.isList = isList;
     this.hasFactory = hasFactory;
     this.isMutable = isMutable;
     this.isImmutable = isImmutable;
+    this.isForbiddingNull = isForbiddingNull;
   }
 
   public Bugs() {
-    this(false, false, false, false);
+    this(false, false, false, false, false);
   }
 
   public Bugs list() {
-    return new Bugs(true, hasFactory, isMutable, isImmutable);
+    return new Bugs(true, hasFactory, isMutable, isImmutable, isForbiddingNull);
   }
 
   public Bugs factory() {
-    return new Bugs(isList, true, isMutable, isImmutable);
+    return new Bugs(isList, true, isMutable, isImmutable, isForbiddingNull);
   }
 
   public Bugs mutable() {
-    return new Bugs(isList, hasFactory, true, isImmutable);
+    return new Bugs(isList, hasFactory, true, isImmutable, isForbiddingNull);
   }
 
   public Bugs immutable() {
-    return new Bugs(isList, hasFactory, isMutable, true);
+    return new Bugs(isList, hasFactory, isMutable, true, isForbiddingNull);
+  }
+
+  public Bugs forbiddingNull() {
+    return new Bugs(isList, hasFactory, isMutable, isImmutable, true);
   }
 
   public List<Class<?>> get() {
@@ -51,6 +57,17 @@ public class Bugs {
     }
     if (isImmutable) {
       bugs.addAll(asFactoriesIf(hasFactory, collectionImmutableBugs));
+    }
+    if (isForbiddingNull) {
+      bugs.addAll(asFactoriesIf(hasFactory, collectionForbiddingNullBugs));
+      if (isMutable) {
+        bugs.addAll(asFactoriesIf(hasFactory, collectionMutableForbiddingNullBugs));
+      }
+    } else {
+      bugs.addAll(asFactoriesIf(hasFactory, collectionAllowingNullBugs));
+      if (isMutable) {
+        bugs.addAll(asFactoriesIf(hasFactory, collectionMutableAllowingNullBugs));
+      }
     }
     if (isList) {
       if (hasFactory) {
@@ -155,6 +172,18 @@ public class Bugs {
       org.quackery.contract.collection.bug.collection.immutable.RetainAllDoesNotThrowException.class,
       org.quackery.contract.collection.bug.collection.immutable.ClearClearsElements.class,
       org.quackery.contract.collection.bug.collection.immutable.ClearDoesNotThrowException.class);
+
+  private static final List<Class<?>> collectionForbiddingNullBugs = classes(
+      org.quackery.contract.collection.bug.collection.nulls.forbidding.CreatorAllowsNullElements.class);
+
+  private static final List<Class<?>> collectionMutableForbiddingNullBugs = classes(
+      org.quackery.contract.collection.bug.collection.nulls.forbidding.AddAllowsNullElements.class);
+
+  private static final List<Class<?>> collectionAllowingNullBugs = classes(
+      org.quackery.contract.collection.bug.collection.nulls.allowing.CreatorForbidsNullElements.class);
+
+  private static final List<Class<?>> collectionMutableAllowingNullBugs = classes(
+      org.quackery.contract.collection.bug.collection.nulls.allowing.AddForbidsNullElements.class);
 
   private static final List<Class<?>> listImmutableBugs = classes(
       org.quackery.contract.collection.bug.list.immutable.AddAllIntAddsElements.class,

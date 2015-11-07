@@ -8,14 +8,14 @@ import java.util.Collection;
 import java.util.List;
 
 public class test_passing_example_collections {
-  public void mutable_list_quacks_like_mutable_list() {
+  public void mutable_list_passes() {
     assertSuccess(quacksLike(Collection.class)
         .implementing(List.class)
         .mutable()
         .test(MutableList.class));
   }
 
-  public void mutable_list_factory_quacks_like_mutable_list_factory() {
+  public void mutable_list_factory_passes() {
     assertSuccess(quacksLike(Collection.class)
         .implementing(List.class)
         .mutable()
@@ -23,18 +23,52 @@ public class test_passing_example_collections {
         .test(asListFactory(MutableList.class)));
   }
 
-  public void immutable_list_quacks_like_immutable_list() {
+  public void immutable_list_passes() {
     assertSuccess(quacksLike(Collection.class)
         .implementing(List.class)
         .immutable()
         .test(ImmutableList.class));
   }
 
-  public void immutable_list_factory_quacks_like_immutable_list_factory() {
+  public void immutable_list_factory_passes() {
     assertSuccess(quacksLike(Collection.class)
         .implementing(List.class)
         .immutable()
         .withFactory("create")
         .test(asListFactory(ImmutableList.class)));
+  }
+
+  public void mutable_list_forbidding_null_nicely_passes() {
+    assertSuccess(quacksLike(Collection.class)
+        .implementing(List.class)
+        .mutable()
+        .forbidding(null)
+        .test(MutableListForbiddingNullNicely.class));
+  }
+
+  public void mutable_list_factory_forbidding_null_nicely_passes() {
+    assertSuccess(quacksLike(Collection.class)
+        .implementing(List.class)
+        .mutable()
+        .forbidding(null)
+        .withFactory("create")
+        .test(asListFactory(MutableListForbiddingNullNicely.class)));
+  }
+
+  public void mutable_list_forbidding_null_strictly_passes() {
+    assertSuccess(quacksLike(Collection.class)
+        .implementing(List.class)
+        .mutable()
+        .forbidding(null)
+        .test(MutableListForbiddingNullStrictly.class));
+  }
+
+  public void mutable_list_factory_forbidding_null_strictly_passes() {
+    assertSuccess(quacksLike(Collection.class)
+        .implementing(List.class)
+        .mutable()
+        .forbidding(null)
+        .withFactory("create")
+        .test(asListFactory(MutableListForbiddingNullStrictly.class)));
   }
 }

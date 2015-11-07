@@ -15,29 +15,30 @@ import org.quackery.Contract;
 public class test_passing_jdk_collections {
   private Contract<Class<?>> contract;
 
-  public void array_list_quacks_like_mutable_list() {
+  public void array_list_passes() {
     contract = quacksLike(Collection.class)
         .implementing(List.class)
         .mutable();
     assertSuccess(contract.test(ArrayList.class));
   }
 
-  public void linked_list_quacks_like_mutable_list() {
+  public void linked_list_passes() {
     contract = quacksLike(Collection.class)
         .implementing(List.class)
         .mutable();
     assertSuccess(contract.test(LinkedList.class));
   }
 
-  public void hash_set_quacks_like_mutable_collection() {
+  public void hash_set_passes() {
     contract = quacksLike(Collection.class)
         .mutable();
     assertSuccess(contract.test(HashSet.class));
   }
 
-  public void tree_set_quacks_like_mutable_collection() {
+  public void tree_set_passes() {
     contract = quacksLike(Collection.class)
-        .mutable();
+        .mutable()
+        .forbidding(null);
     assertSuccess(contract.test(TreeSet.class));
   }
 }

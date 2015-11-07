@@ -78,6 +78,15 @@ public class test_illegal_use {
     } catch (QuackeryException e) {}
   }
 
+  public void cannot_declare_forbidding_twice() {
+    try {
+      quacksLike(Collection.class)
+          .forbidding(null)
+          .forbidding(null);
+      fail();
+    } catch (QuackeryException e) {}
+  }
+
   public void cannot_mix_mutable_and_immutable() {
     try {
       quacksLike(Collection.class)

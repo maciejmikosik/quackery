@@ -38,6 +38,13 @@ public class test_suite_naming {
     assertTrue(test.name.contains(" immutable"));
   }
 
+  public void includes_forbidding_null() {
+    test = quacksLike(Collection.class)
+        .forbidding(null)
+        .test(Object.class);
+    assertTrue(test.name.contains(" forbidding null"));
+  }
+
   public void includes_factory() {
     test = quacksLike(Collection.class)
         .withFactory("method_name")
