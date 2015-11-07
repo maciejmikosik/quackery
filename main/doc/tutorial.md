@@ -1,54 +1,143 @@
+[built-in contracts](#built-in-contracts) |
+[defining you own contracts](#defining-your-own-contracts) |
+[running](#running) |
+[integration](#integration)
 
-### Built-in contracts
+# built-in contracts
+[collection contract](#collection-contract)
 
-Some well-known contracts are already implemented by quackery.
-Best example being contracts for `Collections` like `List` and `Set`.
-Look into `Contracts` class for `quacksLike*` family of methods.
+Quackery lets you define your own contracts containing reusable tests,
+but it also includes some tests for popular contracts.
+It's the same way [hamcrest](http://hamcrest.org/JavaHamcrest/) let's you write your own `Matcher`,
+while having rich library of most common ones.
+
+For an easy start let's first take a look at contracts that are already included.
+To make built-in contracts available add following import.
 
     import static org.quackery.Contracts.quacksLike;
 
-Contracts are customizable so you can choose what features you expect from implementation.
+### collection contract
 
-    quacksLike(Collection.class)
+Quackery has built-in contracts for various types of `Collection`.
+This means that if you implement your own collection, you don't have to write any tests at all.
+
+Collection contracts are customizable so you can choose what features you expect from implementation.
+
+ - `implementing(List.class)` - collection implements `List` interface
+ - `withFactory("factoryMethodName")` - instead of having default and copy constructors, collection has factory method named `factoryMethodName`
+ - `mutable()` - collection supports mutator methods
+ - `immutable()` - collection does not support mutator methods
+ - `forbidding(null)` - collection cannot contain `null` elements
+
+Example usage looks like this.
+
+    Test test = quacksLike(Collection.class)
         .implementing(List.class)
         .mutable()
         .test(java.util.ArrayList.class);
 
-    quacksLike(Collection.class)
+    Test test = quacksLike(Collection.class)
         .implementing(List.class)
-        .withFactory("copyOf")
+        .immutable()
+        .forbidding(null)
+        .withFactory("copyOf");
         .test(com.google.common.collect.ImmutableList.class);
 
-### Junit
-
-You can run quackery tests using junit by using `QuackeryRunner`.
+Generated tests can be run using junit runner.
 
     @RunWith(QuackeryRunner.class)
-    public class MyListTest {
+    public class ArrayListTest {
       @Quackery
       public static Test test() {
           return quacksLike(Collection.class)
-              .implementing(List.class)
-              .test(MyList.class));
+              .test(ArrayList.class));
       }
     }
 
-### Building Suites
+Or you can run them with quackery native mechanism.
 
-You can combine tests into bigger test suites.
+    import static org.quackery.run.Reports.print;
+    import static org.quackery.run.Runners.run;
+    ....
+    Test test = quacksLike(Collection.class)
+        .test(ArrayList.class);
+    System.out.println(print(run(test)));
 
-    import static org.quackery.Suite.suite;
+This would print test hierarchy similar to junit's runner.
 
-    @Quackery
-    public static Test test() {
-      return suite("MyCollection ... ")
-          .testThat(MyCollection.class, quacksLike(Collection.class))
-          .testThat(MyCollection.class, quacksLike( ... ))
-          .testThat(MyCollection.class, quacksLike( ... ));
-    }
+```
+java.util.ArrayList quacks like collection
+  implements Collection interface
+  provides default constructor
+    is declared
+    is public
+    creates empty collection
+  provides copy constructor
+    is declared
+    is public
+    can create collection with 1 element
+    fails for null argument
+    makes defensive copy
+    does not modify argument
+    allows null elements
+  overrides size
+    returns 0 if collection is empty
+    returns 1 if collection has 1 element
+  overrides isEmpty
+    returns false if collection has 1 element
+    returns true if collection is empty
+  overrides contains
+    returns false if collection does not contain element
+    returns true if collection contains element
+  overrides iterator
+    traverses empty collection
+    traverses singleton collection
+```
 
-### Defining you own contracts
+In case of failure, test names are preceded by name of `Throwable` thrown from test.
+`ArrayList` does not forbid `null` elements, so running this
 
+    Test test = quacksLike(Collection.class)
+        .forbidding(null)
+        .test(ArrayList.class);
+    System.out.println(print(run(test)));
+
+prints this
+
+```
+java.util.ArrayList quacks like forbidding null collection
+  implements Collection interface
+  provides default constructor
+    is declared
+    is public
+    creates empty collection
+  provides copy constructor
+    is declared
+    is public
+    can create collection with 1 element
+    fails for null argument
+    makes defensive copy
+    does not modify argument
+    [AssertionException] forbids null elements
+  overrides size
+    returns 0 if collection is empty
+    returns 1 if collection has 1 element
+  overrides isEmpty
+    returns false if collection has 1 element
+    returns true if collection is empty
+  overrides contains
+    returns false if collection does not contain element
+    returns true if collection contains element
+  overrides iterator
+    traverses empty collection
+    traverses singleton collection
+```
+
+which shows failed test `[AssertionException] forbids null elements`.
+
+Tests list is definitely not complete, but it grows with each release.
+
+# Defining your own contracts
 
 You can define your own contracts by implementing `org.quackery.Contract` interface.
 
@@ -56,28 +145,115 @@ You can define your own contracts by implementing `org.quackery.Contract` interf
       Test test(T item);
     }
 
-`Contract` can produce `Test` being single `Case`.
+`Contract` is generic, but in most cases it is used to test `Class<?>`.
 
-      public static Contract<Class<?>> quacksLikeFinalClass() {
-        return new Contract<Class<?>>() {
-          public Test test(final Class<?> type) {
-            return new Case(type.getName() + " is final") {
-              public void run() {
-                assertTrue(Modifier.isFinal(type.getModifiers()));
-              }
-            };
-          }
-        };
+`Test` mimics composite design pattern.
+It has 2 subclasses.
+`Case` represents single test that can either succeed or fail.
+`Suite` represents list of tests (cases and suites).
+This way you can organize your cases into hierarchical tree.
+
+Let's define contract for class that tests only one thing: that class has `final` modifier.
+
+    import static org.quackery.AssertionException.assertTrue;
+    ....
+    public static Contract<Class<?>> quacksLikeFinalClass() {
+      return new Contract<Class<?>>() {
+        public Test test(final Class<?> type) {
+          return new Case(type.getName() + " is final") {
+            public void run() {
+              assertTrue(Modifier.isFinal(type.getModifiers()));
+            }
+          };
+        }
+      };
+    }
+
+As shown above, you do it by extending `Case` class.
+You need to provide a name, that will be visible in reports.
+And you need to override `run` method, that contains testing logic.
+`Case` is considered successful if `run` method ends without throwing `Throwable`.
+Any throwable indicates failed tests. However there are different ways `Case` can fail.
+
+ - `org.quackery.AssertionException` - feature does not work
+ - `org.quackery.AssumptionException` - feature depends on some other feature that does not work
+ - other `Throwable` - any unexpected situation
+
+`AssertionException` and `AssumptionException` contain methods that throw those exceptions on various conditions.
+If you use other assertions library then read [integration section](#integration).
+
+If you want your contract to produce more than single `Case` then aggregate them in `Suite` object.
+It has methods for bulk operations and applying other contracts.
+
+    public static Contract<Class<?>> quacksLikeX() {
+      return new Contract<Class<?>>() {
+        public Test test(Class<?> type) {
+          return suite(type + " quacks like X")
+              .add(test)
+              .addAll(tests)
+              .add(type, quacksLikeA())
+              .addAll(types, quacksLikeB());
+        }
+      };
+    }
+
+# running
+
+You can run `Case` manually by invoking `Case.run()`.
+However you need to handle possible `Throwable` on your own.
+It's more convenient to run any `Test` using `Runners` class.
+
+    import static org.quackery.run.Runners.run;
+    ....
+    Test test = ...
+    Test report = run(test);
+
+Running test returns report that reuses same interface as `Test`/`Case`/`Suite`.
+The difference is that `run(Test)` runs tests eagerly (which may take some time) and caches results.
+Invoking `run(Test)` on report returns/throws immediately.
+
+`org.quackery.run.Runners` contains methods related to running tests
+
+ - `Test run(Test)` - runs tests in single `Thread`
+ - `Test runIn(Executor, Test)` - runs tests in specified `Executor`
+ - `Test threadScoped(Test)` - wraps test, so each `Case` is run in separate `Thread`, thus isolating `ThreadLocal` variables
+ - `Test classLoaderScoped(Test)` - wraps test, so each `Case` is run in separate `ClassLoader`, thus isolating dynamically loaded bytecode
+
+`org.quackery.run.Reports` contains methods related to reports of ran tests
+
+ - `int count(Class<? extends Throwable>, Test)` - counts how many cases thrown specified throwable or its subclass
+ - `String print(Test)` - turns test result into `String` including test names and throwables thrown from them
+
+Trying to use `Reports` on `Test` that was not run, will invoke testing logic every time.
+
+# integration
+
+### Junit
+
+To run quackery tests with junit use junit's `@RunWith` together with quackery's `org.quackery.junit.QuackeryRunner`.
+
+    @RunWith(QuackeryRunner.class)
+    public class ArrayListTest {
+      @Quackery
+      public static Test test() {
+          return quacksLike(Collection.class)
+              .test(ArrayList.class));
       }
+    }
 
-Or `Test` can combine many tests as `Suite`.
+Define factory method and annotate it with `@Quackery`.
+Method must be `public`, `static`, have no parameters and return `Test`.
+If there is more than 1 annotated method, then tests returned by them are aggregated in ad hoc `Suite`.
 
-      public static Contract<Class<?>> quacksLikeX() {
-        return new Contract<Class<?>>() {
-          public Test test(Class<?> type) {
-            return suite(type + " quacks like X")
-                .testThat(type, quacksLikeA())
-                .testThat(type, quacksLikeB());
-          }
-        };
-      }
+If test throws one of quackery exceptions (like tests from built-in contracts do)
+and you run this test using junit,
+then those exceptions are translated to junit's native exceptions.
+
+ - `org.quackery.AssertionException` is translated to `java.lang.AssertionError`
+ - `org.quackery.AssumptionException` is translated to `org.junit.AssumptionViolatedExcetpion`
+ - any other `Throwable` passes through
+
+ If test throws non-quackery exception (like `AssertionError` thrown by `org.junit.Assert`),
+ then this exception passes through quackery and reaches junit's runner.
+ Thus, if you use junit's assertions in combination with junit's runner, then you are fine.
+ Otherwise, you are responsible to make sure your runner and assertions library are compatible.
