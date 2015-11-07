@@ -30,7 +30,7 @@ public class Includes {
         includedChildren.add(includedChild);
       }
     }
-    return suite(suite.name).testAll(includedChildren);
+    return suite(suite.name).addAll(includedChildren);
   }
 
   private static boolean isEmptySuite(Test test) {

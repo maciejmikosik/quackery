@@ -30,6 +30,6 @@ public class Visitor {
           : visit((Suite) child));
     }
     return suite(visiting.name)
-        .testAll(visitedChildren);
+        .addAll(visitedChildren);
   }
 }

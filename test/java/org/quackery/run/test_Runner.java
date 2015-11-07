@@ -27,7 +27,7 @@ public abstract class test_Runner extends test_Visitor {
 
   public void runs_deep_case_once() {
     test = suite(name)
-        .test(new Case(name) {
+        .add(new Case(name) {
           public void run() {
             invoked++;
           }

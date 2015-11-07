@@ -44,31 +44,31 @@ public class test_Suite {
 
   public void adds_test() {
     suite = suite(name)
-        .test(testA)
-        .test(testB)
-        .test(testC);
+        .add(testA)
+        .add(testB)
+        .add(testC);
     assertEquals(suite.tests, asList(testA, testB, testC));
   }
 
   public void adds_tests_from_iterable() {
     suite = suite(name)
-        .testAll(asList(testA, testB))
-        .testAll(asList(testC, testD));
+        .addAll(asList(testA, testB))
+        .addAll(asList(testC, testD));
     assertEquals(suite.tests, asList(testA, testB, testC, testD));
   }
 
   public void adds_tests_from_array() {
     suite = suite(name)
-        .testAll(new Test[] { testA, testB })
-        .testAll(new Test[] { testC, testD });
+        .addAll(new Test[] { testA, testB })
+        .addAll(new Test[] { testC, testD });
     assertEquals(suite.tests, asList(testA, testB, testC, testD));
   }
 
   public void adds_test_produced_by_contract_and_item() {
     suite = suite(name)
-        .testThat(itemA, contractA)
-        .testThat(itemB, contractB)
-        .testThat(itemC, contractC);
+        .add(itemA, contractA)
+        .add(itemB, contractB)
+        .add(itemC, contractC);
     assertEquals(suite.tests, asList(
         mockTest(itemA, contractA),
         mockTest(itemB, contractB),
@@ -77,8 +77,8 @@ public class test_Suite {
 
   public void adds_tests_produced_by_contract_and_items_from_iterable() {
     suite = suite(name)
-        .testThatAll(asList(itemA, itemB), contractA)
-        .testThatAll(asList(itemC, itemD), contractB);
+        .addAll(asList(itemA, itemB), contractA)
+        .addAll(asList(itemC, itemD), contractB);
     assertEquals(suite.tests, asList(
         mockTest(itemA, contractA),
         mockTest(itemB, contractA),
@@ -88,8 +88,8 @@ public class test_Suite {
 
   public void adds_tests_produced_by_contract_and_items_from_array() {
     suite = suite(name)
-        .testThatAll(new Object[] { itemA, itemB }, contractA)
-        .testThatAll(new Object[] { itemC, itemD }, contractB);
+        .addAll(new Object[] { itemA, itemB }, contractA)
+        .addAll(new Object[] { itemC, itemD }, contractB);
     assertEquals(suite.tests, asList(
         mockTest(itemA, contractA),
         mockTest(itemB, contractA),
@@ -107,8 +107,8 @@ public class test_Suite {
     new Runnable() {
       public void run() {
         suite(name)
-            .testAll(asList(new Case[0]))
-            .testThatAll(asList(bar), fooContract);
+            .addAll(asList(new Case[0]))
+            .addAll(asList(bar), fooContract);
       }
     };
   }
@@ -129,23 +129,23 @@ public class test_Suite {
   public void test_cannot_be_null() {
     suite = suite(name);
     try {
-      suite.test(null);
+      suite.add(null);
       fail();
     } catch (QuackeryException e) {}
     try {
-      suite.testAll((Iterable<Test>) null);
+      suite.addAll((Iterable<Test>) null);
       fail();
     } catch (QuackeryException e) {}
     try {
-      suite.testAll(asList(testA, null, testB));
+      suite.addAll(asList(testA, null, testB));
       fail();
     } catch (QuackeryException e) {}
     try {
-      suite.testAll((Test[]) null);
+      suite.addAll((Test[]) null);
       fail();
     } catch (QuackeryException e) {}
     try {
-      suite.testAll(new Test[] { testA, null, testB });
+      suite.addAll(new Test[] { testA, null, testB });
       fail();
     } catch (QuackeryException e) {}
   }
@@ -153,11 +153,11 @@ public class test_Suite {
   public void items_cannot_be_null() {
     suite = suite(name);
     try {
-      suite.testThatAll((Iterable<Object>) null, contractA);
+      suite.addAll((Iterable<Object>) null, contractA);
       fail();
     } catch (QuackeryException e) {}
     try {
-      suite.testThatAll((Object[]) null, contractA);
+      suite.addAll((Object[]) null, contractA);
       fail();
     } catch (QuackeryException e) {}
   }
@@ -165,15 +165,15 @@ public class test_Suite {
   public void contract_cannot_be_null() {
     suite = suite(name);
     try {
-      suite.testThat(itemA, (Contract<Object>) null);
+      suite.add(itemA, (Contract<Object>) null);
       fail();
     } catch (QuackeryException e) {}
     try {
-      suite.testThatAll(asList(), (Contract<Object>) null);
+      suite.addAll(asList(), (Contract<Object>) null);
       fail();
     } catch (QuackeryException e) {}
     try {
-      suite.testThatAll(new Object[0], (Contract<Object>) null);
+      suite.addAll(new Object[0], (Contract<Object>) null);
       fail();
     } catch (QuackeryException e) {}
   }

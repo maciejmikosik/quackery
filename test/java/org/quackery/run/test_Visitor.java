@@ -40,7 +40,7 @@ public abstract class test_Visitor {
 
   public void keeps_deep_case_name() {
     test = suite(nameA)
-        .test(mockCase(name));
+        .add(mockCase(name));
 
     // when
     visited = visit(test);
@@ -85,12 +85,12 @@ public abstract class test_Visitor {
 
   public void copies_suite_hierarchy() {
     test = suite(name)
-        .test(suite(nameA)
-            .test(mockCase(nameC))
-            .test(mockCase(nameD)))
-        .test(suite(nameB)
-            .test(mockCase(nameE))
-            .test(mockCase(nameF)));
+        .add(suite(nameA)
+            .add(mockCase(nameC))
+            .add(mockCase(nameD)))
+        .add(suite(nameB)
+            .add(mockCase(nameE))
+            .add(mockCase(nameF)));
 
     // when
     visited = visit(test);

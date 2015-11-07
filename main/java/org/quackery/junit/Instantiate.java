@@ -19,7 +19,7 @@ public class Instantiate {
     check(tests.size() > 0);
     return tests.size() == 1
         ? tests.get(0)
-        : suite(testClass.getName()).testAll(tests);
+        : suite(testClass.getName()).addAll(tests);
   }
 
   private static List<Method> annotatedMethods(Class<?> testClass) {

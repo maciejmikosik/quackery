@@ -61,14 +61,14 @@ public class test_Reports_count_throwables {
 
   public void sums_all_throwables_in_hierarchy() {
     test = suite(name)
-        .test(suite(name)
-            .test(mockCase(name))
-            .test(mockCase(name, new RuntimeException()))
-            .test(mockCase(name, new Exception())))
-        .test(suite(name)
-            .test(mockCase(name))
-            .test(mockCase(name, new Throwable()))
-            .test(mockCase(name, new Error())));
+        .add(suite(name)
+            .add(mockCase(name))
+            .add(mockCase(name, new RuntimeException()))
+            .add(mockCase(name, new Exception())))
+        .add(suite(name)
+            .add(mockCase(name))
+            .add(mockCase(name, new Throwable()))
+            .add(mockCase(name, new Error())));
 
     // when
     count = count(Throwable.class, test);

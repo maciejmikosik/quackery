@@ -34,7 +34,7 @@ public class test_QuackeryRunner {
 
   public void suite_name_is_preserved() {
     test = suite(name)
-        .test(mockCase("anything", throwable));
+        .add(mockCase("anything", throwable));
 
     result = run(test);
 
@@ -103,12 +103,12 @@ public class test_QuackeryRunner {
 
   public void case_is_invoked_even_if_name_collides() {
     test = suite("suite")
-        .test(new Case(name) {
+        .add(new Case(name) {
           public void run() {
             invoked = true;
           }
         })
-        .test(new Case(name) {
+        .add(new Case(name) {
           public void run() {
             otherInvoked = true;
           }
@@ -161,7 +161,7 @@ public class test_QuackeryRunner {
     @Quackery
     public static Suite test() {
       return suite("suite")
-          .test(mockCase("case"));
+          .add(mockCase("case"));
     }
   }
 

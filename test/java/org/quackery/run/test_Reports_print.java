@@ -27,7 +27,7 @@ public class test_Reports_print {
 
   public void prints_name_of_deep_case() {
     report = suite("suite")
-        .test(mockCase(name));
+        .add(mockCase(name));
 
     printed = print(report);
 
@@ -78,13 +78,13 @@ public class test_Reports_print {
 
   public void indents_to_reflect_hierarchy() {
     report = suite(a)
-        .test(suite(b)
-            .test(mockCase(c))
-            .test(mockCase(d)))
-        .test(suite(e)
-            .test(mockCase(f))
-            .test(mockCase(g))
-            .test(mockCase(h)));
+        .add(suite(b)
+            .add(mockCase(c))
+            .add(mockCase(d)))
+        .add(suite(e)
+            .add(mockCase(f))
+            .add(mockCase(g))
+            .add(mockCase(h)));
 
     printed = print(report);
 

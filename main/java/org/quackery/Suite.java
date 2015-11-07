@@ -29,7 +29,7 @@ public class Suite extends Test {
     return suite(name, Arrays.<Test> asList());
   }
 
-  public Suite test(Test extraTest) {
+  public Suite add(Test extraTest) {
     check(extraTest != null);
     ArrayList<Test> allTests = new ArrayList<>();
     allTests.addAll(tests);
@@ -37,7 +37,7 @@ public class Suite extends Test {
     return suite(name, allTests);
   }
 
-  public Suite testAll(Iterable<? extends Test> extraTests) {
+  public Suite addAll(Iterable<? extends Test> extraTests) {
     check(extraTests != null);
     ArrayList<Test> allTests = new ArrayList<>();
     allTests.addAll(tests);
@@ -48,29 +48,29 @@ public class Suite extends Test {
     return suite(name, allTests);
   }
 
-  public Suite testAll(Test[] extraTests) {
+  public Suite addAll(Test[] extraTests) {
     check(extraTests != null);
-    return testAll(asList(extraTests));
+    return addAll(asList(extraTests));
   }
 
-  public <T> Suite testThat(T item, Contract<T> contract) {
+  public <T> Suite add(T item, Contract<T> contract) {
     check(contract != null);
-    return test(contract.test(item));
+    return add(contract.test(item));
   }
 
-  public <T> Suite testThatAll(Iterable<? extends T> items, Contract<T> contract) {
+  public <T> Suite addAll(Iterable<? extends T> items, Contract<T> contract) {
     check(items != null);
     check(contract != null);
     List<Test> extraTests = new ArrayList<>();
     for (T item : items) {
       extraTests.add(contract.test(item));
     }
-    return testAll(extraTests);
+    return addAll(extraTests);
   }
 
-  public <T> Suite testThatAll(T[] items, Contract<T> contract) {
+  public <T> Suite addAll(T[] items, Contract<T> contract) {
     check(items != null);
-    return testThatAll(asList(items), contract);
+    return addAll(asList(items), contract);
   }
 
   public String toString() {

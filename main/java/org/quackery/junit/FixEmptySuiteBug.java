@@ -28,7 +28,7 @@ public class FixEmptySuiteBug {
   private static Test fixChildren(Suite suite) {
     Suite fixedSuite = suite(suite.name);
     for (Test test : suite.tests) {
-      fixedSuite = fixedSuite.test(fixEmptySuiteBug(test));
+      fixedSuite = fixedSuite.add(fixEmptySuiteBug(test));
     }
     return fixedSuite;
   }

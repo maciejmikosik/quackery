@@ -27,9 +27,9 @@ public class test_Runners_runIn extends test_Runner {
     CountDownLatch latch = new CountDownLatch(3);
     executor = newCachedThreadPool();
     test = suite("")
-        .test(countDown(latch))
-        .test(countDown(latch))
-        .test(countDown(latch));
+        .add(countDown(latch))
+        .add(countDown(latch))
+        .add(countDown(latch));
 
     // when
     runIn(executor, test);
@@ -44,9 +44,9 @@ public class test_Runners_runIn extends test_Runner {
   public void runs_test_eagerly() throws InterruptedException {
     executor = newCachedThreadPool();
     test = suite("")
-        .test(sleepFor(100, MILLISECONDS))
-        .test(sleepFor(100, MILLISECONDS))
-        .test(sleepFor(100, MILLISECONDS));
+        .add(sleepFor(100, MILLISECONDS))
+        .add(sleepFor(100, MILLISECONDS))
+        .add(sleepFor(100, MILLISECONDS));
 
     // when
     runIn(executor, test);
