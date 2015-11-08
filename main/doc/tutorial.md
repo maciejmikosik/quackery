@@ -25,7 +25,6 @@ Collection contracts are customizable so you can choose what features you expect
 
  - `implementing(List.class)` - collection implements `List` interface
  - `withFactory("factoryMethodName")` - instead of having default and copy constructors, collection has factory method named `factoryMethodName`
- - `mutable()` - collection supports mutator methods
  - `immutable()` - collection does not support mutator methods
  - `forbidding(null)` - collection cannot contain `null` elements
 
@@ -33,7 +32,6 @@ Example usage looks like this.
 
     Test test = quacksLike(Collection.class)
         .implementing(List.class)
-        .mutable()
         .test(java.util.ArrayList.class);
 
     Test test = quacksLike(Collection.class)
