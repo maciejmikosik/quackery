@@ -206,14 +206,14 @@ It's more convenient to run any `Test` using `Runners` class.
     Test test = ...
     Test report = run(test);
 
-Running test returns report that reuses same interface as `Test`/`Case`/`Suite`.
-The difference is that `run(Test)` runs tests eagerly (which may take some time) and caches results.
-Invoking `run(Test)` on report returns/throws immediately.
+`Runnables.run(Test)` runs each `Case` eagerly (which may take some time) and caches its results.
+It returns a report, that reuses the same interface as `Test`/`Case`/`Suite`.
+The difference is that invoking `Case.run()` on any case from report returns/throws cached result immediately.
 
 `org.quackery.run.Runners` contains methods related to running tests
 
- - `Test run(Test)` - runs tests in single `Thread`
- - `Test runIn(Executor, Test)` - runs tests in specified `Executor`
+ - `Test run(Test)` - runs each `Case` in same `Thread`
+ - `Test runIn(Executor, Test)` - runs each `Case` in specified `Executor`
  - `Test threadScoped(Test)` - wraps test, so each `Case` is run in separate `Thread`, thus isolating `ThreadLocal` variables
  - `Test classLoaderScoped(Test)` - wraps test, so each `Case` is run in separate `ClassLoader`, thus isolating dynamically loaded bytecode
 
