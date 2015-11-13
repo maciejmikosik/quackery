@@ -10,7 +10,6 @@ Running this example
       public static Test test() {
         return quacksLike(Collection.class)
             .implementing(List.class)
-            .mutable()
             .test(ArrayList.class);
       }
     }
