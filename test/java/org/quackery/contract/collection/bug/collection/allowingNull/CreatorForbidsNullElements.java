@@ -1,4 +1,4 @@
-package org.quackery.contract.collection.bug.collection.nulls.allowing;
+package org.quackery.contract.collection.bug.collection.allowingNull;
 
 import java.util.Collection;
 

@@ -168,16 +168,16 @@ public class Bugs {
       org.quackery.contract.collection.bug.collection.immutable.ClearDoesNotThrowException.class);
 
   private static final List<Class<?>> collectionForbiddingNullBugs = classes(
-      org.quackery.contract.collection.bug.collection.nulls.forbidding.CreatorAllowsNullElements.class);
+      org.quackery.contract.collection.bug.collection.forbiddingNull.CreatorAllowsNullElements.class);
 
   private static final List<Class<?>> collectionMutableForbiddingNullBugs = classes(
-      org.quackery.contract.collection.bug.collection.nulls.forbidding.AddAllowsNullElements.class);
+      org.quackery.contract.collection.bug.collection.mutableForbiddingNull.AddAllowsNullElements.class);
 
   private static final List<Class<?>> collectionAllowingNullBugs = classes(
-      org.quackery.contract.collection.bug.collection.nulls.allowing.CreatorForbidsNullElements.class);
+      org.quackery.contract.collection.bug.collection.allowingNull.CreatorForbidsNullElements.class);
 
   private static final List<Class<?>> collectionMutableAllowingNullBugs = classes(
-      org.quackery.contract.collection.bug.collection.nulls.allowing.AddForbidsNullElements.class);
+      org.quackery.contract.collection.bug.collection.mutableAllowingNull.AddForbidsNullElements.class);
 
   private static final List<Class<?>> listImmutableBugs = classes(
       org.quackery.contract.collection.bug.list.immutable.AddAllIntAddsElements.class,

@@ -1,4 +1,4 @@
-package org.quackery.contract.collection.bug.collection.nulls.forbidding;
+package org.quackery.contract.collection.bug.collection.forbiddingNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
