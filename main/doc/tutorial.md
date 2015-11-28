@@ -135,7 +135,7 @@ which shows failed test `[AssertException] forbids null elements`.
 
 Tests list is definitely not complete, but it grows with each release.
 
-# Defining your own contracts
+# defining your own contracts
 
 You can define your own contracts by implementing `org.quackery.Contract` interface.
 
@@ -206,7 +206,7 @@ It's more convenient to run any `Test` using `Runners` class.
     Test test = ...
     Test report = run(test);
 
-`Runnables.run(Test)` runs each `Case` eagerly (which may take some time) and caches its results.
+`Runners.run(Test)` runs each `Case` eagerly (which may take some time) and caches its results.
 It returns a report, that reuses the same interface as `Test`/`Case`/`Suite`.
 The difference is that invoking `Case.run()` on any case from report returns/throws cached result immediately.
 
@@ -217,7 +217,7 @@ The difference is that invoking `Case.run()` on any case from report returns/thr
  - `Test threadScoped(Test)` - wraps test, so each `Case` is run in separate `Thread`, thus isolating `ThreadLocal` variables
  - `Test classLoaderScoped(Test)` - wraps test, so each `Case` is run in separate `ClassLoader`, thus isolating dynamically loaded bytecode
 
-`org.quackery.report.Reports` contains methods related to reports of ran tests
+`org.quackery.report.Reports` contains methods related to reports of run tests
 
  - `int count(Class<? extends Throwable>, Test)` - counts how many cases thrown specified throwable or its subclass
  - `String format(Test)` - turns test result into `String` including test names and throwables thrown from them
