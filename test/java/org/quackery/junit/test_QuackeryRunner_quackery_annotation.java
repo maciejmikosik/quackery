@@ -4,10 +4,11 @@ import static java.lang.reflect.Modifier.PUBLIC;
 import static java.lang.reflect.Modifier.STATIC;
 import static org.quackery.Suite.suite;
 import static org.quackery.junit.JunitClassBuilder.defaultQuackeryMethod;
+import static org.quackery.junit.JunitCoreRunner.run;
+import static org.quackery.junit.JunitCoreRunner.runFailing;
 import static org.quackery.testing.Assertions.assertEquals;
 import static org.quackery.testing.Mocks.mockCase;
 
-import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.quackery.Case;
 import org.quackery.QuackeryException;
@@ -16,7 +17,7 @@ import org.quackery.Test;
 import org.quackery.report.AssertException;
 import org.quackery.report.AssumeException;
 
-public class test_QuackeryRunner {
+public class test_QuackeryRunner_quackery_annotation {
   private final String name = "name " + hashCode();
   private final String message = "message";
   private Throwable throwable = new Throwable();
@@ -214,19 +215,5 @@ public class test_QuackeryRunner {
         .load());
 
     assertEquals(failure.getClass(), QuackeryException.class);
-  }
-
-  private static Result run(Class<?> type) {
-    return new JUnitCore().run(type);
-  }
-
-  private static Throwable runFailing(Class<?> type) {
-    return run(type).getFailures().get(0).getException();
-  }
-
-  private static Result run(Test test) {
-    return run(new JunitClassBuilder()
-        .define(defaultQuackeryMethod().returns(test))
-        .load());
   }
 }
