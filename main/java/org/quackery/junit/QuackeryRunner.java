@@ -2,10 +2,13 @@ package org.quackery.junit;
 
 import static org.junit.runner.Description.createSuiteDescription;
 import static org.junit.runner.Description.createTestDescription;
+import static org.quackery.Suite.suite;
 import static org.quackery.junit.FixEmptySuiteBug.fixEmptySuiteBug;
-import static org.quackery.junit.Instantiate.instantiate;
+import static org.quackery.junit.ScanJunitTests.scanJunitTests;
+import static org.quackery.junit.ScanQuackeryTests.scanQuackeryTests;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.junit.AssumptionViolatedException;
 import org.junit.runner.Description;
@@ -20,14 +23,57 @@ import org.quackery.report.AssertException;
 import org.quackery.report.AssumeException;
 
 public class QuackeryRunner extends Runner {
-  private final Test test;
+  private final Runner delegate;
 
-  public QuackeryRunner(Class<?> testClass) {
-    test = fixEmptySuiteBug(instantiate(testClass));
+  public QuackeryRunner(Class<?> annotatedClass) {
+    List<Test> quackeryTests = scanQuackeryTests(annotatedClass);
+    Runner junitRunner = scanJunitTests(annotatedClass);
+    delegate = junitRunner == null
+        ? quackeryTestsRunner(annotatedClass, quackeryTests)
+        : quackeryAndJunitTestsRunner(quackeryTests, junitRunner);
   }
 
   public Description getDescription() {
-    return describe(test);
+    return delegate.getDescription();
+  }
+
+  public void run(RunNotifier notifier) {
+    delegate.run(notifier);
+  }
+
+  private static Runner quackeryTestsRunner(Class<?> annotatedClass, List<Test> tests) {
+    final Test root = fixEmptySuiteBug(tests.size() == 1
+        ? tests.get(0)
+        : suite(annotatedClass.getName()).addAll(tests));
+    final Description description = describe(root);
+    return new Runner() {
+      public Description getDescription() {
+        return description;
+      }
+
+      public void run(RunNotifier notifier) {
+        QuackeryRunner.run(root, notifier);
+      }
+    };
+  }
+
+  private static Runner quackeryAndJunitTestsRunner(final List<Test> tests, final Runner junitRunner) {
+    final Description description = junitRunner.getDescription();
+    for (Test test : tests) {
+      description.addChild(describe(fixEmptySuiteBug(test)));
+    }
+    return new Runner() {
+      public Description getDescription() {
+        return description;
+      }
+
+      public void run(RunNotifier notifier) {
+        for (Test test : tests) {
+          QuackeryRunner.run(test, notifier);
+        }
+        junitRunner.run(notifier);
+      }
+    };
   }
 
   private static Description describe(Test test) {
@@ -50,10 +96,6 @@ public class QuackeryRunner extends Runner {
 
   private static Description describe(Case cas) {
     return createTestDescription(cas.getClass().getName(), cas.name, id(cas));
-  }
-
-  public void run(RunNotifier notifier) {
-    run(test, notifier);
   }
 
   private static void run(Test test, RunNotifier notifier) {

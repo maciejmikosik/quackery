@@ -3,7 +3,6 @@ package org.quackery.junit;
 import static java.lang.reflect.Modifier.isPublic;
 import static java.lang.reflect.Modifier.isStatic;
 import static org.quackery.QuackeryException.check;
-import static org.quackery.Suite.suite;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -13,13 +12,9 @@ import org.quackery.Quackery;
 import org.quackery.QuackeryException;
 import org.quackery.Test;
 
-public class Instantiate {
-  public static Test instantiate(Class<?> testClass) {
-    List<Test> tests = instantiate(annotatedMethods(testClass));
-    check(tests.size() > 0);
-    return tests.size() == 1
-        ? tests.get(0)
-        : suite(testClass.getName()).addAll(tests);
+public class ScanQuackeryTests {
+  public static List<Test> scanQuackeryTests(Class<?> testClass) {
+    return instantiate(annotatedMethods(testClass));
   }
 
   private static List<Method> annotatedMethods(Class<?> testClass) {
