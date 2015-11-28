@@ -17,7 +17,7 @@ class JunitCoreRunner {
 
   public static Result run(Test test) {
     return run(new JunitClassBuilder()
-        .define(defaultQuackeryMethod().returns(test))
+        .define(defaultQuackeryMethod().returning(test))
         .load());
   }
 }

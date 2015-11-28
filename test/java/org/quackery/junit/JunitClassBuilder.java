@@ -3,12 +3,14 @@ package org.quackery.junit;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static java.lang.reflect.Modifier.STATIC;
 import static net.bytebuddy.dynamic.loading.ClassLoadingStrategy.Default.WRAPPER;
-import static net.bytebuddy.implementation.FixedValue.reference;
 
 import java.lang.annotation.Annotation;
 
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.DynamicType.Builder;
+import net.bytebuddy.implementation.ExceptionMethod;
+import net.bytebuddy.implementation.FixedValue;
+import net.bytebuddy.implementation.Implementation;
 
 import org.junit.runner.RunWith;
 import org.junit.runner.Runner;
@@ -32,8 +34,14 @@ class JunitClassBuilder {
   public JunitClassBuilder define(MethodDefinition def) {
     return new JunitClassBuilder(builder
         .defineMethod(def.name, def.returnType, def.parameters, def.modifiers)
-        .intercept(reference(def.returns))
+        .intercept(implementationOf(def))
         .annotateMethod(def.annotations));
+  }
+
+  private static Implementation implementationOf(MethodDefinition def) {
+    return def.throwing != null
+        ? ExceptionMethod.throwing(def.throwing)
+        : FixedValue.reference(def.returning);
   }
 
   public Class<?> load() {

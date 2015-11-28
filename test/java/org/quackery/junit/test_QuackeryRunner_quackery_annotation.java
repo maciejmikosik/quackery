@@ -134,10 +134,10 @@ public class test_QuackeryRunner_quackery_annotation {
     result = run(new JunitClassBuilder()
         .define(defaultQuackeryMethod()
             .name("testA")
-            .returns(mockCase("name")))
+            .returning(mockCase("name")))
         .define(defaultQuackeryMethod()
             .name("testB")
-            .returns(mockCase("name")))
+            .returning(mockCase("name")))
         .load());
 
     assertEquals(result.getRunCount(), 2);
@@ -148,7 +148,7 @@ public class test_QuackeryRunner_quackery_annotation {
     result = run(new JunitClassBuilder()
         .define(defaultQuackeryMethod()
             .returnType(Suite.class)
-            .returns(suite("suite")
+            .returning(suite("suite")
                 .add(mockCase("case"))))
         .load());
 
@@ -160,7 +160,7 @@ public class test_QuackeryRunner_quackery_annotation {
     result = run(new JunitClassBuilder()
         .define(defaultQuackeryMethod()
             .returnType(Case.class)
-            .returns(mockCase("case")))
+            .returning(mockCase("case")))
         .load());
 
     assertEquals(result.getRunCount(), 1);
@@ -171,7 +171,7 @@ public class test_QuackeryRunner_quackery_annotation {
     failure = runFailing(new JunitClassBuilder()
         .define(defaultQuackeryMethod()
             .annotations()
-            .returns(mockCase("name")))
+            .returning(mockCase("name")))
         .load());
 
     assertEquals(failure.getClass(), QuackeryException.class);
@@ -181,7 +181,7 @@ public class test_QuackeryRunner_quackery_annotation {
     failure = runFailing(new JunitClassBuilder()
         .define(defaultQuackeryMethod()
             .modifiers(defaultQuackeryMethod().modifiers & ~PUBLIC)
-            .returns(mockCase("name")))
+            .returning(mockCase("name")))
         .load());
 
     assertEquals(failure.getClass(), QuackeryException.class);
@@ -191,7 +191,7 @@ public class test_QuackeryRunner_quackery_annotation {
     failure = runFailing(new JunitClassBuilder()
         .define(defaultQuackeryMethod()
             .modifiers(defaultQuackeryMethod().modifiers & ~STATIC)
-            .returns(mockCase("name")))
+            .returning(mockCase("name")))
         .load());
 
     assertEquals(failure.getClass(), QuackeryException.class);
@@ -201,7 +201,7 @@ public class test_QuackeryRunner_quackery_annotation {
     failure = runFailing(new JunitClassBuilder()
         .define(defaultQuackeryMethod()
             .returnType(Object.class)
-            .returns(mockCase("name")))
+            .returning(mockCase("name")))
         .load());
 
     assertEquals(failure.getClass(), QuackeryException.class);
@@ -211,7 +211,7 @@ public class test_QuackeryRunner_quackery_annotation {
     failure = runFailing(new JunitClassBuilder()
         .define(defaultQuackeryMethod()
             .parameters(Object.class)
-            .returns(mockCase("name")))
+            .returning(mockCase("name")))
         .load());
 
     assertEquals(failure.getClass(), QuackeryException.class);
