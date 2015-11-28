@@ -255,3 +255,38 @@ then those exceptions are translated to junit's native exceptions.
  then this exception passes through quackery and reaches junit's runner.
  Thus, if you use junit's assertions in combination with junit's runner, then you are fine.
  Otherwise, you are responsible to make sure your runner and assertions library are compatible.
+
+`QuackeryRunner`, while adding possibility to run tests annotated with `@Quackery`, keeps all features provided by default junit4 runner.
+This mean that if you already have junit class with tests.
+
+    public class ArrayListTest {
+      @Test
+      public void implements_random_access() {
+        assertTrue(RandomAccess.class.isAssignableFrom(ArrayList.class));
+      }
+    }
+
+You can add quackery tests inside.
+
+    @RunWith(QuackeryRunner.class)
+    public class ArrayListTest {
+      @Quackery
+      public static org.quackery.Test test() {
+        return quacksLike(Collection.class)
+            .test(ArrayList.class);
+      }
+
+      @Test
+      public void implements_random_access() {
+        assertTrue(RandomAccess.class.isAssignableFrom(ArrayList.class));
+      }
+    }
+
+Quackery merges all test into one hierarchy. There are few things to keep in mind.
+
+ - Watch out for name collision between `org.quackery.Test` and `org.junit.Test`
+ - `@Ignore` does not work on methods annotated with `@Quackery`.
+     However it works if you use it at class level.
+ - You can use `@QuackeryRunner` even on class that only have junit tests.
+     This makes no difference except one detail.
+     It does not complain if you have no test methods in class, like default junit4 runner does.
