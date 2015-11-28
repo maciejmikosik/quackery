@@ -58,7 +58,7 @@ public class test_detecting_bugs {
     for (Class<?> bug : bugs.get()) {
       assertFailure(contract.test(bug));
     }
-    for (Class<?> bug : bugs.factory().get()) {
+    for (Class<?> bug : bugs.factory("create").get()) {
       assertFailure(contract.withFactory("create").test(bug));
     }
   }

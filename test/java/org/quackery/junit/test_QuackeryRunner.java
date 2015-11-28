@@ -1,14 +1,15 @@
 package org.quackery.junit;
 
+import static java.lang.reflect.Modifier.PUBLIC;
+import static java.lang.reflect.Modifier.STATIC;
 import static org.quackery.Suite.suite;
+import static org.quackery.junit.JunitClassBuilder.defaultQuackeryMethod;
 import static org.quackery.testing.Assertions.assertEquals;
 import static org.quackery.testing.Mocks.mockCase;
 
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
-import org.junit.runner.RunWith;
 import org.quackery.Case;
-import org.quackery.Quackery;
 import org.quackery.QuackeryException;
 import org.quackery.Suite;
 import org.quackery.Test;
@@ -33,8 +34,7 @@ public class test_QuackeryRunner {
   }
 
   public void suite_name_is_preserved() {
-    test = suite(name)
-        .add(mockCase("anything", throwable));
+    test = mockCase("anything", throwable);
 
     result = run(test);
 
@@ -130,123 +130,90 @@ public class test_QuackeryRunner {
   }
 
   public void class_can_have_more_than_one_annotated_method() {
-    result = run(TwoAnnotatedMethods.class);
+    result = run(new JunitClassBuilder()
+        .define(defaultQuackeryMethod()
+            .name("testA")
+            .returns(mockCase("name")))
+        .define(defaultQuackeryMethod()
+            .name("testB")
+            .returns(mockCase("name")))
+        .load());
 
     assertEquals(result.getRunCount(), 2);
     assertEquals(result.getFailureCount(), 0);
   }
 
-  @RunWith(QuackeryRunner.class)
-  public static class TwoAnnotatedMethods {
-    @Quackery
-    public static Test testA() {
-      return mockCase("name");
-    }
-
-    @Quackery
-    public static Test testB() {
-      return mockCase("name");
-    }
-  }
-
   public void annotated_method_can_return_suite() {
-    result = run(ReturnsSuite.class);
+    result = run(new JunitClassBuilder()
+        .define(defaultQuackeryMethod()
+            .returnType(Suite.class)
+            .returns(suite("suite")
+                .add(mockCase("case"))))
+        .load());
 
     assertEquals(result.getRunCount(), 1);
     assertEquals(result.getFailureCount(), 0);
-  }
-
-  @RunWith(QuackeryRunner.class)
-  public static class ReturnsSuite {
-    @Quackery
-    public static Suite test() {
-      return suite("suite")
-          .add(mockCase("case"));
-    }
   }
 
   public void annotated_method_can_return_case() {
-    result = run(ReturnsCase.class);
+    result = run(new JunitClassBuilder()
+        .define(defaultQuackeryMethod()
+            .returnType(Case.class)
+            .returns(mockCase("case")))
+        .load());
 
     assertEquals(result.getRunCount(), 1);
     assertEquals(result.getFailureCount(), 0);
   }
 
-  @RunWith(QuackeryRunner.class)
-  public static class ReturnsCase {
-    @Quackery
-    public static Case test() {
-      return mockCase("case");
-    }
-  }
-
   public void class_must_have_annotated_method() {
-    failure = runFailing(NoAnnotatedMethods.class);
+    failure = runFailing(new JunitClassBuilder()
+        .define(defaultQuackeryMethod()
+            .annotations()
+            .returns(mockCase("name")))
+        .load());
 
     assertEquals(failure.getClass(), QuackeryException.class);
-  }
-
-  @RunWith(QuackeryRunner.class)
-  public static class NoAnnotatedMethods {
-    public static Test test() {
-      return mockCase("name");
-    }
   }
 
   public void annotated_method_must_be_public() {
-    failure = runFailing(NotPublic.class);
+    failure = runFailing(new JunitClassBuilder()
+        .define(defaultQuackeryMethod()
+            .modifiers(defaultQuackeryMethod().modifiers & ~PUBLIC)
+            .returns(mockCase("name")))
+        .load());
 
     assertEquals(failure.getClass(), QuackeryException.class);
-  }
-
-  @RunWith(QuackeryRunner.class)
-  public static class NotPublic {
-    @Quackery
-    static Test test() {
-      return mockCase("name");
-    }
   }
 
   public void annotated_method_must_be_static() {
-    failure = runFailing(NotStatic.class);
+    failure = runFailing(new JunitClassBuilder()
+        .define(defaultQuackeryMethod()
+            .modifiers(defaultQuackeryMethod().modifiers & ~STATIC)
+            .returns(mockCase("name")))
+        .load());
 
     assertEquals(failure.getClass(), QuackeryException.class);
   }
 
-  @RunWith(QuackeryRunner.class)
-  public static class NotStatic {
-    @Quackery
-    public Test test() {
-      return mockCase("name");
-    }
-  }
-
-  public void annotated_method_must_return_test() {
-    failure = runFailing(NotReturnsTest.class);
+  public void annotated_method_cannot_return_object() {
+    failure = runFailing(new JunitClassBuilder()
+        .define(defaultQuackeryMethod()
+            .returnType(Object.class)
+            .returns(mockCase("name")))
+        .load());
 
     assertEquals(failure.getClass(), QuackeryException.class);
-  }
-
-  @RunWith(QuackeryRunner.class)
-  public static class NotReturnsTest {
-    @Quackery
-    public static Object suite() {
-      return mockCase("name");
-    }
   }
 
   public void annotated_method_cannot_have_parameters() {
-    failure = runFailing(HasParameters.class);
+    failure = runFailing(new JunitClassBuilder()
+        .define(defaultQuackeryMethod()
+            .parameters(Object.class)
+            .returns(mockCase("name")))
+        .load());
 
     assertEquals(failure.getClass(), QuackeryException.class);
-  }
-
-  @RunWith(QuackeryRunner.class)
-  public static class HasParameters {
-    @Quackery
-    public static Test test(Object parameter) {
-      return mockCase("name");
-    }
   }
 
   private static Result run(Class<?> type) {
@@ -258,17 +225,8 @@ public class test_QuackeryRunner {
   }
 
   private static Result run(Test test) {
-    RunnableClass.localTest.set(test);
-    return run(RunnableClass.class);
-  }
-
-  @RunWith(QuackeryRunner.class)
-  public static class RunnableClass {
-    private static final ThreadLocal<Test> localTest = new ThreadLocal<>();
-
-    @Quackery
-    public static Test test() {
-      return localTest.get();
-    }
+    return run(new JunitClassBuilder()
+        .define(defaultQuackeryMethod().returns(test))
+        .load());
   }
 }

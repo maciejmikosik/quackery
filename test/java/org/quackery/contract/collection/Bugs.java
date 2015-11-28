@@ -1,95 +1,96 @@
 package org.quackery.contract.collection;
 
 import static java.util.Collections.unmodifiableList;
-import static org.quackery.contract.collection.Factories.asCollectionFactory;
-import static org.quackery.contract.collection.Factories.asListFactory;
+import static org.quackery.contract.collection.Factories.asFactory;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Bugs {
-  private final boolean isList, hasFactory, isImmutable, isForbiddingNull;
+  private final boolean isList, isImmutable, isForbiddingNull;
+  private final String factory;
 
-  private Bugs(boolean isList, boolean hasFactory,
+  private Bugs(boolean isList, String factory,
       boolean isImmutable, boolean isForbiddingNull) {
     this.isList = isList;
-    this.hasFactory = hasFactory;
+    this.factory = factory;
     this.isImmutable = isImmutable;
     this.isForbiddingNull = isForbiddingNull;
   }
 
   public Bugs() {
-    this(false, false, false, false);
+    this(false, null, false, false);
   }
 
   public Bugs list() {
-    return new Bugs(true, hasFactory, isImmutable, isForbiddingNull);
+    return new Bugs(true, factory, isImmutable, isForbiddingNull);
   }
 
-  public Bugs factory() {
-    return new Bugs(isList, true, isImmutable, isForbiddingNull);
+  public Bugs factory(String factoryName) {
+    return new Bugs(isList, factoryName, isImmutable, isForbiddingNull);
   }
 
   public Bugs immutable() {
-    return new Bugs(isList, hasFactory, true, isForbiddingNull);
+    return new Bugs(isList, factory, true, isForbiddingNull);
   }
 
   public Bugs forbiddingNull() {
-    return new Bugs(isList, hasFactory, isImmutable, true);
+    return new Bugs(isList, factory, isImmutable, true);
   }
 
   public List<Class<?>> get() {
     List<Class<?>> bugs = new LinkedList<>();
 
     bugs.addAll(alienTypes);
-    bugs.addAll(hasFactory
+    bugs.addAll(factory != null
         ? collectionFactoryBugs
         : collectionConstructorBugs);
-    bugs.addAll(asFactoriesIf(hasFactory, collectionBugs));
+    bugs.addAll(asFactoriesIf(factory, collectionBugs));
     if (isImmutable) {
-      bugs.addAll(asFactoriesIf(hasFactory, collectionImmutableBugs));
+      bugs.addAll(asFactoriesIf(factory, collectionImmutableBugs));
     } else {
-      bugs.addAll(asFactoriesIf(hasFactory, collectionMutableBugs));
+      bugs.addAll(asFactoriesIf(factory, collectionMutableBugs));
     }
     if (isForbiddingNull) {
-      bugs.addAll(asFactoriesIf(hasFactory, collectionForbiddingNullBugs));
+      bugs.addAll(asFactoriesIf(factory, collectionForbiddingNullBugs));
       if (!isImmutable) {
-        bugs.addAll(asFactoriesIf(hasFactory, collectionMutableForbiddingNullBugs));
+        bugs.addAll(asFactoriesIf(factory, collectionMutableForbiddingNullBugs));
       }
     } else {
-      bugs.addAll(asFactoriesIf(hasFactory, collectionAllowingNullBugs));
+      bugs.addAll(asFactoriesIf(factory, collectionAllowingNullBugs));
       if (!isImmutable) {
-        bugs.addAll(asFactoriesIf(hasFactory, collectionMutableAllowingNullBugs));
+        bugs.addAll(asFactoriesIf(factory, collectionMutableAllowingNullBugs));
       }
     }
     if (isList) {
-      if (hasFactory) {
+      if (factory != null) {
         bugs.addAll(listFactoryBugs);
       }
-      bugs.addAll(asFactoriesIf(hasFactory, listBugs));
+      bugs.addAll(asFactoriesIf(factory, listBugs));
       if (isImmutable) {
-        bugs.addAll(asFactoriesIf(hasFactory, listImmutableBugs));
+        bugs.addAll(asFactoriesIf(factory, listImmutableBugs));
       } else {
-        bugs.addAll(asFactoriesIf(hasFactory, listMutableBugs));
+        bugs.addAll(asFactoriesIf(factory, listMutableBugs));
       }
     }
 
     return unmodifiableList(bugs);
   }
 
-  private static List<Class<?>> asFactoriesIf(boolean hasFactory, List<Class<?>> bugs) {
-    return hasFactory
-        ? asFactories(bugs)
+  private static List<Class<?>> asFactoriesIf(String factory, List<Class<?>> bugs) {
+    return factory != null
+        ? asFactories(factory, bugs)
         : bugs;
   }
 
-  private static List<Class<?>> asFactories(List<Class<?>> bugs) {
+  private static List<Class<?>> asFactories(String factory, List<Class<?>> bugs) {
     List<Class<?>> factoryBugs = new LinkedList<>();
     for (Class<?> bug : bugs) {
       factoryBugs.add(bug.isInstance(List.class)
-          ? asListFactory(bug)
-          : asCollectionFactory(bug));
+          ? asFactory(List.class, factory, bug)
+          : asFactory(Collection.class, factory, bug));
     }
     return factoryBugs;
   }

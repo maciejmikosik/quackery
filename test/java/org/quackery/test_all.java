@@ -10,6 +10,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.bytebuddy.test_ByteBuddy;
+
 import org.quackery.contract.collection.test_detecting_bugs;
 import org.quackery.contract.collection.test_illegal_use;
 import org.quackery.contract.collection.test_passing_example_collections;
@@ -30,6 +32,8 @@ public class test_all {
 
   public static void main(String[] args) throws Throwable {
     long start = System.nanoTime();
+
+    runTestsIn(test_ByteBuddy.class);
 
     runTestsIn(test_Case.class);
     runTestsIn(test_Suite.class);
