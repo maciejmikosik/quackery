@@ -18,6 +18,8 @@ import org.quackery.contract.collection.test_passing_example_collections;
 import org.quackery.contract.collection.test_passing_guava_collections;
 import org.quackery.contract.collection.test_passing_jdk_collections;
 import org.quackery.contract.collection.test_suite_naming;
+import org.quackery.junit.test_QuackeryRunner_junit_test_annotation;
+import org.quackery.junit.test_QuackeryRunner_mixed_annotations;
 import org.quackery.junit.test_QuackeryRunner_quackery_annotation;
 import org.quackery.report.test_Reports_count_throwables;
 import org.quackery.report.test_Reports_format;
@@ -45,6 +47,8 @@ public class test_all {
     runTestsIn(test_Reports_format.class);
 
     runTestsIn(test_QuackeryRunner_quackery_annotation.class);
+    runTestsIn(test_QuackeryRunner_junit_test_annotation.class);
+    runTestsIn(test_QuackeryRunner_mixed_annotations.class);
 
     runTestsIn(test_illegal_use.class);
     runTestsIn(test_suite_naming.class);

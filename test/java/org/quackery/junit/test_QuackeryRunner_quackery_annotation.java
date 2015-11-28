@@ -126,7 +126,15 @@ public class test_QuackeryRunner_quackery_annotation {
 
     result = run(test);
 
-    assertEquals(result.getRunCount(), 1);
+    assertEquals(result.getRunCount(), 1); // 1 because of empty suite workaround
+    assertEquals(result.getFailureCount(), 0);
+  }
+
+  public void class_can_have_no_annotated_methods() {
+    result = run(new JunitClassBuilder()
+        .load());
+
+    assertEquals(result.getRunCount(), 1); // 1 because of empty suite workaround
     assertEquals(result.getFailureCount(), 0);
   }
 
@@ -165,16 +173,6 @@ public class test_QuackeryRunner_quackery_annotation {
 
     assertEquals(result.getRunCount(), 1);
     assertEquals(result.getFailureCount(), 0);
-  }
-
-  public void class_must_have_annotated_method() {
-    failure = runFailing(new JunitClassBuilder()
-        .define(defaultQuackeryMethod()
-            .annotations()
-            .returning(mockCase("name")))
-        .load());
-
-    assertEquals(failure.getClass(), QuackeryException.class);
   }
 
   public void annotated_method_must_be_public() {
