@@ -5,9 +5,10 @@ import static org.quackery.junit.JunitClassBuilder.defaultJunitMethod;
 import static org.quackery.junit.JunitClassBuilder.defaultQuackeryMethod;
 import static org.quackery.junit.JunitCoreRunner.run;
 import static org.quackery.testing.Assertions.assertEquals;
+import static org.quackery.testing.Mocks.mockCase;
 
 import org.junit.runner.Result;
-import org.quackery.testing.Mocks;
+import org.quackery.report.AssertException;
 
 public class test_QuackeryRunner_mixed_annotations {
   private Result result;
@@ -19,7 +20,7 @@ public class test_QuackeryRunner_mixed_annotations {
             .returning(null))
         .define(JunitClassBuilder.defaultQuackeryMethod()
             .name("quackery_test")
-            .returning(Mocks.mockCase("quackery_case")))
+            .returning(mockCase("quackery_case")))
         .load());
 
     assertEquals(result.getRunCount(), 2);
@@ -31,7 +32,7 @@ public class test_QuackeryRunner_mixed_annotations {
     result = run(new JunitClassBuilder()
         .annotate(annotationIgnore(""))
         .define(defaultQuackeryMethod()
-            .throwing(AssertionError.class))
+            .returning(mockCase("name", new AssertException())))
         .load());
 
     assertEquals(result.getRunCount(), 0);
