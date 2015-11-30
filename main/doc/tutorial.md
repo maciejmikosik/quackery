@@ -170,6 +170,15 @@ Let's define contract for class that tests only one thing: that class has `final
 As shown above, you do it by extending `Case` class.
 You need to provide a name, that will be visible in reports.
 And you need to override `run` method, that contains testing logic.
+
+If you use java 8, you can use factory method that accepts lambda expression.
+
+    import static org.quackery.Case.newCase;
+    ...
+    newCase(type.getName() + " is final", () -> {
+      assertTrue(Modifier.isFinal(type.getModifiers()));
+    });
+
 `Case` is considered successful if `run` method ends without throwing `Throwable`.
 Any throwable indicates failed tests. However there are different ways `Case` can fail.
 
