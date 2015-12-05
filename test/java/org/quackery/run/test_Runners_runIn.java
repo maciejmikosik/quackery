@@ -1,7 +1,6 @@
 package org.quackery.run;
 
 import static java.util.concurrent.Executors.newCachedThreadPool;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.quackery.Suite.suite;
 import static org.quackery.run.Runners.runIn;
@@ -10,7 +9,6 @@ import static org.quackery.testing.Assertions.assertTrue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import org.quackery.Case;
 import org.quackery.Test;
@@ -18,6 +16,7 @@ import org.quackery.Test;
 public class test_Runners_runIn extends test_Runner {
   private Test test;
   private ExecutorService executor;
+  private boolean failed = false;
 
   protected Test visit(Test visiting) {
     return runIn(currentThreadExecutor(), visiting);
@@ -34,41 +33,21 @@ public class test_Runners_runIn extends test_Runner {
     // when
     runIn(executor, test);
 
-    // then no deadlock
+    // then
+    assertTrue(!failed);
 
     // tear down
     executor.shutdown();
     assertTrue(executor.awaitTermination(1, SECONDS));
   }
 
-  public void runs_test_eagerly() throws InterruptedException {
-    executor = newCachedThreadPool();
-    test = suite("")
-        .add(sleepFor(100, MILLISECONDS))
-        .add(sleepFor(100, MILLISECONDS))
-        .add(sleepFor(100, MILLISECONDS));
-
-    // when
-    runIn(executor, test);
-
-    // then
-    executor.shutdown();
-    assertTrue(executor.awaitTermination(1, MILLISECONDS));
-  }
-
-  private static Case countDown(final CountDownLatch latch) {
+  private Case countDown(final CountDownLatch latch) {
     return new Case("") {
       public void run() throws Throwable {
         latch.countDown();
-        latch.await();
-      }
-    };
-  }
-
-  private static Case sleepFor(final long timeout, final TimeUnit unit) {
-    return new Case("") {
-      public void run() throws Throwable {
-        unit.sleep(timeout);
+        if (!latch.await(1, SECONDS)) {
+          failed = true;
+        }
       }
     };
   }
