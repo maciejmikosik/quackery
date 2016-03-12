@@ -12,18 +12,15 @@ import static org.quackery.testing.Mocks.mockTest;
 
 public class test_Suite {
   private String name = "name";
-  private final Test
-      testA = mockCase("testA"),
+  private final Test testA = mockCase("testA"),
       testB = mockCase("testB"),
       testC = mockCase("testC"),
       testD = mockCase("testD");
-  private final Object
-      itemA = mockObject("itemA"),
+  private final Object itemA = mockObject("itemA"),
       itemB = mockObject("itemB"),
       itemC = mockObject("itemC"),
       itemD = mockObject("itemD");
-  private final Contract<Object>
-      contractA = mockContract("contractA"),
+  private final Contract<Object> contractA = mockContract("contractA"),
       contractB = mockContract("contractB"),
       contractC = mockContract("contractC");
   private Suite suite;

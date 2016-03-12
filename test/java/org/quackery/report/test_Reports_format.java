@@ -94,8 +94,7 @@ public class test_Reports_format {
         + "  e\n"
         + "    f\n"
         + "    g\n"
-        + "    h\n"
-        ));
+        + "    h\n"));
   }
 
   public void test_cannot_be_null() {

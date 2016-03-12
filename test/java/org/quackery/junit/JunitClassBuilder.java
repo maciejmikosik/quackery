@@ -6,17 +6,17 @@ import static net.bytebuddy.dynamic.loading.ClassLoadingStrategy.Default.WRAPPER
 
 import java.lang.annotation.Annotation;
 
-import net.bytebuddy.ByteBuddy;
-import net.bytebuddy.dynamic.DynamicType.Builder;
-import net.bytebuddy.implementation.ExceptionMethod;
-import net.bytebuddy.implementation.FixedValue;
-import net.bytebuddy.implementation.Implementation;
-
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runner.Runner;
 import org.quackery.Quackery;
 import org.quackery.Test;
+
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.dynamic.DynamicType.Builder;
+import net.bytebuddy.implementation.ExceptionMethod;
+import net.bytebuddy.implementation.FixedValue;
+import net.bytebuddy.implementation.Implementation;
 
 class JunitClassBuilder {
   public final Builder<?> builder;
