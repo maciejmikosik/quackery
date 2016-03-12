@@ -18,11 +18,11 @@ public class Visitor {
         : visit((Suite) visiting);
   }
 
-  protected Case visit(Case visiting) {
+  protected Test visit(Case visiting) {
     return visiting;
   }
 
-  protected Suite visit(Suite visiting) {
+  protected Test visit(Suite visiting) {
     List<Test> visitedChildren = new ArrayList<>();
     for (Test child : visiting.tests) {
       visitedChildren.add(child instanceof Case

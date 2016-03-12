@@ -1,35 +1,25 @@
 package org.quackery.junit;
 
-import static org.quackery.Suite.suite;
-
 import org.quackery.Case;
 import org.quackery.Suite;
 import org.quackery.Test;
+import org.quackery.run.Visitor;
 
 public class FixEmptySuiteBug {
   public static Test fixEmptySuiteBug(Test test) {
-    return test instanceof Suite
-        ? fix((Suite) test)
-        : test;
+    return new Visitor() {
+      protected Test visit(Suite visiting) {
+        Suite suite = (Suite) super.visit(visiting);
+        return suite.tests.isEmpty()
+            ? successfulCase(suite.name)
+            : suite;
+      }
+    }.visit(test);
   }
 
-  private static Test fix(Suite suite) {
-    return suite.tests.isEmpty()
-        ? fixEmpty(suite)
-        : fixChildren(suite);
-  }
-
-  private static Case fixEmpty(Suite suite) {
-    return new Case(suite.name) {
+  private static Case successfulCase(String name) {
+    return new Case(name) {
       public void run() {}
     };
-  }
-
-  private static Test fixChildren(Suite suite) {
-    Suite fixedSuite = suite(suite.name);
-    for (Test test : suite.tests) {
-      fixedSuite = fixedSuite.add(fixEmptySuiteBug(test));
-    }
-    return fixedSuite;
   }
 }
