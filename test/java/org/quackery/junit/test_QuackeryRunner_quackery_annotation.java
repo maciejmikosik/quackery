@@ -18,6 +18,7 @@ import org.quackery.report.AssertException;
 import org.quackery.report.AssumeException;
 
 public class test_QuackeryRunner_quackery_annotation {
+  private final int emptySuiteWorkaround = 1;
   private final String name = "name " + hashCode();
   private final String message = "message";
   private Throwable throwable = new Throwable();
@@ -126,7 +127,7 @@ public class test_QuackeryRunner_quackery_annotation {
 
     result = run(test);
 
-    assertEquals(result.getRunCount(), 1); // 1 because of empty suite workaround
+    assertEquals(result.getRunCount(), 0 + emptySuiteWorkaround);
     assertEquals(result.getFailureCount(), 0);
   }
 
@@ -134,7 +135,7 @@ public class test_QuackeryRunner_quackery_annotation {
     result = run(new JunitClassBuilder()
         .load());
 
-    assertEquals(result.getRunCount(), 1); // 1 because of empty suite workaround
+    assertEquals(result.getRunCount(), 0 + emptySuiteWorkaround);
     assertEquals(result.getFailureCount(), 0);
   }
 
