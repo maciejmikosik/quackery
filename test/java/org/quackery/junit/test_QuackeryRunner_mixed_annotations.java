@@ -18,7 +18,7 @@ public class test_QuackeryRunner_mixed_annotations {
         .define(defaultJunitMethod()
             .name("junit_test")
             .returning(null))
-        .define(JunitClassBuilder.defaultQuackeryMethod()
+        .define(defaultQuackeryMethod()
             .name("quackery_test")
             .returning(mockCase("quackery_case")))
         .load());

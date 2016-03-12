@@ -10,14 +10,13 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.bytebuddy.test_ByteBuddy;
-
 import org.quackery.contract.collection.test_detecting_bugs;
 import org.quackery.contract.collection.test_illegal_use;
 import org.quackery.contract.collection.test_passing_example_collections;
 import org.quackery.contract.collection.test_passing_guava_collections;
 import org.quackery.contract.collection.test_passing_jdk_collections;
 import org.quackery.contract.collection.test_suite_naming;
+import org.quackery.junit.test_QuackeryRunner_description_hierarchy;
 import org.quackery.junit.test_QuackeryRunner_junit_test_annotation;
 import org.quackery.junit.test_QuackeryRunner_mixed_annotations;
 import org.quackery.junit.test_QuackeryRunner_quackery_annotation;
@@ -27,6 +26,8 @@ import org.quackery.run.test_Runners_classLoaderScoped;
 import org.quackery.run.test_Runners_run;
 import org.quackery.run.test_Runners_runIn;
 import org.quackery.run.test_Runners_threadScoped;
+
+import net.bytebuddy.test_ByteBuddy;
 
 public class test_all {
   private static List<Throwable> failures = new ArrayList<Throwable>();
@@ -49,6 +50,7 @@ public class test_all {
     runTestsIn(test_QuackeryRunner_quackery_annotation.class);
     runTestsIn(test_QuackeryRunner_junit_test_annotation.class);
     runTestsIn(test_QuackeryRunner_mixed_annotations.class);
+    runTestsIn(test_QuackeryRunner_description_hierarchy.class);
 
     runTestsIn(test_illegal_use.class);
     runTestsIn(test_suite_naming.class);

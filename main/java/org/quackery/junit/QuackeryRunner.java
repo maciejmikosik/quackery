@@ -9,6 +9,7 @@ import static org.quackery.junit.ScanJunitTests.scanJunitTests;
 import static org.quackery.junit.ScanQuackeryTests.scanQuackeryTests;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.AssumptionViolatedException;
@@ -60,8 +61,12 @@ public class QuackeryRunner extends Runner {
 
   private static Runner quackeryAndJunitTestsRunner(final List<Test> tests, final Runner junitRunner) {
     final Description description = junitRunner.getDescription();
+    final List<Test> fixedTests = new ArrayList<>();
     for (Test test : tests) {
-      description.addChild(describe(fixAllBugs(test)));
+      fixedTests.add(fixAllBugs(test));
+    }
+    for (Test test : fixedTests) {
+      description.addChild(describe(test));
     }
     return new Runner() {
       public Description getDescription() {
@@ -69,7 +74,7 @@ public class QuackeryRunner extends Runner {
       }
 
       public void run(RunNotifier notifier) {
-        for (Test test : tests) {
+        for (Test test : fixedTests) {
           QuackeryRunner.run(test, notifier);
         }
         junitRunner.run(notifier);
