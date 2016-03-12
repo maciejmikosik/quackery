@@ -4,6 +4,7 @@ import static org.junit.runner.Description.createSuiteDescription;
 import static org.junit.runner.Description.createTestDescription;
 import static org.quackery.Suite.suite;
 import static org.quackery.junit.FixEmptySuiteBug.fixEmptySuiteBug;
+import static org.quackery.junit.FixNewlineBug.fixNewlineBug;
 import static org.quackery.junit.ScanJunitTests.scanJunitTests;
 import static org.quackery.junit.ScanQuackeryTests.scanQuackeryTests;
 
@@ -150,6 +151,6 @@ public class QuackeryRunner extends Runner {
   }
 
   private static Test fixAllBugs(Test test) {
-    return fixEmptySuiteBug(test);
+    return fixNewlineBug(fixEmptySuiteBug(test));
   }
 }

@@ -21,6 +21,8 @@ public class test_QuackeryRunner_quackery_annotation {
   private final int emptySuiteWorkaround = 1;
   private final String name = "name " + hashCode();
   private final String message = "message";
+  private final String firstLine = "first line";
+  private final String secondLine = "second line";
   private Throwable throwable = new Throwable();
   private Result result;
   private boolean invoked, otherInvoked;
@@ -129,6 +131,23 @@ public class test_QuackeryRunner_quackery_annotation {
 
     assertEquals(result.getRunCount(), 0 + emptySuiteWorkaround);
     assertEquals(result.getFailureCount(), 0);
+  }
+
+  public void name_with_line_feed_is_escaped() {
+    test = mockCase(firstLine + "\n" + secondLine, new Throwable());
+
+    result = run(test);
+
+    assertEquals(result.getFailures().get(0).getDescription().getMethodName(),
+        firstLine + " " + secondLine);
+  }
+
+  public void name_with_carriage_return_is_escaped() {
+    test = mockCase(firstLine + "\r" + secondLine, new Throwable());
+
+    result = run(test);
+    assertEquals(result.getFailures().get(0).getDescription().getMethodName(),
+        firstLine + " " + secondLine);
   }
 
   public void class_can_have_no_annotated_methods() {
