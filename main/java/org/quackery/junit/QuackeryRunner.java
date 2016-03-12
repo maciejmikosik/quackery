@@ -4,6 +4,7 @@ import static org.junit.runner.Description.createSuiteDescription;
 import static org.junit.runner.Description.createTestDescription;
 import static org.quackery.Suite.suite;
 import static org.quackery.junit.FixEmptySuiteBug.fixEmptySuiteBug;
+import static org.quackery.junit.FixNewlineBug.fixNewlineBug;
 import static org.quackery.junit.ScanJunitTests.scanJunitTests;
 import static org.quackery.junit.ScanQuackeryTests.scanQuackeryTests;
 
@@ -42,7 +43,7 @@ public class QuackeryRunner extends Runner {
   }
 
   private static Runner quackeryTestsRunner(Class<?> annotatedClass, List<Test> tests) {
-    final Test root = fixEmptySuiteBug(tests.size() == 1
+    final Test root = fixAllBugs(tests.size() == 1
         ? tests.get(0)
         : suite(annotatedClass.getName()).addAll(tests));
     final Description description = describe(root);
@@ -60,7 +61,7 @@ public class QuackeryRunner extends Runner {
   private static Runner quackeryAndJunitTestsRunner(final List<Test> tests, final Runner junitRunner) {
     final Description description = junitRunner.getDescription();
     for (Test test : tests) {
-      description.addChild(describe(fixEmptySuiteBug(test)));
+      description.addChild(describe(fixAllBugs(test)));
     }
     return new Runner() {
       public Description getDescription() {
@@ -147,5 +148,9 @@ public class QuackeryRunner extends Runner {
         return Integer.toString(id);
       }
     };
+  }
+
+  private static Test fixAllBugs(Test test) {
+    return fixNewlineBug(fixEmptySuiteBug(test));
   }
 }
