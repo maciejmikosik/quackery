@@ -18,7 +18,6 @@ import org.quackery.report.AssertException;
 import org.quackery.report.AssumeException;
 
 public class test_QuackeryRunner_quackery_annotation {
-  private final int emptySuiteWorkaround = 1;
   private final String name = "name " + hashCode();
   private final String message = "message";
   private final String firstLine = "first line";
@@ -28,22 +27,6 @@ public class test_QuackeryRunner_quackery_annotation {
   private boolean invoked, otherInvoked;
   private Throwable failure;
   private Test test;
-
-  public void case_name_is_preserved() {
-    test = mockCase(name, throwable);
-
-    result = run(test);
-
-    assertEquals(result.getFailures().get(0).getDescription().getMethodName(), name);
-  }
-
-  public void suite_name_is_preserved() {
-    test = mockCase("anything", throwable);
-
-    result = run(test);
-
-    // TODO assert suite name
-  }
 
   public void case_is_run() {
     test = new Case(name) {
@@ -124,15 +107,6 @@ public class test_QuackeryRunner_quackery_annotation {
     assertEquals(otherInvoked, true);
   }
 
-  public void empty_suite_does_not_confuse_runner() {
-    test = suite("suite");
-
-    result = run(test);
-
-    assertEquals(result.getRunCount(), 0 + emptySuiteWorkaround);
-    assertEquals(result.getFailureCount(), 0);
-  }
-
   public void name_with_line_feed_is_escaped() {
     test = mockCase(firstLine + "\n" + secondLine, new Throwable());
 
@@ -146,16 +120,9 @@ public class test_QuackeryRunner_quackery_annotation {
     test = mockCase(firstLine + "\r" + secondLine, new Throwable());
 
     result = run(test);
+
     assertEquals(result.getFailures().get(0).getDescription().getMethodName(),
         firstLine + " " + secondLine);
-  }
-
-  public void class_can_have_no_annotated_methods() {
-    result = run(new JunitClassBuilder()
-        .load());
-
-    assertEquals(result.getRunCount(), 0 + emptySuiteWorkaround);
-    assertEquals(result.getFailureCount(), 0);
   }
 
   public void class_can_have_more_than_one_annotated_method() {

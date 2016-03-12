@@ -1,6 +1,7 @@
 package org.quackery.junit;
 
 import static org.quackery.junit.JunitClassBuilder.annotationIgnore;
+import static org.quackery.junit.JunitClassBuilder.annotationJunitTest;
 import static org.quackery.junit.JunitClassBuilder.defaultJunitMethod;
 import static org.quackery.junit.JunitClassBuilder.defaultQuackeryMethod;
 import static org.quackery.junit.JunitCoreRunner.run;
@@ -10,22 +11,31 @@ import static org.quackery.testing.Mocks.mockCase;
 import org.junit.runner.Result;
 import org.quackery.report.AssertException;
 
-public class test_QuackeryRunner_mixed_annotations {
+public class test_QuackeryRunner_ignore_annotation {
   private Result result;
 
-  public void runs_mixed_tests() {
+  public void ignore_annotation_on_method_ignores_junit_test() {
     result = run(new JunitClassBuilder()
         .define(defaultJunitMethod()
-            .name("junit_test")
-            .returning(null))
-        .define(defaultQuackeryMethod()
-            .name("quackery_test")
-            .returning(mockCase("quackery_case")))
+            .annotations(annotationJunitTest(), annotationIgnore(""))
+            .throwing(AssertionError.class))
         .load());
 
-    assertEquals(result.getRunCount(), 2);
+    assertEquals(result.getRunCount(), 0);
     assertEquals(result.getFailureCount(), 0);
-    assertEquals(result.getIgnoreCount(), 0);
+    assertEquals(result.getIgnoreCount(), 1);
+  }
+
+  public void ignore_annotation_on_class_ignores_junit_test() {
+    result = run(new JunitClassBuilder()
+        .annotate(annotationIgnore(""))
+        .define(defaultJunitMethod()
+            .throwing(AssertionError.class))
+        .load());
+
+    assertEquals(result.getRunCount(), 0);
+    assertEquals(result.getFailureCount(), 0);
+    assertEquals(result.getIgnoreCount(), 1);
   }
 
   public void ignore_annotation_on_class_ignores_quackery_test() {
