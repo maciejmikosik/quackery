@@ -19,7 +19,8 @@ To make built-in contracts available add following import.
 ### collection contract
 
 Quackery has built-in contracts for various types of `Collection`.
-This means that if you implement your own collection, you don't have to write any tests at all.
+This means that if you implement your own collection, you don't have to write those tests at all.
+Just write tests for functionality that makes your collection unique.
 
 Collection contracts are customizable so you can choose what features you expect from implementation.
 
@@ -137,48 +138,30 @@ Tests list is definitely not complete, but it grows with each release.
 
 # defining your own contracts
 
-You can define your own contracts by implementing `org.quackery.Contract` interface.
+[Case](#case) | [Suite](#suite) | [Contract](#contract)
 
-    public interface Contract<T> {
-      Test test(T item);
-    }
+### Case
 
-`Contract` is generic, but in most cases it is used to test `Class<?>`.
+The most basic concept of quackery library is `Case`.
+It is used to test smallest possible piece of functionality.
 
-`Test` mimics composite design pattern.
-It has 2 subclasses.
-`Case` represents single test that can either succeed or fail.
-`Suite` represents list of tests (cases and suites).
-This way you can organize your cases into hierarchical tree.
+You can create case by extending `Case` class and overriding `run` method.
 
-Let's define contract for class that tests only one thing: that class has `final` modifier.
+    Case test = new Case("empty string has length of zero") {
+      public void run() {
+        assertTrue("".length() == 0);
+      }
+    };
 
-    import static org.quackery.report.AssertException.assertTrue;
-    ....
-    public static Contract<Class<?>> quacksLikeFinalClass() {
-      return new Contract<Class<?>>() {
-        public Test test(final Class<?> type) {
-          return new Case(type.getName() + " is final") {
-            public void run() {
-              assertTrue(Modifier.isFinal(type.getModifiers()));
-            }
-          };
-        }
-      };
-    }
-
-As shown above, you do it by extending `Case` class.
-You need to provide a name, that will be visible in reports.
-And you need to override `run` method, that contains testing logic.
-
-If you use java 8, you can use factory method that accepts lambda expression.
+Or using `newCase` factory method that accepts testing logic in form of a lambda expression.
 
     import static org.quackery.Case.newCase;
     ...
-    newCase(type.getName() + " is final", () -> {
-      assertTrue(Modifier.isFinal(type.getModifiers()));
-    });
+    Case test = newCase(
+        "empty string has length of zero",
+        () -> assertTrue("".length() == 0));
 
+`Case` has a human-readable name that is used in reports and a `run` method that encapsulates testing logic.
 `Case` is considered successful if `run` method ends without throwing `Throwable`.
 Any throwable indicates failed tests. However there are different ways `Case` can fail.
 
@@ -189,20 +172,89 @@ Any throwable indicates failed tests. However there are different ways `Case` ca
 `AssertException` and `AssumeException` contain methods that throw those exceptions on various conditions.
 If you use other assertions library then read [integration section](#integration).
 
-If you want your contract to produce more than single `Case` then aggregate them in `Suite` object.
-It has methods for bulk operations and applying other contracts.
+### Suite
 
-    public static Contract<Class<?>> quacksLikeX() {
-      return new Contract<Class<?>>() {
-        public Test test(Class<?> type) {
-          return suite(type + " quacks like X")
-              .add(test)
-              .addAll(tests)
-              .add(type, quacksLikeA())
-              .addAll(types, quacksLikeB());
-        }
-      };
+`Test` interface mimics composite design pattern.
+It has 2 subclasses.
+`Case` represents single test that can either succeed or fail.
+`Suite` represents list of tests (cases and suites).
+This way you can organize your cases into hierarchical tree.
+
+You can aggregate cases into suites using `Suite` fluent grammar.
+
+    Suite suite = suite("all tests")
+        .add(test(1))
+        .add(test(2))
+        .addAll(asList(test(3), test(4)))
+        .add(suite("nested tests")
+            .add(test(5))
+            .add(test(6)))
+        .add(test(7));
+
+### Contract
+
+`Contract` is a functional interface that represents reusable test.
+
+    public interface Contract<T> {
+      Test test(T item);
     }
+
+It contains logic that tests functionality of an item, but it doesn't know what this item is.
+Item is provided by client programmer.
+Contract can be small, returning a single `Case`, or it can be bigger, returning `Suite` of tests.
+
+Let's start with a simple contract that takes item of type `Object` and produces single `Case` that tests if this item is equal to itself.
+
+```
+import static java.lang.String.format;
+import static org.quackery.Case.newCase;
+import static org.quackery.report.AssertException.assertTrue;
+
+import org.quackery.Contract;
+import org.quackery.Test;
+
+public class IsEqualToItself implements Contract<Object> {
+  public Test test(Object item) {
+    return newCase(
+        format("%s is equal to itself", item),
+        () -> assertTrue(item.equals(item)));
+  }
+}
+```
+
+Since `Contract` is a functional interface we can implement it as a method.
+
+```
+public class Contracts {
+  public static Test isEqualToItself(Object value) {
+    return newCase(
+        format("%s is equal to itself", value),
+        () -> assertTrue(value.equals(value)));
+  }
+}
+```
+
+Now we can obtain contract instance using method reference.
+
+    Contract<Object> contract = Contracts::isEqualToItself;
+
+Contracts are useful when building a suite of similar cases.
+
+```
+    suite("string is equal to itself")
+        .addAll(asList("first", "second", "third"), Contracts::isEqualToItself);
+```
+
+will generate a suite of tests
+
+```
+string is equal to itself
+  first is equal to itself
+  second is equal to itself
+  third is equal to itself
+```
+
+`Contract` allows you to built a library of reusable tests similar to built-in contracts.
 
 # running
 
@@ -260,13 +312,14 @@ then those exceptions are translated to junit's native exceptions.
  - `org.quackery.report.AssumeException` is translated to `org.junit.AssumptionViolatedExcetpion`
  - any other `Throwable` passes through
 
- If test throws non-quackery exception (like `AssertionError` thrown by `org.junit.Assert`),
- then this exception passes through quackery and reaches junit's runner.
- Thus, if you use junit's assertions in combination with junit's runner, then you are fine.
- Otherwise, you are responsible to make sure your runner and assertions library are compatible.
+If test throws non-quackery exception (like `AssertionError` thrown by `org.junit.Assert`),
+then this exception passes through quackery and reaches junit's runner.
+Thus, if you use junit's assertions in combination with junit's runner, then you are fine.
+Otherwise, you are responsible to make sure your runner and assertions library are compatible.
 
-`QuackeryRunner`, while adding possibility to run tests annotated with `@Quackery`, keeps all features provided by default junit4 runner.
-This mean that if you already have junit class with tests.
+`QuackeryRunner` adds possibility to run tests annotated with `@Quackery`.
+It also keeps features provided by default junit4 runner.
+This means that if you already have junit class with tests.
 
     public class ArrayListTest {
       @Test
