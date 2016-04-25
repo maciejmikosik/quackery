@@ -2,7 +2,7 @@ package org.quackery.contract.collection.bug.collection;
 
 import java.util.Collection;
 
-import org.quackery.contract.collection.MutableList;
+import org.quackery.contract.collection.correct.MutableList;
 
 public class ContainsReturnsTrue<E> extends MutableList<E> {
   public ContainsReturnsTrue() {}

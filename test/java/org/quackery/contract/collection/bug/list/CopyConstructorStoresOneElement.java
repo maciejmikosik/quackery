@@ -4,7 +4,7 @@ import static java.util.Arrays.asList;
 
 import java.util.Collection;
 
-import org.quackery.contract.collection.MutableList;
+import org.quackery.contract.collection.correct.MutableList;
 
 public class CopyConstructorStoresOneElement<E> extends MutableList<E> {
   public CopyConstructorStoresOneElement() {}

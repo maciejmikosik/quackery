@@ -3,7 +3,7 @@ package org.quackery.contract.collection.bug.collection.immutable;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.quackery.contract.collection.ImmutableList;
+import org.quackery.contract.collection.correct.ImmutableList;
 
 public class IteratorDoesNotThrowException<E> extends ImmutableList<E> {
   public IteratorDoesNotThrowException() {}

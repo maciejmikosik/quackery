@@ -3,7 +3,7 @@ package org.quackery.contract.collection.bug.list.immutable;
 import java.util.Collection;
 import java.util.ListIterator;
 
-import org.quackery.contract.collection.ImmutableList;
+import org.quackery.contract.collection.correct.ImmutableList;
 
 public class ListIteratorSetsElement<E> extends ImmutableList<E> {
   public ListIteratorSetsElement() {}

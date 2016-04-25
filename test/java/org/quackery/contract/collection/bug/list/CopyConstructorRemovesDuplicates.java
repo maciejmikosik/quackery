@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.quackery.contract.collection.MutableList;
+import org.quackery.contract.collection.correct.MutableList;
 
 public class CopyConstructorRemovesDuplicates<E> extends MutableList<E> {
   public CopyConstructorRemovesDuplicates() {}

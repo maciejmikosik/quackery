@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.quackery.contract.collection.MutableList;
+import org.quackery.contract.collection.correct.MutableList;
 
 public class CopyConstructorReversesOrder<E> extends MutableList<E> {
   public CopyConstructorReversesOrder() {}
