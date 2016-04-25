@@ -1,4 +1,4 @@
-package org.quackery.contract.collection;
+package org.quackery.contract.collection.correct;
 
 import java.util.ArrayList;
 import java.util.Collection;

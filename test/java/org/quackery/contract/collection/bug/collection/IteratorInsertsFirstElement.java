@@ -3,7 +3,7 @@ package org.quackery.contract.collection.bug.collection;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.quackery.contract.collection.MutableList;
+import org.quackery.contract.collection.correct.MutableList;
 
 public class IteratorInsertsFirstElement<E> extends MutableList<E> {
   public IteratorInsertsFirstElement() {}

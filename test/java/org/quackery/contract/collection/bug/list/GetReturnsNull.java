@@ -2,7 +2,7 @@ package org.quackery.contract.collection.bug.list;
 
 import java.util.Collection;
 
-import org.quackery.contract.collection.MutableList;
+import org.quackery.contract.collection.correct.MutableList;
 
 public class GetReturnsNull<E> extends MutableList<E> {
   public GetReturnsNull() {}

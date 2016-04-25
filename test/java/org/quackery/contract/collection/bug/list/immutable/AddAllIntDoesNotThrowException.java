@@ -2,7 +2,7 @@ package org.quackery.contract.collection.bug.list.immutable;
 
 import java.util.Collection;
 
-import org.quackery.contract.collection.ImmutableList;
+import org.quackery.contract.collection.correct.ImmutableList;
 
 public class AddAllIntDoesNotThrowException<E> extends ImmutableList<E> {
   public AddAllIntDoesNotThrowException() {}

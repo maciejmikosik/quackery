@@ -3,7 +3,7 @@ package org.quackery.contract.collection.bug.collection.mutable;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.quackery.contract.collection.MutableList;
+import org.quackery.contract.collection.correct.MutableList;
 
 public class IteratorRemovesThrowsException<E> extends MutableList<E> {
   public IteratorRemovesThrowsException() {}

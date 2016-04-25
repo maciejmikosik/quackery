@@ -7,6 +7,11 @@ import static org.quackery.testing.Assertions.assertSuccess;
 import java.util.Collection;
 import java.util.List;
 
+import org.quackery.contract.collection.correct.ImmutableList;
+import org.quackery.contract.collection.correct.MutableList;
+import org.quackery.contract.collection.correct.MutableListForbiddingNullNicely;
+import org.quackery.contract.collection.correct.MutableListForbiddingNullStrictly;
+
 public class test_passing_example_collections {
   private static final String factoryName = "create";
 
