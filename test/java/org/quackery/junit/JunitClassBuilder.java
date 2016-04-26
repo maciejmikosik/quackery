@@ -17,6 +17,7 @@ import net.bytebuddy.dynamic.DynamicType.Builder;
 import net.bytebuddy.implementation.ExceptionMethod;
 import net.bytebuddy.implementation.FixedValue;
 import net.bytebuddy.implementation.Implementation;
+import net.bytebuddy.implementation.StubMethod;
 
 class JunitClassBuilder {
   public final Builder<?> builder;
@@ -38,7 +39,8 @@ class JunitClassBuilder {
 
   public JunitClassBuilder define(MethodDefinition def) {
     return new JunitClassBuilder(builder
-        .defineMethod(def.name, def.returnType, def.parameters, def.modifiers)
+        .defineMethod(def.name, def.returnType, def.modifiers)
+        .withParameters(def.parameters)
         .intercept(implementationOf(def))
         .annotateMethod(def.annotations));
   }
@@ -46,7 +48,11 @@ class JunitClassBuilder {
   private static Implementation implementationOf(MethodDefinition def) {
     return def.throwing != null
         ? ExceptionMethod.throwing(def.throwing)
-        : FixedValue.reference(def.returning);
+        : def.returning == null
+            ? def.returnType == void.class
+                ? StubMethod.INSTANCE
+                : FixedValue.nullValue()
+            : FixedValue.reference(def.returning);
   }
 
   public Class<?> load() {

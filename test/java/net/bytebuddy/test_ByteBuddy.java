@@ -5,6 +5,7 @@ import static org.quackery.testing.Assertions.assertTrue;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Modifier;
 
 import net.bytebuddy.dynamic.DynamicType.Builder;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
@@ -18,14 +19,12 @@ public class test_ByteBuddy {
     Class<?> type = load(new ByteBuddy()
         .redefine(Inner.class)
         .modifiers(PUBLIC)
-        .defineConstructor(Object.class.getConstructor())
+        .defineConstructor(PUBLIC)
         .intercept(SuperMethodCall.INSTANCE));
 
     // then
     assertTrue(type.getConstructor().newInstance() != null);
-
-    // TODO why this fails?
-    // assertTrue(Modifier.isPublic(type.getModifiers()));
+    assertTrue(Modifier.isPublic(type.getModifiers()));
   }
 
   public void redefining_class_preserves_annotation_on_methods() throws Exception {

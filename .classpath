@@ -8,6 +8,6 @@
 	<classpathentry kind="lib" path="main/jar/junit-4.12.jar" sourcepath="main/jar/junit-4.12-sources.jar"/>
 
 	<classpathentry kind="src" path="test/java"/>
-	<classpathentry kind="lib" path="test/jar/byte-buddy-0.7.2.jar" sourcepath="test/jar/byte-buddy-0.7.2-sources.jar"/>
+	<classpathentry kind="lib" path="test/jar/byte-buddy-1.3.18.jar" sourcepath="test/jar/byte-buddy-1.3.18-sources.jar"/>
 	<classpathentry kind="lib" path="test/jar/guava-18.0.jar" sourcepath="test/jar/guava-18.0-sources.jar"/>
 </classpath>
