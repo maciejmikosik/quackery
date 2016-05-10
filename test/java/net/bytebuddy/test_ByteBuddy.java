@@ -1,26 +1,30 @@
 package net.bytebuddy;
 
-import static java.lang.reflect.Modifier.PUBLIC;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static net.bytebuddy.description.modifier.Ownership.STATIC;
+import static net.bytebuddy.description.modifier.Visibility.PUBLIC;
+import static net.bytebuddy.dynamic.loading.ClassLoadingStrategy.Default.INJECTION;
 import static org.quackery.testing.Assertions.assertTrue;
 
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Modifier;
 
-import net.bytebuddy.dynamic.DynamicType.Builder;
-import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.implementation.SuperMethodCall;
 
 public class test_ByteBuddy {
-  public void can_redefine_inner_class_as_public_with_default_constructor() throws Exception {
+  public void can_redefine_inner_class_as_nested_public() throws Exception {
     class Inner {}
 
     // when
-    Class<?> type = load(new ByteBuddy()
+    Class<?> type = new ByteBuddy()
         .redefine(Inner.class)
-        .modifiers(PUBLIC)
+        .modifiers(PUBLIC, STATIC)
         .defineConstructor(PUBLIC)
-        .intercept(SuperMethodCall.INSTANCE));
+        .intercept(SuperMethodCall.INSTANCE)
+        .name(Inner.class.getName() + "$$Nested")
+        .make()
+        .load(Thread.currentThread().getContextClassLoader(), INJECTION)
+        .getLoaded();
 
     // then
     assertTrue(type.getConstructor().newInstance() != null);
@@ -34,20 +38,17 @@ public class test_ByteBuddy {
     }
 
     // when
-    Class<?> type = load(new ByteBuddy().redefine(TestClass.class));
+    Class<?> type = new ByteBuddy()
+        .redefine(TestClass.class)
+        .name(TestClass.class.getName() + "$$Redefined")
+        .make()
+        .load(Thread.currentThread().getContextClassLoader(), INJECTION)
+        .getLoaded();
 
     // then
     assertTrue(type.getDeclaredMethod("method").isAnnotationPresent(TestAnnotation.class));
   }
 
-  private static Class<?> load(Builder<?> builder) {
-    return builder
-        .name("Redefined")
-        .make()
-        .load(Thread.currentThread().getContextClassLoader(), ClassLoadingStrategy.Default.WRAPPER)
-        .getLoaded();
-  }
-
-  @Retention(RetentionPolicy.RUNTIME)
+  @Retention(RUNTIME)
   private @interface TestAnnotation {}
 }
