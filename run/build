@@ -4,7 +4,7 @@ HERE=`dirname ${0}`
 cd "${HERE}"
 cd ..
 PROJECT=`pwd`
-SINK=".sink"
+SINK="/tmp/build_quackery"
 
 #cleanup
 rm \
@@ -41,7 +41,7 @@ cd "${PROJECT}"
 
 echo ""
 echo "BUILD SUCCESSFUL"
-echo "created ${PROJECT}/${SINK}/quackery.jar"
+echo "created ${SINK}/quackery.jar"
 
 #cleanup
 rm \
