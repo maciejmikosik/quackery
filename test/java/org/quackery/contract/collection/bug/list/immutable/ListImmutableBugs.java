@@ -5,8 +5,8 @@ import static java.util.Collections.unmodifiableList;
 
 import java.util.List;
 
-public class Bugs {
-  public static final List<? extends Class<?>> bugs = unmodifiableList(asList(
+public class ListImmutableBugs {
+  public static final List<? extends Class<?>> BUGS = unmodifiableList(asList(
       org.quackery.contract.collection.bug.list.immutable.AddAllIntAddsElements.class,
       org.quackery.contract.collection.bug.list.immutable.AddAllIntDoesNotThrowException.class,
       org.quackery.contract.collection.bug.list.immutable.SetSetsElement.class,

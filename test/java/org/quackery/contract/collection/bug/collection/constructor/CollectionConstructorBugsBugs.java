@@ -5,8 +5,8 @@ import static java.util.Collections.unmodifiableList;
 
 import java.util.List;
 
-public class Bugs {
-  public static final List<? extends Class<?>> bugs = unmodifiableList(asList(
+public class CollectionConstructorBugsBugs {
+  public static final List<? extends Class<?>> BUGS = unmodifiableList(asList(
       org.quackery.contract.collection.bug.collection.constructor.DefaultConstructorIsMissing.class,
       org.quackery.contract.collection.bug.collection.constructor.DefaultConstructorIsHidden.class,
       org.quackery.contract.collection.bug.collection.constructor.DefaultConstructorAddsElement.class,

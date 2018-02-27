@@ -5,8 +5,8 @@ import static java.util.Collections.unmodifiableList;
 
 import java.util.List;
 
-public class Bugs {
-  public static final List<? extends Class<?>> bugs = unmodifiableList(asList(
+public class AlienBugs {
+  public static final List<? extends Class<?>> BUGS = unmodifiableList(asList(
       Object.class,
       String.class,
       Integer.class,

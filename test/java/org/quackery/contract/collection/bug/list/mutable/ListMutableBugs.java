@@ -5,8 +5,8 @@ import static java.util.Collections.unmodifiableList;
 
 import java.util.List;
 
-public class Bugs {
-  public static final List<? extends Class<?>> bugs = unmodifiableList(asList(
+public class ListMutableBugs {
+  public static final List<? extends Class<?>> BUGS = unmodifiableList(asList(
       org.quackery.contract.collection.bug.list.mutable.AddAddsAtTheBegin.class,
       org.quackery.contract.collection.bug.list.mutable.AddReturnsFalse.class,
       org.quackery.contract.collection.bug.list.mutable.AddNotAddsDuplicatedElement.class,
