@@ -126,10 +126,6 @@ public abstract class TestVisitor {
   }
 
   private static <T extends Test> T navigate(Class<T> cast, Test test, int... path) {
-    Test result = test;
-    for (int index : path) {
-      result = ((Suite) result).tests.get(index);
-    }
-    return (T) result;
+    return (T) navigate(test, path);
   }
 }
