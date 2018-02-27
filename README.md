@@ -59,6 +59,4 @@ public class ArrayListTest {
 
 ![ArrayListTest.png](main/doc/ArrayListTest.png "ArrayListTest.png")
 
-More tests are added with each release.
-
 See [tutorial](main/doc/tutorial.md) for all features.
