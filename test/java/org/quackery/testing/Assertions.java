@@ -19,23 +19,27 @@ public class Assertions {
 
   public static void assertEquals(Object actual, Object expected) {
     if (!Objects.deepEquals(actual, expected)) {
-      throw new AssertionError(""
+      throw new AssertionError(String.format(""
           + "\n"
           + "  expected that\n"
-          + "    " + actual + "\n"
+          + "    %s\n"
           + "  is equal to\n"
-          + "    " + expected + "\n");
+          + "    %s\n",
+          actual,
+          expected));
     }
   }
 
   public static void assertNotEquals(Object actual, Object expected) {
     if (Objects.deepEquals(actual, expected)) {
-      throw new AssertionError(""
+      throw new AssertionError(String.format(""
           + "\n"
           + "  expected that\n"
-          + "    " + actual + "\n"
+          + "    %s\n"
           + "  is not equal to\n"
-          + "    " + expected + "\n");
+          + "    %s\n",
+          actual,
+          expected));
     }
   }
 

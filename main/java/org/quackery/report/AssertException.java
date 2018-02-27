@@ -1,5 +1,6 @@
 package org.quackery.report;
 
+import static java.lang.String.format;
 import static java.util.Objects.deepEquals;
 
 public class AssertException extends ReportException {
@@ -25,12 +26,14 @@ public class AssertException extends ReportException {
 
   public static void assertEquals(Object actual, Object expected) {
     if (!deepEquals(actual, expected)) {
-      throw new AssertException(""
+      throw new AssertException(format(""
           + "\n"
           + "  expected that\n"
-          + "    " + actual + "\n"
+          + "    %s\n"
           + "  is equal to\n"
-          + "    " + expected + "\n");
+          + "    %s\n",
+          actual,
+          expected));
     }
   }
 
