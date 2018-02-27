@@ -17,7 +17,7 @@ import org.quackery.Test;
 import org.quackery.report.AssertException;
 import org.quackery.report.AssumeException;
 
-public class test_QuackeryRunner_quackery_annotation {
+public class TestQuackeryRunnerQuackeryAnnotation {
   private final String name = "name " + hashCode();
   private final String message = "message";
   private final String firstLine = "first line";

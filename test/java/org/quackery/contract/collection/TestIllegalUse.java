@@ -10,7 +10,7 @@ import java.util.Set;
 
 import org.quackery.QuackeryException;
 
-public class test_illegal_use {
+public class TestIllegalUse {
   public void cannot_implement_object() {
     try {
       quacksLike(Collection.class)

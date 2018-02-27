@@ -8,7 +8,7 @@ import static org.quackery.testing.Mocks.mockCase;
 import org.quackery.Case;
 import org.quackery.Test;
 
-public class test_Runners_classLoaderScoped extends test_Visitor {
+public class TestRunnersClassLoaderScoped extends TestVisitor {
   private final String name = "name";
   private final Throwable throwable = new Throwable();
   private ClassLoader original, scoped, parent;

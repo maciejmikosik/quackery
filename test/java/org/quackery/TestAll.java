@@ -10,54 +10,54 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.quackery.contract.collection.test_detecting_bugs;
-import org.quackery.contract.collection.test_illegal_use;
-import org.quackery.contract.collection.test_passing_example_collections;
-import org.quackery.contract.collection.test_passing_guava_collections;
-import org.quackery.contract.collection.test_passing_jdk_collections;
-import org.quackery.contract.collection.test_suite_naming;
-import org.quackery.junit.test_QuackeryRunner_description_hierarchy;
-import org.quackery.junit.test_QuackeryRunner_ignore_annotation;
-import org.quackery.junit.test_QuackeryRunner_junit_test_annotation;
-import org.quackery.junit.test_QuackeryRunner_quackery_annotation;
-import org.quackery.report.test_Reports_count_throwables;
-import org.quackery.report.test_Reports_format;
-import org.quackery.run.test_Runners_classLoaderScoped;
-import org.quackery.run.test_Runners_run;
-import org.quackery.run.test_Runners_runIn;
-import org.quackery.run.test_Runners_threadScoped;
+import org.quackery.contract.collection.TestDetectingBugs;
+import org.quackery.contract.collection.TestIllegalUse;
+import org.quackery.contract.collection.TestPassingExampleCollections;
+import org.quackery.contract.collection.TestPassingGuavaCollections;
+import org.quackery.contract.collection.TestPassingJdkCollections;
+import org.quackery.contract.collection.TestSuiteNaming;
+import org.quackery.junit.TestQuackeryRunnerDescriptionHierarchy;
+import org.quackery.junit.TestQuackeryRunnerIgnoreAnnotation;
+import org.quackery.junit.TestQuackeryRunnerJunitTestAnnotation;
+import org.quackery.junit.TestQuackeryRunnerQuackeryAnnotation;
+import org.quackery.report.TestReportsCountThrowables;
+import org.quackery.report.TestReportsFormat;
+import org.quackery.run.TestRunnersClassLoaderScoped;
+import org.quackery.run.TestRunnersRun;
+import org.quackery.run.TestRunnersRunIn;
+import org.quackery.run.TestRunnersThreadScoped;
 
-import net.bytebuddy.test_ByteBuddy;
+import net.bytebuddy.TestByteBuddy;
 
-public class test_all {
+public class TestAll {
   private static List<Throwable> failures = new ArrayList<Throwable>();
   private static List<String> statistics = new ArrayList<String>();
 
   public static void main(String[] args) throws Throwable {
     long start = System.nanoTime();
 
-    runTestsIn(test_ByteBuddy.class);
+    runTestsIn(TestByteBuddy.class);
 
-    runTestsIn(test_Case.class);
-    runTestsIn(test_Suite.class);
-    runTestsIn(test_Runners_run.class);
-    runTestsIn(test_Runners_runIn.class);
-    runTestsIn(test_Runners_threadScoped.class);
-    runTestsIn(test_Runners_classLoaderScoped.class);
-    runTestsIn(test_Reports_count_throwables.class);
-    runTestsIn(test_Reports_format.class);
+    runTestsIn(TestCase.class);
+    runTestsIn(TestSuite.class);
+    runTestsIn(TestRunnersRun.class);
+    runTestsIn(TestRunnersRunIn.class);
+    runTestsIn(TestRunnersThreadScoped.class);
+    runTestsIn(TestRunnersClassLoaderScoped.class);
+    runTestsIn(TestReportsCountThrowables.class);
+    runTestsIn(TestReportsFormat.class);
 
-    runTestsIn(test_QuackeryRunner_quackery_annotation.class);
-    runTestsIn(test_QuackeryRunner_junit_test_annotation.class);
-    runTestsIn(test_QuackeryRunner_description_hierarchy.class);
-    runTestsIn(test_QuackeryRunner_ignore_annotation.class);
+    runTestsIn(TestQuackeryRunnerQuackeryAnnotation.class);
+    runTestsIn(TestQuackeryRunnerJunitTestAnnotation.class);
+    runTestsIn(TestQuackeryRunnerDescriptionHierarchy.class);
+    runTestsIn(TestQuackeryRunnerIgnoreAnnotation.class);
 
-    runTestsIn(test_illegal_use.class);
-    runTestsIn(test_suite_naming.class);
-    runTestsIn(test_detecting_bugs.class);
-    runTestsIn(test_passing_example_collections.class);
-    runTestsIn(test_passing_jdk_collections.class);
-    runTestsIn(test_passing_guava_collections.class);
+    runTestsIn(TestIllegalUse.class);
+    runTestsIn(TestSuiteNaming.class);
+    runTestsIn(TestDetectingBugs.class);
+    runTestsIn(TestPassingExampleCollections.class);
+    runTestsIn(TestPassingJdkCollections.class);
+    runTestsIn(TestPassingGuavaCollections.class);
 
     long stop = System.nanoTime();
     BigDecimal time = new BigDecimal(BigInteger.valueOf(stop - start), 9).setScale(3, HALF_UP);

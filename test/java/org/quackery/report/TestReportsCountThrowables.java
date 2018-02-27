@@ -9,7 +9,7 @@ import static org.quackery.testing.Mocks.mockCase;
 import org.quackery.QuackeryException;
 import org.quackery.Test;
 
-public class test_Reports_count_throwables {
+public class TestReportsCountThrowables {
   private Test test;
   private int count;
   private final String name = "name";

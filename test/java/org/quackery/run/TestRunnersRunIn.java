@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutorService;
 import org.quackery.Case;
 import org.quackery.Test;
 
-public class test_Runners_runIn extends test_Runner {
+public class TestRunnersRunIn extends TestRunner {
   private Test test;
   private ExecutorService executor;
   private boolean failed = false;

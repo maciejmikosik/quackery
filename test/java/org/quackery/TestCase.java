@@ -7,7 +7,7 @@ import static org.quackery.testing.Assertions.assertTrue;
 
 import org.quackery.Case.Body;
 
-public class test_Case {
+public class TestCase {
   private final String name = "name";
   private Case test;
   private final Body body = new Body() {

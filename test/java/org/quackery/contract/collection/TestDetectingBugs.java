@@ -7,7 +7,7 @@ import static org.quackery.testing.Assertions.assertFailure;
 import java.util.Collection;
 import java.util.List;
 
-public class test_detecting_bugs {
+public class TestDetectingBugs {
   public void detects_bugs() {
     for (boolean immutable : asList(true, false)) {
       for (boolean forbiddingNull : asList(true, false)) {

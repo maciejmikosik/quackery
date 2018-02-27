@@ -10,7 +10,7 @@ import org.quackery.QuackeryException;
 import org.quackery.Suite;
 import org.quackery.Test;
 
-public abstract class test_Visitor {
+public abstract class TestVisitor {
   private final String name = "name", nameA = "nameA", nameB = "nameB", nameC = "nameC",
       nameD = "nameD", nameE = "nameE", nameF = "nameF";
   private Test test, visited;

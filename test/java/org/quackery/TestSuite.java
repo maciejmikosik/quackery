@@ -10,7 +10,7 @@ import static org.quackery.testing.Mocks.mockContract;
 import static org.quackery.testing.Mocks.mockObject;
 import static org.quackery.testing.Mocks.mockTest;
 
-public class test_Suite {
+public class TestSuite {
   private String name = "name";
   private final Test testA = mockCase("testA"),
       testB = mockCase("testB"),

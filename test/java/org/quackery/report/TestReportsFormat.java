@@ -9,7 +9,7 @@ import static org.quackery.testing.Mocks.mockCase;
 import org.quackery.QuackeryException;
 import org.quackery.Test;
 
-public class test_Reports_format {
+public class TestReportsFormat {
   private final String name = "name";
   private final String a = "a", b = "b", c = "c", d = "d", e = "e", f = "f", g = "g", h = "h";
   private Test report;

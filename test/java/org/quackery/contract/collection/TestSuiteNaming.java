@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.quackery.Test;
 
-public class test_suite_naming {
+public class TestSuiteNaming {
   private Test test;
 
   public void includes_class_name() {

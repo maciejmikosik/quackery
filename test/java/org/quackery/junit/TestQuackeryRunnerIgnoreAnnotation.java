@@ -11,7 +11,7 @@ import static org.quackery.testing.Mocks.mockCase;
 import org.junit.runner.Result;
 import org.quackery.report.AssertException;
 
-public class test_QuackeryRunner_ignore_annotation {
+public class TestQuackeryRunnerIgnoreAnnotation {
   private Result result;
 
   public void ignore_annotation_on_method_ignores_junit_test() {

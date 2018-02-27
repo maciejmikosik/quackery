@@ -12,7 +12,7 @@ import java.util.HashSet;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 
-public class test_QuackeryRunner_description_hierarchy {
+public class TestQuackeryRunnerDescriptionHierarchy {
   private Result result;
   private final String testName = "caseName";
   private final String junitMethodName = "junitMethodName";

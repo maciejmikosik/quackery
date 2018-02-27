@@ -6,7 +6,7 @@ import static org.quackery.testing.Assertions.assertTrue;
 import org.quackery.Case;
 import org.quackery.Test;
 
-public class test_Runners_threadScoped extends test_Visitor {
+public class TestRunnersThreadScoped extends TestVisitor {
   private final String name = "name";
   private Test test, testA, testB;
   private Thread callerThread, scopingThread, scopingThreadA, scopingThreadB;

@@ -6,7 +6,7 @@ import static org.quackery.testing.Assertions.assertEquals;
 import org.quackery.Case;
 import org.quackery.Test;
 
-public abstract class test_Runner extends test_Visitor {
+public abstract class TestRunner extends TestVisitor {
   private final String name = "name";
   private Test test, report;
   private int invoked;

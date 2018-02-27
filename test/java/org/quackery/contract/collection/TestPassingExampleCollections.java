@@ -12,7 +12,7 @@ import org.quackery.contract.collection.correct.MutableList;
 import org.quackery.contract.collection.correct.MutableListForbiddingNullNicely;
 import org.quackery.contract.collection.correct.MutableListForbiddingNullStrictly;
 
-public class test_passing_example_collections {
+public class TestPassingExampleCollections {
   private static final String factoryName = "create";
 
   public void mutable_list_passes() {

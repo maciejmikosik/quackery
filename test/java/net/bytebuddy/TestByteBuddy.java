@@ -11,7 +11,7 @@ import net.bytebuddy.dynamic.DynamicType.Builder;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.implementation.SuperMethodCall;
 
-public class test_ByteBuddy {
+public class TestByteBuddy {
   public void can_redefine_inner_class_as_public_with_default_constructor() throws Exception {
     class Inner {}
 

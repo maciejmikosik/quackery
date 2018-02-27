@@ -4,7 +4,7 @@ import static org.quackery.run.Runners.run;
 
 import org.quackery.Test;
 
-public class test_Runners_run extends test_Runner {
+public class TestRunnersRun extends TestRunner {
   protected Test visit(Test visited) {
     return run(visited);
   }

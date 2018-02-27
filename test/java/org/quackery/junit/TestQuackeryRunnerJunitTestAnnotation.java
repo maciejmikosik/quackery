@@ -8,7 +8,7 @@ import java.io.IOException;
 
 import org.junit.runner.Result;
 
-public class test_QuackeryRunner_junit_test_annotation {
+public class TestQuackeryRunnerJunitTestAnnotation {
   private final String name = "name";
   private Result result;
 
