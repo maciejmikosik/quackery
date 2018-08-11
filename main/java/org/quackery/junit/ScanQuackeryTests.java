@@ -14,32 +14,20 @@ import org.quackery.Test;
 
 public class ScanQuackeryTests {
   public static List<Test> scanQuackeryTests(Class<?> testClass) {
-    return instantiate(annotatedMethods(testClass));
-  }
-
-  private static List<Method> annotatedMethods(Class<?> testClass) {
-    List<Method> methods = new ArrayList<>();
+    List<Test> tests = new ArrayList<>();
     for (Method method : testClass.getDeclaredMethods()) {
       if (method.isAnnotationPresent(Quackery.class)) {
-        check(isPublic(method.getModifiers()));
-        check(isStatic(method.getModifiers()));
-        check(Test.class.isAssignableFrom(method.getReturnType()));
-        check(method.getParameterTypes().length == 0);
-        methods.add(method);
+        tests.add(instantiate(method));
       }
-    }
-    return methods;
-  }
-
-  private static List<Test> instantiate(List<Method> methods) {
-    List<Test> tests = new ArrayList<>();
-    for (Method method : methods) {
-      tests.add(instantiate(method));
     }
     return tests;
   }
 
   private static Test instantiate(Method method) {
+    check(isPublic(method.getModifiers()));
+    check(isStatic(method.getModifiers()));
+    check(Test.class.isAssignableFrom(method.getReturnType()));
+    check(method.getParameterTypes().length == 0);
     try {
       return (Test) method.invoke(null);
     } catch (ReflectiveOperationException e) {
