@@ -43,7 +43,7 @@ public class TestRunnersRunIn extends TestRunner {
 
   private Case countDown(final CountDownLatch latch) {
     return new Case("") {
-      public void run() throws Throwable {
+      public void run() throws InterruptedException {
         latch.countDown();
         if (!latch.await(1, SECONDS)) {
           failed = true;

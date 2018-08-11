@@ -79,7 +79,7 @@ public class TestRunnersClassLoaderScoped extends TestVisitor {
     assertEquals(Thread.currentThread().getContextClassLoader(), original);
   }
 
-  public void restores_context_if_failed() throws Throwable {
+  public void restores_context_if_failed() {
     original = Thread.currentThread().getContextClassLoader();
     test = classLoaderScoped(mockCase(name, throwable));
 

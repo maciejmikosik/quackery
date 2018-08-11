@@ -69,7 +69,7 @@ public abstract class TestVisitor {
     // then no exception
   }
 
-  public void imitates_failed_case() throws Throwable {
+  public void imitates_failed_case() {
     test = mockCase(name, throwable);
     visited = visit(test);
 
