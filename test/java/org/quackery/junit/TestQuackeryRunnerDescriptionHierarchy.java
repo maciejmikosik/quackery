@@ -46,10 +46,10 @@ public class TestQuackeryRunnerDescriptionHierarchy {
     assertEquals(new HashSet<>(runner.getDescription().getChildren()), new HashSet<>(asList(
         result.getFailures().get(0).getDescription(),
         result.getFailures().get(1).getDescription())));
-    assertEquals(new HashSet(asList(
+    assertEquals(new HashSet<>(asList(
         result.getFailures().get(0).getDescription().getMethodName(),
         result.getFailures().get(1).getDescription().getMethodName())),
-        new HashSet(asList(testName, junitMethodName)));
+        new HashSet<>(asList(testName, junitMethodName)));
   }
 
   public void empty_suite_is_replaced_by_successful_case() {
