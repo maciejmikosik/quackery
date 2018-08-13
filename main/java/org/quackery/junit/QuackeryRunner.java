@@ -5,6 +5,7 @@ import static org.junit.runner.Description.createTestDescription;
 import static org.quackery.Suite.suite;
 import static org.quackery.junit.FixEmptySuiteBug.fixEmptySuiteBug;
 import static org.quackery.junit.FixNewlineBug.fixNewlineBug;
+import static org.quackery.junit.ScanJunitTests.causes;
 import static org.quackery.junit.ScanJunitTests.scanJunitTests;
 import static org.quackery.junit.ScanQuackeryTests.scanQuackeryTests;
 
@@ -17,6 +18,7 @@ import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
+import org.junit.runners.model.InitializationError;
 import org.quackery.Case;
 import org.quackery.QuackeryException;
 import org.quackery.Suite;
@@ -28,11 +30,18 @@ public class QuackeryRunner extends Runner {
   private final Runner delegate;
 
   public QuackeryRunner(Class<?> annotatedClass) {
+    delegate = scan(annotatedClass);
+  }
+
+  private static Runner scan(Class<?> annotatedClass) {
     List<Test> quackeryTests = scanQuackeryTests(annotatedClass);
-    Runner junitRunner = scanJunitTests(annotatedClass);
-    delegate = junitRunner == null
-        ? quackeryTestsRunner(annotatedClass, quackeryTests)
-        : quackeryAndJunitTestsRunner(quackeryTests, junitRunner);
+    try {
+      Runner junitRunner = scanJunitTests(annotatedClass);
+      return quackeryAndJunitTestsRunner(quackeryTests, junitRunner);
+    } catch (InitializationError e) {
+      quackeryTests.addAll(causes(e));
+      return quackeryTestsRunner(annotatedClass, quackeryTests);
+    }
   }
 
   public Description getDescription() {
