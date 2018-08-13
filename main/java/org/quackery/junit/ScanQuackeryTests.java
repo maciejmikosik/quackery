@@ -2,7 +2,6 @@ package org.quackery.junit;
 
 import static java.lang.reflect.Modifier.isPublic;
 import static java.lang.reflect.Modifier.isStatic;
-import static org.quackery.QuackeryException.check;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -26,10 +25,15 @@ public class ScanQuackeryTests {
   }
 
   private static Test instantiate(Method method) {
-    check(isPublic(method.getModifiers()));
-    check(isStatic(method.getModifiers()));
-    check(Test.class.isAssignableFrom(method.getReturnType()));
-    check(method.getParameterTypes().length == 0);
+    if (!isPublic(method.getModifiers())) {
+      return failingCase(method, "method must be public");
+    } else if (!isStatic(method.getModifiers())) {
+      return failingCase(method, "method must be static");
+    } else if (!Test.class.isAssignableFrom(method.getReturnType())) {
+      return failingCase(method, "method return type must be assignable to " + Test.class.getName());
+    } else if (method.getParameterTypes().length > 0) {
+      return failingCase(method, "method cannot have parameters");
+    }
     try {
       return (Test) method.invoke(null);
     } catch (final InvocationTargetException e) {
@@ -41,5 +45,13 @@ public class ScanQuackeryTests {
     } catch (ReflectiveOperationException e) {
       throw new QuackeryException(e);
     }
+  }
+
+  private static Test failingCase(Method method, final String message) {
+    return new Case(method.getName()) {
+      public void run() {
+        throw new QuackeryException(message);
+      }
+    };
   }
 }
