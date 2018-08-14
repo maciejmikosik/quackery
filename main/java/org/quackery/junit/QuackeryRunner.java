@@ -120,6 +120,12 @@ public class QuackeryRunner extends Runner {
         continue;
       } else if (noPublicDefaultConstructor(cause) && !hasJunitTestMethods) {
         continue;
+      } else if (incorrectJunitTestMethod(cause)) {
+        testsExplainingErrors.add(new Case(junitTestMethodName(cause)) {
+          public void run() throws Throwable {
+            throw cause;
+          }
+        });
       } else {
         testsExplainingErrors.add(new Case(cause.getMessage()) {
           public void run() throws Throwable {
@@ -148,6 +154,21 @@ public class QuackeryRunner extends Runner {
     String message = cause.getMessage();
     return message.equals("Test class should have exactly one public constructor")
         || message.equals("Test class should have exactly one public zero-argument constructor");
+  }
+
+  private static boolean incorrectJunitTestMethod(Throwable cause) {
+    String message = cause.getMessage();
+    return message.startsWith("Method")
+        && message.contains(" should ");
+  }
+
+  private static String junitTestMethodName(Throwable cause) {
+    String message = cause.getMessage();
+    int begin = "Method ".length();
+    int end = message.contains("() should")
+        ? message.indexOf("() should")
+        : message.indexOf(" should");
+    return message.substring(begin, end);
   }
 
   private Description describe(Test test) {

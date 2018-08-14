@@ -1,5 +1,6 @@
 package org.quackery.junit;
 
+import static java.lang.String.format;
 import static java.lang.reflect.Modifier.PRIVATE;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static java.lang.reflect.Modifier.STATIC;
@@ -94,6 +95,70 @@ public class TestQuackeryRunnerInitialization {
     assertEquals(failure.getDescription().getMethodName(), methodName);
     assertEquals(failure.getException().getClass(), QuackeryException.class);
     assertEquals(failure.getException().getMessage(), "method cannot have parameters");
+  }
+
+  public void reports_junit_test_annotated_method_being_not_public() {
+    result = run(new JunitClassBuilder()
+        .define(defaultJunitMethod()
+            .name(methodName)
+            .modifiers(PRIVATE))
+        .load());
+
+    assertEquals(result.getFailureCount(), 1);
+    Failure failure = result.getFailures().get(0);
+    assertEquals(failure.getDescription().getMethodName(), methodName);
+    assertEquals(failure.getException().getClass(), Exception.class);
+    assertEquals(
+        failure.getException().getMessage(),
+        format("Method %s() should be public", methodName));
+  }
+
+  public void reports_junit_test_annotated_method_being_static() {
+    result = run(new JunitClassBuilder()
+        .define(defaultJunitMethod()
+            .name(methodName)
+            .modifiers(PUBLIC | STATIC))
+        .load());
+
+    assertEquals(result.getFailureCount(), 1);
+    Failure failure = result.getFailures().get(0);
+    assertEquals(failure.getDescription().getMethodName(), methodName);
+    assertEquals(failure.getException().getClass(), Exception.class);
+    assertEquals(
+        failure.getException().getMessage(),
+        format("Method %s() should not be static", methodName));
+  }
+
+  public void reports_junit_test_annotated_method_wrong_return_type() {
+    result = run(new JunitClassBuilder()
+        .define(defaultJunitMethod()
+            .name(methodName)
+            .returnType(Object.class))
+        .load());
+
+    assertEquals(result.getFailureCount(), 1);
+    Failure failure = result.getFailures().get(0);
+    assertEquals(failure.getDescription().getMethodName(), methodName);
+    assertEquals(failure.getException().getClass(), Exception.class);
+    assertEquals(
+        failure.getException().getMessage(),
+        format("Method %s() should be void", methodName));
+  }
+
+  public void reports_junit_test_annotated_method_having_parameters() {
+    result = run(new JunitClassBuilder()
+        .define(defaultJunitMethod()
+            .name(methodName)
+            .parameters(Object.class))
+        .load());
+
+    assertEquals(result.getFailureCount(), 1);
+    Failure failure = result.getFailures().get(0);
+    assertEquals(failure.getDescription().getMethodName(), methodName);
+    assertEquals(failure.getException().getClass(), Exception.class);
+    assertEquals(
+        failure.getException().getMessage(),
+        format("Method %s should have no parameters", methodName));
   }
 
   public void reports_missing_default_constructor() {
