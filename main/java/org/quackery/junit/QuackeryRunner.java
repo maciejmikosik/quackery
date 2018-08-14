@@ -30,12 +30,14 @@ import org.quackery.report.AssertException;
 import org.quackery.report.AssumeException;
 
 public class QuackeryRunner extends Runner {
+  private final Class<?> annotatedClass;
   private Description description;
   private Runner junitRunner;
   private List<Test> quackeryTests;
 
   /** This constructor is required by Runner contract and is invoked by junit. */
   public QuackeryRunner(Class<?> annotatedClass) {
+    this.annotatedClass = annotatedClass;
     quackeryTests = instantiateQuackeryTestsDeclaredIn(annotatedClass);
     try {
       junitRunner = new BlockJUnit4ClassRunner(annotatedClass);
@@ -167,7 +169,7 @@ public class QuackeryRunner extends Runner {
   }
 
   private Description describe(Case cas) {
-    return createTestDescription(cas.getClass().getName(), cas.name, id(cas));
+    return createTestDescription(annotatedClass.getName(), cas.name, id(cas));
   }
 
   private void run(Test test, RunNotifier notifier) {

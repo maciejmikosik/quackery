@@ -1,5 +1,6 @@
 package org.quackery.junit;
 
+import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static org.quackery.Suite.suite;
 import static org.quackery.junit.JunitClassBuilder.defaultJunitMethod;
@@ -99,5 +100,17 @@ public class TestQuackeryRunnerDescriptionHierarchy {
     assertEquals(runner.getDescription().getMethodName(), junitTestClass.getSimpleName());
     assertEquals(result.getRunCount(), 1);
     assertEquals(result.getFailureCount(), 0);
+  }
+
+  public void display_name_uses_outer_class() {
+    junitTestClass = new JunitClassBuilder()
+        .define(defaultQuackeryMethod()
+            .returning(mockCase(testName, new Throwable())))
+        .load();
+    runner = new QuackeryRunner(junitTestClass);
+
+    assertEquals(
+        runner.getDescription().getDisplayName(),
+        format("%s(%s)", testName, junitTestClass.getName()));
   }
 }
