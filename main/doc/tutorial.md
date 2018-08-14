@@ -1,7 +1,8 @@
 [built-in contracts](#built-in-contracts) |
 [defining you own contracts](#defining-your-own-contracts) |
 [running](#running) |
-[integration](#integration)
+[integration](#integration) |
+[extra](#extra)
 
 # built-in contracts
 [collection contract](#collection-contract)
@@ -351,3 +352,7 @@ There are many problems that may occur during initialization. Method annotated w
 `@org.junit.Ignore` does not work on methods annotated with `@Quackery`. However ignoring whole class will ignore also quackery tests.
 
 Watch out for name collision between `org.quackery.Test` and `org.junit.Test`!
+
+# extra
+
+ - [Eclipse templates](eclipse_templates.md)
