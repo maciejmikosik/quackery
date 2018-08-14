@@ -12,7 +12,7 @@ import org.quackery.run.Visitor;
 
 public class FixBugs {
   public static Test fixBugs(Test test) {
-    return fixNewlineBug(fixEmptySuiteBug(test));
+    return fixNewlineBug(fixEmptySuiteBug(fixEmptyNameBug(test)));
   }
 
   public static List<Test> fixBugs(List<Test> tests) {
@@ -62,5 +62,29 @@ public class FixBugs {
     return new Case(name) {
       public void run() {}
     };
+  }
+
+  private static Test fixEmptyNameBug(Test test) {
+    return new Visitor() {
+      protected Test visit(Suite visiting) {
+        Suite suite = (Suite) super.visit(visiting);
+        return suite(fixEmptyNameBug(suite.name))
+            .addAll(suite.tests);
+      }
+
+      protected Test visit(final Case visiting) {
+        return new Case(fixEmptyNameBug(visiting.name)) {
+          public void run() throws Throwable {
+            visiting.run();
+          }
+        };
+      }
+    }.visit(test);
+  }
+
+  private static String fixEmptyNameBug(String name) {
+    return name.isEmpty()
+        ? "[empty_name]"
+        : name;
   }
 }
