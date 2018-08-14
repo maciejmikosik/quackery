@@ -328,27 +328,26 @@ This means that if you already have junit class with tests.
       }
     }
 
-You can add quackery tests inside.
+You can add quackery tests inside and quackery runner will merge them into one hierarchy.
 
-    @RunWith(QuackeryRunner.class)
-    public class ArrayListTest {
-      @Quackery
-      public static org.quackery.Test test() {
-        return quacksLike(Collection.class)
-            .test(ArrayList.class);
-      }
+```
+@RunWith(QuackeryRunner.class)
+public class ArrayListTest {
+  @Quackery
+  public static org.quackery.Test test() {
+    return quacksLike(Collection.class)
+        .test(ArrayList.class);
+  }
 
-      @Test
-      public void implements_random_access() {
-        assertTrue(RandomAccess.class.isAssignableFrom(ArrayList.class));
-      }
-    }
+  @Test
+  public void implements_random_access() {
+    assertTrue(RandomAccess.class.isAssignableFrom(ArrayList.class));
+  }
+}
+```
 
-Quackery merges all test into one hierarchy. There are few things to keep in mind.
+There are many problems that may occur during initialization. Method annotated with `@Quackery` could have incorrect signature, have some parameters or throw exception during invocation. All such problems are caught and represented as failing tests. This way they can be reported together with other tests. Default junit runner can detect problems too, missing default constructor for example. Those problems are also caught. However, junit validation happens only if there is at least one method annotated with `@org.junit.Test`. This mean that if you use quackery methods exclusively, you don't even need to provide default constructor.
 
- - Watch out for name collision between `org.quackery.Test` and `org.junit.Test`
- - `@Ignore` does not work on methods annotated with `@Quackery`.
-     However it works if you use it at class level.
- - You can use `@QuackeryRunner` even on class that only have junit tests.
-     This makes no difference except one detail.
-     It does not complain if you have no test methods in class, like default junit4 runner does.
+`@org.junit.Ignore` does not work on methods annotated with `@Quackery`. However ignoring whole class will ignore also quackery tests.
+
+Watch out for name collision between `org.quackery.Test` and `org.junit.Test`!
