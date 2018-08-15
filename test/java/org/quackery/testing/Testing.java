@@ -20,25 +20,12 @@ public class Testing {
     if (!Objects.deepEquals(actual, expected)) {
       throw new AssertionError(String.format(""
           + "\n"
-          + "  expected that\n"
+          + "  expected equal to\n"
           + "    %s\n"
-          + "  is equal to\n"
+          + "  but was\n"
           + "    %s\n",
-          actual,
-          expected));
-    }
-  }
-
-  public static void assertNotEquals(Object actual, Object expected) {
-    if (Objects.deepEquals(actual, expected)) {
-      throw new AssertionError(String.format(""
-          + "\n"
-          + "  expected that\n"
-          + "    %s\n"
-          + "  is not equal to\n"
-          + "    %s\n",
-          actual,
-          expected));
+          expected,
+          actual));
     }
   }
 
