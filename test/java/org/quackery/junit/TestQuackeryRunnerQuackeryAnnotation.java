@@ -28,6 +28,7 @@ public class TestQuackeryRunnerQuackeryAnnotation {
   private boolean invoked, otherInvoked;
   private Throwable failure;
   private Test test;
+  private QuackeryRunner runner;
 
   public void case_is_run() {
     test = new Case(name) {
@@ -106,6 +107,30 @@ public class TestQuackeryRunnerQuackeryAnnotation {
 
     assertEquals(invoked, true);
     assertEquals(otherInvoked, true);
+  }
+
+  public void empty_case_name_is_replaced() {
+    runner = new QuackeryRunner(new JunitClassBuilder()
+        .define(defaultQuackeryMethod()
+            .returning(mockCase("")))
+        .load());
+
+    assertEquals(
+        runner.getDescription().getMethodName(),
+        "[empty_name]");
+  }
+
+  public void empty_suite_name_is_replaced() {
+    runner = new QuackeryRunner(new JunitClassBuilder()
+        .define(defaultQuackeryMethod()
+            .returning(suite("")
+                .add(mockCase(name))
+                .add(mockCase(name))))
+        .load());
+
+    assertEquals(
+        runner.getDescription().getDisplayName(),
+        "[empty_name]");
   }
 
   public void name_with_line_feed_is_escaped() {

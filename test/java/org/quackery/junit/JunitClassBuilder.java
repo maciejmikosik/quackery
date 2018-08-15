@@ -5,6 +5,7 @@ import static java.lang.reflect.Modifier.STATIC;
 import static net.bytebuddy.dynamic.loading.ClassLoadingStrategy.Default.WRAPPER;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
@@ -14,13 +15,15 @@ import org.quackery.Test;
 
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.DynamicType.Builder;
+import net.bytebuddy.dynamic.scaffold.subclass.ConstructorStrategy;
 import net.bytebuddy.implementation.ExceptionMethod;
 import net.bytebuddy.implementation.FixedValue;
 import net.bytebuddy.implementation.Implementation;
+import net.bytebuddy.implementation.MethodCall;
 import net.bytebuddy.implementation.StubMethod;
 
 class JunitClassBuilder {
-  public final Builder<?> builder;
+  private final Builder<?> builder;
 
   private JunitClassBuilder(Builder<?> builder) {
     this.builder = builder;
@@ -29,6 +32,13 @@ class JunitClassBuilder {
   public JunitClassBuilder() {
     this(new ByteBuddy()
         .subclass(Object.class)
+        .name("JunitClass")
+        .annotateType(annotationRunWith(QuackeryRunner.class)));
+  }
+
+  public JunitClassBuilder(ConstructorStrategy strategy) {
+    this(new ByteBuddy()
+        .subclass(Object.class, strategy)
         .name("JunitClass")
         .annotateType(annotationRunWith(QuackeryRunner.class)));
   }
@@ -43,6 +53,22 @@ class JunitClassBuilder {
         .withParameters(def.parameters)
         .intercept(implementationOf(def))
         .annotateMethod(def.annotations));
+  }
+
+  public JunitClassBuilder defineConstructor(MethodDefinition def) {
+    return new JunitClassBuilder(builder
+        .defineConstructor(def.modifiers)
+        .withParameters(def.parameters)
+        .intercept(MethodCall.invoke(objectConstrcutor()))
+        .annotateMethod(def.annotations));
+  }
+
+  private static Constructor<Object> objectConstrcutor() {
+    try {
+      return Object.class.getDeclaredConstructor();
+    } catch (ReflectiveOperationException e) {
+      throw new Error(e);
+    }
   }
 
   private static Implementation implementationOf(MethodDefinition def) {

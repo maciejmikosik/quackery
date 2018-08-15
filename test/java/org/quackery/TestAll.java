@@ -19,6 +19,7 @@ import org.quackery.contract.collection.TestPassingJdkCollections;
 import org.quackery.contract.collection.TestSuiteNaming;
 import org.quackery.junit.TestQuackeryRunnerDescriptionHierarchy;
 import org.quackery.junit.TestQuackeryRunnerIgnoreAnnotation;
+import org.quackery.junit.TestQuackeryRunnerInitialization;
 import org.quackery.junit.TestQuackeryRunnerJunitTestAnnotation;
 import org.quackery.junit.TestQuackeryRunnerQuackeryAnnotation;
 import org.quackery.report.TestReportsCountThrowables;
@@ -52,6 +53,7 @@ public class TestAll {
     runTestsIn(TestQuackeryRunnerJunitTestAnnotation.class);
     runTestsIn(TestQuackeryRunnerDescriptionHierarchy.class);
     runTestsIn(TestQuackeryRunnerIgnoreAnnotation.class);
+    runTestsIn(TestQuackeryRunnerInitialization.class);
 
     runTestsIn(TestIllegalUse.class);
     runTestsIn(TestSuiteNaming.class);
