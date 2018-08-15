@@ -2,6 +2,7 @@ package org.quackery;
 
 import static java.lang.String.format;
 import static java.math.RoundingMode.HALF_UP;
+import static net.bytebuddy.TestByteBuddy.test_byte_buddy;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -29,8 +30,6 @@ import org.quackery.run.TestRunnersRun;
 import org.quackery.run.TestRunnersRunIn;
 import org.quackery.run.TestRunnersThreadScoped;
 
-import net.bytebuddy.TestByteBuddy;
-
 public class TestAll {
   private static List<Throwable> failures = new ArrayList<Throwable>();
   private static List<String> statistics = new ArrayList<String>();
@@ -38,7 +37,7 @@ public class TestAll {
   public static void main(String[] args) throws Throwable {
     long start = System.nanoTime();
 
-    runTestsIn(TestByteBuddy.class);
+    test_byte_buddy();
 
     runTestsIn(TestCase.class);
     runTestsIn(TestSuite.class);
