@@ -71,7 +71,7 @@ public class Testing {
   public static <T> Contract<T> mockContract(final String name) {
     return new Contract<T>() {
       public Test test(T item) {
-        return mockTest(item, this);
+        return new MockTest(item, this);
       }
 
       public String toString() {
@@ -80,26 +80,24 @@ public class Testing {
     };
   }
 
-  public static Test mockTest(Object item, Contract<?> contract) {
-    return new MockTest(item, contract);
-  }
-
   private static class MockTest extends Test {
     public final Object item;
     public final Contract<?> contract;
 
     public MockTest(Object item, Contract<?> contract) {
-      super(format("mockTest(%s, %s)", item, contract));
+      super(format("%s.test(%s)", contract, item));
       this.item = item;
       this.contract = contract;
     }
 
     public boolean equals(Object object) {
-      return object instanceof MockTest && equals((MockTest) object);
+      return object instanceof MockTest
+          && equals((MockTest) object);
     }
 
     public boolean equals(MockTest that) {
-      return item.equals(that.item) && contract.equals(that.contract);
+      return item.equals(that.item)
+          && contract.equals(that.contract);
     }
 
     public int hashCode() {

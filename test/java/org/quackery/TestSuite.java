@@ -8,7 +8,6 @@ import static org.quackery.testing.Testing.fail;
 import static org.quackery.testing.Testing.mockCase;
 import static org.quackery.testing.Testing.mockContract;
 import static org.quackery.testing.Testing.mockObject;
-import static org.quackery.testing.Testing.mockTest;
 
 public class TestSuite {
   private String name = "name";
@@ -67,9 +66,9 @@ public class TestSuite {
         .add(itemB, contractB)
         .add(itemC, contractC);
     assertEquals(suite.tests, asList(
-        mockTest(itemA, contractA),
-        mockTest(itemB, contractB),
-        mockTest(itemC, contractC)));
+        contractA.test(itemA),
+        contractB.test(itemB),
+        contractC.test(itemC)));
   }
 
   public void adds_tests_produced_by_contract_and_items_from_iterable() {
@@ -77,10 +76,10 @@ public class TestSuite {
         .addAll(asList(itemA, itemB), contractA)
         .addAll(asList(itemC, itemD), contractB);
     assertEquals(suite.tests, asList(
-        mockTest(itemA, contractA),
-        mockTest(itemB, contractA),
-        mockTest(itemC, contractB),
-        mockTest(itemD, contractB)));
+        contractA.test(itemA),
+        contractA.test(itemB),
+        contractB.test(itemC),
+        contractB.test(itemD)));
   }
 
   public void adds_tests_produced_by_contract_and_items_from_array() {
@@ -88,10 +87,10 @@ public class TestSuite {
         .addAll(new Object[] { itemA, itemB }, contractA)
         .addAll(new Object[] { itemC, itemD }, contractB);
     assertEquals(suite.tests, asList(
-        mockTest(itemA, contractA),
-        mockTest(itemB, contractA),
-        mockTest(itemC, contractB),
-        mockTest(itemD, contractB)));
+        contractA.test(itemA),
+        contractA.test(itemB),
+        contractB.test(itemC),
+        contractB.test(itemD)));
   }
 
   public void lists_are_covariant() {
