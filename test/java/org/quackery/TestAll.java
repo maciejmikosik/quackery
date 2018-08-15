@@ -1,5 +1,6 @@
 package org.quackery;
 
+import static java.lang.String.format;
 import static java.math.RoundingMode.HALF_UP;
 
 import java.lang.reflect.InvocationTargetException;
@@ -61,7 +62,7 @@ public class TestAll {
 
     long stop = System.nanoTime();
     BigDecimal time = new BigDecimal(BigInteger.valueOf(stop - start), 9).setScale(3, HALF_UP);
-    System.out.println("finished in " + time + " seconds");
+    System.out.println(format("finished in %s seconds", time));
 
     if (failures.size() == 0) {
       System.out.println("no failures");
@@ -69,7 +70,7 @@ public class TestAll {
         System.out.println(stat);
       }
     } else {
-      System.out.println(failures.size() + " failures");
+      System.out.println(format("%s failures", failures.size()));
       for (Throwable failure : failures) {
         System.out.println();
         failure.printStackTrace(System.out);
@@ -89,7 +90,7 @@ public class TestAll {
         }
       }
     }
-    statistics.add(type.getSimpleName() + " : " + count);
+    statistics.add(format("%s : %s", type.getSimpleName(), count));
   }
 
   private static boolean isJdkMethod(Method method) {

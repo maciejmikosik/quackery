@@ -42,7 +42,7 @@ public class TestCase {
     assertTrue(invoked);
   }
 
-  public void factory_body_can_throw_exception() throws Throwable {
+  public void factory_body_can_throw_exception() {
     test = newCase(name, new Body() {
       public void run() throws Throwable {
         throw throwable;

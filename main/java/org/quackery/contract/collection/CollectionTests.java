@@ -165,7 +165,7 @@ public class CollectionTests {
 
   private static Test implementsCollectionInterface(final Class<?> type) {
     return new Case("implements Collection interface") {
-      public void run() throws Throwable {
+      public void run() {
         assertTrue(Collection.class.isAssignableFrom(type));
       }
     };

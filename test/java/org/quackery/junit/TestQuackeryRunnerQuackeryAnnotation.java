@@ -1,5 +1,6 @@
 package org.quackery.junit;
 
+import static java.lang.String.format;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static java.lang.reflect.Modifier.STATIC;
 import static org.quackery.Suite.suite;
@@ -108,21 +109,23 @@ public class TestQuackeryRunnerQuackeryAnnotation {
   }
 
   public void name_with_line_feed_is_escaped() {
-    test = mockCase(firstLine + "\n" + secondLine, new Throwable());
+    test = mockCase(format("%s\n%s", firstLine, secondLine), new Throwable());
 
     result = run(test);
 
-    assertEquals(result.getFailures().get(0).getDescription().getMethodName(),
-        firstLine + " " + secondLine);
+    assertEquals(
+        result.getFailures().get(0).getDescription().getMethodName(),
+        format("%s %s", firstLine, secondLine));
   }
 
   public void name_with_carriage_return_is_escaped() {
-    test = mockCase(firstLine + "\r" + secondLine, new Throwable());
+    test = mockCase(format("%s\r%s", firstLine, secondLine), new Throwable());
 
     result = run(test);
 
-    assertEquals(result.getFailures().get(0).getDescription().getMethodName(),
-        firstLine + " " + secondLine);
+    assertEquals(
+        result.getFailures().get(0).getDescription().getMethodName(),
+        format("%s %s", firstLine, secondLine));
   }
 
   public void class_can_have_more_than_one_annotated_method() {

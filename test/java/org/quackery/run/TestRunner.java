@@ -56,7 +56,7 @@ public abstract class TestRunner extends TestVisitor {
     assertEquals(invoked, 0);
   }
 
-  public void running_report_does_not_run_failed_case() throws Throwable {
+  public void running_report_does_not_run_failed_case() {
     test = new Case(name) {
       public void run() {
         invoked++;

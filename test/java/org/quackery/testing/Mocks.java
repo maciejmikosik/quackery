@@ -1,5 +1,6 @@
 package org.quackery.testing;
 
+import static java.lang.String.format;
 import static java.util.Objects.hash;
 
 import org.quackery.Case;
@@ -36,7 +37,7 @@ public class Mocks {
       }
 
       public String toString() {
-        return "mockContract(" + name + ")";
+        return format("mockContract(%s)", name);
       }
     };
   }
@@ -50,7 +51,7 @@ public class Mocks {
     public final Contract<?> contract;
 
     public MockTest(Object item, Contract<?> contract) {
-      super("mockTest(" + item + ", " + contract + ")");
+      super(format("mockTest(%s, %s)", item, contract));
       this.item = item;
       this.contract = contract;
     }
