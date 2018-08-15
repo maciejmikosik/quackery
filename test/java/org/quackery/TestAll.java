@@ -3,6 +3,8 @@ package org.quackery;
 import static java.lang.String.format;
 import static java.math.RoundingMode.HALF_UP;
 import static net.bytebuddy.TestByteBuddy.test_byte_buddy;
+import static org.quackery.TestCase.test_case;
+import static org.quackery.TestSuite.test_suite;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -39,8 +41,9 @@ public class TestAll {
 
     test_byte_buddy();
 
-    runTestsIn(TestCase.class);
-    runTestsIn(TestSuite.class);
+    test_case();
+    test_suite();
+
     runTestsIn(TestRunnersRun.class);
     runTestsIn(TestRunnersRunIn.class);
     runTestsIn(TestRunnersThreadScoped.class);

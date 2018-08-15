@@ -6,6 +6,7 @@ import static java.util.Objects.hash;
 import java.util.Objects;
 
 import org.quackery.Case;
+import org.quackery.Case.Body;
 import org.quackery.Contract;
 import org.quackery.Test;
 
@@ -38,6 +39,12 @@ public class Testing {
       public String toString() {
         return name;
       }
+    };
+  }
+
+  public static Body mockBody() {
+    return new Body() {
+      public void run() {}
     };
   }
 
