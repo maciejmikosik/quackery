@@ -2,9 +2,9 @@ package org.quackery.report;
 
 import static org.quackery.Suite.suite;
 import static org.quackery.report.Reports.count;
-import static org.quackery.testing.Assertions.assertEquals;
-import static org.quackery.testing.Assertions.fail;
-import static org.quackery.testing.Mocks.mockCase;
+import static org.quackery.testing.Testing.assertEquals;
+import static org.quackery.testing.Testing.fail;
+import static org.quackery.testing.Testing.mockCase;
 
 import org.quackery.QuackeryException;
 import org.quackery.Test;

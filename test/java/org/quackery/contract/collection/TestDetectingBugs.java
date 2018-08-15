@@ -2,7 +2,7 @@ package org.quackery.contract.collection;
 
 import static java.util.Arrays.asList;
 import static org.quackery.Contracts.quacksLike;
-import static org.quackery.testing.Assertions.assertFailure;
+import static org.quackery.contract.TestingContracts.assertFailure;
 
 import java.util.Collection;
 import java.util.List;

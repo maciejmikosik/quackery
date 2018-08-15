@@ -2,7 +2,7 @@ package net.bytebuddy;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.lang.reflect.Modifier.PUBLIC;
-import static org.quackery.testing.Assertions.assertTrue;
+import static org.quackery.testing.Testing.assertTrue;
 
 import java.lang.annotation.Retention;
 import java.lang.reflect.Modifier;

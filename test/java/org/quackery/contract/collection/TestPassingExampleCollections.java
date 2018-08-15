@@ -1,8 +1,8 @@
 package org.quackery.contract.collection;
 
 import static org.quackery.Contracts.quacksLike;
+import static org.quackery.contract.TestingContracts.assertSuccess;
 import static org.quackery.contract.collection.Factories.asFactory;
-import static org.quackery.testing.Assertions.assertSuccess;
 
 import java.util.Collection;
 import java.util.List;

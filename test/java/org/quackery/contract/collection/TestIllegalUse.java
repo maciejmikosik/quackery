@@ -1,7 +1,7 @@
 package org.quackery.contract.collection;
 
 import static org.quackery.Contracts.quacksLike;
-import static org.quackery.testing.Assertions.fail;
+import static org.quackery.testing.Testing.fail;
 
 import java.util.Collection;
 import java.util.List;

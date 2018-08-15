@@ -3,11 +3,49 @@ package org.quackery.testing;
 import static java.lang.String.format;
 import static java.util.Objects.hash;
 
+import java.util.Objects;
+
 import org.quackery.Case;
 import org.quackery.Contract;
 import org.quackery.Test;
 
-public class Mocks {
+public class Testing {
+  public static void assertTrue(boolean condition) {
+    if (!condition) {
+      throw new AssertionError();
+    }
+  }
+
+  public static void assertEquals(Object actual, Object expected) {
+    if (!Objects.deepEquals(actual, expected)) {
+      throw new AssertionError(String.format(""
+          + "\n"
+          + "  expected that\n"
+          + "    %s\n"
+          + "  is equal to\n"
+          + "    %s\n",
+          actual,
+          expected));
+    }
+  }
+
+  public static void assertNotEquals(Object actual, Object expected) {
+    if (Objects.deepEquals(actual, expected)) {
+      throw new AssertionError(String.format(""
+          + "\n"
+          + "  expected that\n"
+          + "    %s\n"
+          + "  is not equal to\n"
+          + "    %s\n",
+          actual,
+          expected));
+    }
+  }
+
+  public static void fail() {
+    throw new AssertionError();
+  }
+
   public static Object mockObject(final String name) {
     return new Object() {
       public String toString() {

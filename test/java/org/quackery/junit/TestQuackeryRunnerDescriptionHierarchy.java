@@ -5,8 +5,8 @@ import static java.util.Arrays.asList;
 import static org.quackery.Suite.suite;
 import static org.quackery.junit.JunitClassBuilder.defaultJunitMethod;
 import static org.quackery.junit.JunitClassBuilder.defaultQuackeryMethod;
-import static org.quackery.testing.Assertions.assertEquals;
-import static org.quackery.testing.Mocks.mockCase;
+import static org.quackery.testing.Testing.assertEquals;
+import static org.quackery.testing.Testing.mockCase;
 
 import java.util.HashSet;
 

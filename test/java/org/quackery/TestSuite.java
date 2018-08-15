@@ -2,13 +2,13 @@ package org.quackery;
 
 import static java.util.Arrays.asList;
 import static org.quackery.Suite.suite;
-import static org.quackery.testing.Assertions.assertEquals;
-import static org.quackery.testing.Assertions.assertTrue;
-import static org.quackery.testing.Assertions.fail;
-import static org.quackery.testing.Mocks.mockCase;
-import static org.quackery.testing.Mocks.mockContract;
-import static org.quackery.testing.Mocks.mockObject;
-import static org.quackery.testing.Mocks.mockTest;
+import static org.quackery.testing.Testing.assertEquals;
+import static org.quackery.testing.Testing.assertTrue;
+import static org.quackery.testing.Testing.fail;
+import static org.quackery.testing.Testing.mockCase;
+import static org.quackery.testing.Testing.mockContract;
+import static org.quackery.testing.Testing.mockObject;
+import static org.quackery.testing.Testing.mockTest;
 
 public class TestSuite {
   private String name = "name";

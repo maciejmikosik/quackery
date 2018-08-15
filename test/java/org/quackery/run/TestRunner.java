@@ -1,7 +1,7 @@
 package org.quackery.run;
 
 import static org.quackery.Suite.suite;
-import static org.quackery.testing.Assertions.assertEquals;
+import static org.quackery.testing.Testing.assertEquals;
 
 import org.quackery.Case;
 import org.quackery.Test;

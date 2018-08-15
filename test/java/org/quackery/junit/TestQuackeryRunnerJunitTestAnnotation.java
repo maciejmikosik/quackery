@@ -2,7 +2,7 @@ package org.quackery.junit;
 
 import static org.quackery.junit.JunitClassBuilder.defaultJunitMethod;
 import static org.quackery.junit.JunitCoreRunner.run;
-import static org.quackery.testing.Assertions.assertEquals;
+import static org.quackery.testing.Testing.assertEquals;
 
 import java.io.IOException;
 

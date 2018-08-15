@@ -5,8 +5,8 @@ import static org.quackery.junit.JunitClassBuilder.annotationJunitTest;
 import static org.quackery.junit.JunitClassBuilder.defaultJunitMethod;
 import static org.quackery.junit.JunitClassBuilder.defaultQuackeryMethod;
 import static org.quackery.junit.JunitCoreRunner.run;
-import static org.quackery.testing.Assertions.assertEquals;
-import static org.quackery.testing.Mocks.mockCase;
+import static org.quackery.testing.Testing.assertEquals;
+import static org.quackery.testing.Testing.mockCase;
 
 import org.junit.runner.Result;
 import org.quackery.report.AssertException;

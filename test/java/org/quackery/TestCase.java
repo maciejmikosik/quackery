@@ -2,8 +2,8 @@ package org.quackery;
 
 import static org.junit.Assert.fail;
 import static org.quackery.Case.newCase;
-import static org.quackery.testing.Assertions.assertEquals;
-import static org.quackery.testing.Assertions.assertTrue;
+import static org.quackery.testing.Testing.assertEquals;
+import static org.quackery.testing.Testing.assertTrue;
 
 import org.quackery.Case.Body;
 

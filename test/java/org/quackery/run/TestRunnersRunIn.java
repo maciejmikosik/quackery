@@ -4,7 +4,7 @@ import static java.util.concurrent.Executors.newCachedThreadPool;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.quackery.Suite.suite;
 import static org.quackery.run.Runners.runIn;
-import static org.quackery.testing.Assertions.assertTrue;
+import static org.quackery.testing.Testing.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;

@@ -1,7 +1,7 @@
 package org.quackery.run;
 
 import static org.quackery.run.Runners.threadScoped;
-import static org.quackery.testing.Assertions.assertTrue;
+import static org.quackery.testing.Testing.assertTrue;
 
 import org.quackery.Case;
 import org.quackery.Test;

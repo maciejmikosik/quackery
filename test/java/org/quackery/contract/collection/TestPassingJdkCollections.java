@@ -1,7 +1,7 @@
 package org.quackery.contract.collection;
 
 import static org.quackery.Contracts.quacksLike;
-import static org.quackery.testing.Assertions.assertSuccess;
+import static org.quackery.contract.TestingContracts.assertSuccess;
 
 import java.util.ArrayList;
 import java.util.Collection;

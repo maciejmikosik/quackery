@@ -1,9 +1,9 @@
 package org.quackery.run;
 
 import static org.quackery.Suite.suite;
-import static org.quackery.testing.Assertions.assertEquals;
-import static org.quackery.testing.Assertions.fail;
-import static org.quackery.testing.Mocks.mockCase;
+import static org.quackery.testing.Testing.assertEquals;
+import static org.quackery.testing.Testing.fail;
+import static org.quackery.testing.Testing.mockCase;
 
 import org.quackery.Case;
 import org.quackery.QuackeryException;

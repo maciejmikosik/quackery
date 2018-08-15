@@ -1,9 +1,9 @@
 package org.quackery.run;
 
 import static org.quackery.run.Runners.classLoaderScoped;
-import static org.quackery.testing.Assertions.assertEquals;
-import static org.quackery.testing.Assertions.assertTrue;
-import static org.quackery.testing.Mocks.mockCase;
+import static org.quackery.testing.Testing.assertEquals;
+import static org.quackery.testing.Testing.assertTrue;
+import static org.quackery.testing.Testing.mockCase;
 
 import org.quackery.Case;
 import org.quackery.Test;
