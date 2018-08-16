@@ -5,6 +5,7 @@ import static java.math.RoundingMode.HALF_UP;
 import static net.bytebuddy.TestByteBuddy.test_byte_buddy;
 import static org.quackery.TestCase.test_case;
 import static org.quackery.TestSuite.test_suite;
+import static org.quackery.contract.collection.TestCollectionContract.test_collection_contract;
 import static org.quackery.report.TestReportsCountThrowables.test_reports_count_throwables;
 import static org.quackery.report.TestReportsFormat.test_reports_format;
 import static org.quackery.run.TestRunnersClassLoaderScoped.test_runners_class_loader_scoped;
@@ -20,12 +21,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.quackery.contract.collection.TestDetectingBugs;
-import org.quackery.contract.collection.TestIllegalUse;
-import org.quackery.contract.collection.TestPassingExampleCollections;
-import org.quackery.contract.collection.TestPassingGuavaCollections;
-import org.quackery.contract.collection.TestPassingJdkCollections;
-import org.quackery.contract.collection.TestSuiteNaming;
 import org.quackery.junit.TestQuackeryRunnerDescriptionHierarchy;
 import org.quackery.junit.TestQuackeryRunnerIgnoreAnnotation;
 import org.quackery.junit.TestQuackeryRunnerInitialization;
@@ -58,12 +53,7 @@ public class TestAll {
     runTestsIn(TestQuackeryRunnerIgnoreAnnotation.class);
     runTestsIn(TestQuackeryRunnerInitialization.class);
 
-    runTestsIn(TestIllegalUse.class);
-    runTestsIn(TestSuiteNaming.class);
-    runTestsIn(TestDetectingBugs.class);
-    runTestsIn(TestPassingExampleCollections.class);
-    runTestsIn(TestPassingJdkCollections.class);
-    runTestsIn(TestPassingGuavaCollections.class);
+    test_collection_contract();
 
     long stop = System.nanoTime();
     BigDecimal time = new BigDecimal(BigInteger.valueOf(stop - start), 9).setScale(3, HALF_UP);
