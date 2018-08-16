@@ -8,6 +8,7 @@ import static org.quackery.testing.Testing.fail;
 import static org.quackery.testing.Testing.mockCase;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.quackery.Case;
 import org.quackery.QuackeryException;
@@ -102,5 +103,57 @@ public class TestingVisitors {
       visitor.visit((Test) null);
       fail();
     } catch (QuackeryException e) {}
+  }
+
+  public static void visitor_runs_cases(Visitor visitor) throws Throwable {
+    visitor_runs_case_once(visitor);
+    visitor_report_does_not_run_successful_case(visitor);
+    visitor_report_does_not_run_failed_case(visitor);
+  }
+
+  private static void visitor_runs_case_once(Visitor visitor) {
+    final AtomicInteger invoked = new AtomicInteger();
+    Test test = new Case("name") {
+      public void run() {
+        invoked.incrementAndGet();
+      }
+    };
+
+    visitor.visit(test);
+
+    assertEquals(invoked.get(), 1);
+  }
+
+  private static void visitor_report_does_not_run_successful_case(Visitor visitor) throws Throwable {
+    final AtomicInteger invoked = new AtomicInteger();
+    Test test = new Case("name") {
+      public void run() {
+        invoked.incrementAndGet();
+      }
+    };
+    Test report = visitor.visit(test);
+    invoked.set(0);
+
+    ((Case) report).run();
+
+    assertEquals(invoked.get(), 0);
+  }
+
+  private static void visitor_report_does_not_run_failed_case(Visitor visitor) {
+    final AtomicInteger invoked = new AtomicInteger();
+    Test test = new Case("name") {
+      public void run() {
+        invoked.incrementAndGet();
+        throw new RuntimeException();
+      }
+    };
+    Test report = visitor.visit(test);
+    invoked.set(0);
+
+    try {
+      ((Case) report).run();
+    } catch (Throwable t) {}
+
+    assertEquals(invoked.get(), 0);
   }
 }
