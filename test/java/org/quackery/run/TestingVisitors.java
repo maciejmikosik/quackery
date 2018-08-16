@@ -105,13 +105,19 @@ public class TestingVisitors {
     } catch (QuackeryException e) {}
   }
 
-  public static void visitor_runs_cases(Visitor visitor) throws Throwable {
-    visitor_runs_case_once(visitor);
-    visitor_report_does_not_run_successful_case(visitor);
-    visitor_report_does_not_run_failed_case(visitor);
+  public static void visitor_runs_cases_eagerly(Visitor visitor) throws Throwable {
+    visitor_runs_case(1, visitor);
+    visitor_runs_successful_visited(0, visitor);
+    visitor_runs_failed_visited(0, visitor);
   }
 
-  private static void visitor_runs_case_once(Visitor visitor) {
+  public static void visitor_runs_cases_lazily(Visitor visitor) throws Throwable {
+    visitor_runs_case(0, visitor);
+    visitor_runs_successful_visited(1, visitor);
+    visitor_runs_failed_visited(1, visitor);
+  }
+
+  private static void visitor_runs_case(int count, Visitor visitor) {
     final AtomicInteger invoked = new AtomicInteger();
     Test test = new Case("name") {
       public void run() {
@@ -121,25 +127,25 @@ public class TestingVisitors {
 
     visitor.visit(test);
 
-    assertEquals(invoked.get(), 1);
+    assertEquals(invoked.get(), count);
   }
 
-  private static void visitor_report_does_not_run_successful_case(Visitor visitor) throws Throwable {
+  private static void visitor_runs_successful_visited(int count, Visitor visitor) throws Throwable {
     final AtomicInteger invoked = new AtomicInteger();
     Test test = new Case("name") {
       public void run() {
         invoked.incrementAndGet();
       }
     };
-    Test report = visitor.visit(test);
+    Test visited = visitor.visit(test);
     invoked.set(0);
 
-    ((Case) report).run();
+    ((Case) visited).run();
 
-    assertEquals(invoked.get(), 0);
+    assertEquals(invoked.get(), count);
   }
 
-  private static void visitor_report_does_not_run_failed_case(Visitor visitor) {
+  private static void visitor_runs_failed_visited(int count, Visitor visitor) {
     final AtomicInteger invoked = new AtomicInteger();
     Test test = new Case("name") {
       public void run() {
@@ -147,13 +153,13 @@ public class TestingVisitors {
         throw new RuntimeException();
       }
     };
-    Test report = visitor.visit(test);
+    Test visited = visitor.visit(test);
     invoked.set(0);
 
     try {
-      ((Case) report).run();
+      ((Case) visited).run();
     } catch (Throwable t) {}
 
-    assertEquals(invoked.get(), 0);
+    assertEquals(invoked.get(), count);
   }
 }

@@ -3,6 +3,7 @@ package org.quackery.run;
 import static org.quackery.run.Runners.classLoaderScoped;
 import static org.quackery.run.TestingVisitors.visitor_preserves_case_result;
 import static org.quackery.run.TestingVisitors.visitor_preserves_names_and_structure;
+import static org.quackery.run.TestingVisitors.visitor_runs_cases_lazily;
 import static org.quackery.run.TestingVisitors.visitor_validates_arguments;
 import static org.quackery.testing.Testing.assertEquals;
 import static org.quackery.testing.Testing.assertNotEquals;
@@ -24,6 +25,7 @@ public class TestRunnersClassLoaderScoped {
     visitor_preserves_names_and_structure(visitor);
     visitor_preserves_case_result(visitor);
     visitor_validates_arguments(visitor);
+    visitor_runs_cases_lazily(visitor);
 
     Thread thread = Thread.currentThread();
     ClassLoader original = thread.getContextClassLoader();

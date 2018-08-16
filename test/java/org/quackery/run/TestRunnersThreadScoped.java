@@ -3,6 +3,7 @@ package org.quackery.run;
 import static org.quackery.run.Runners.threadScoped;
 import static org.quackery.run.TestingVisitors.visitor_preserves_case_result;
 import static org.quackery.run.TestingVisitors.visitor_preserves_names_and_structure;
+import static org.quackery.run.TestingVisitors.visitor_runs_cases_lazily;
 import static org.quackery.run.TestingVisitors.visitor_validates_arguments;
 import static org.quackery.testing.Testing.assertNotEquals;
 
@@ -22,6 +23,7 @@ public class TestRunnersThreadScoped {
     visitor_preserves_names_and_structure(visitor);
     visitor_preserves_case_result(visitor);
     visitor_validates_arguments(visitor);
+    visitor_runs_cases_lazily(visitor);
 
     runs_test_in_different_thread_than_caller();
     runs_each_test_in_different_thread();
