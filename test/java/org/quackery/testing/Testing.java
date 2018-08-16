@@ -1,9 +1,8 @@
 package org.quackery.testing;
 
 import static java.lang.String.format;
+import static java.util.Objects.deepEquals;
 import static java.util.Objects.hash;
-
-import java.util.Objects;
 
 import org.quackery.Case;
 import org.quackery.Case.Body;
@@ -18,8 +17,8 @@ public class Testing {
   }
 
   public static void assertEquals(Object actual, Object expected) {
-    if (!Objects.deepEquals(actual, expected)) {
-      throw new AssertionError(String.format(""
+    if (!deepEquals(actual, expected)) {
+      throw new AssertionError(format(""
           + "\n"
           + "  expected equal to\n"
           + "    %s\n"
