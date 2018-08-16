@@ -4,49 +4,59 @@ import static java.util.concurrent.Executors.newCachedThreadPool;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.quackery.Suite.suite;
 import static org.quackery.run.Runners.runIn;
+import static org.quackery.run.TestingVisitors.visitor_preserves_case_result;
+import static org.quackery.run.TestingVisitors.visitor_preserves_names_and_structure;
+import static org.quackery.run.TestingVisitors.visitor_runs_cases;
+import static org.quackery.run.TestingVisitors.visitor_validates_arguments;
 import static org.quackery.testing.Testing.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.quackery.Case;
 import org.quackery.Test;
 
-public class TestRunnersRunIn extends TestRunner {
-  private Test test;
-  private ExecutorService executor;
-  private boolean failed = false;
+public class TestRunnersRunIn {
+  public static void test_runners_run_in() throws Throwable {
+    Visitor visitor = new Visitor() {
+      public Test visit(Test visiting) {
+        return runIn(currentThreadExecutor(), visiting);
+      }
+    };
 
-  protected Test visit(Test visiting) {
-    return runIn(currentThreadExecutor(), visiting);
+    visitor_preserves_names_and_structure(visitor);
+    visitor_preserves_case_result(visitor);
+    visitor_validates_arguments(visitor);
+    visitor_runs_cases(visitor);
+
+    submits_asynchronously_to_executor();
   }
 
-  public void submits_asynchronously_to_executor() throws InterruptedException {
+  private static void submits_asynchronously_to_executor() throws InterruptedException {
     CountDownLatch latch = new CountDownLatch(3);
-    executor = newCachedThreadPool();
-    test = suite("")
-        .add(countDown(latch))
-        .add(countDown(latch))
-        .add(countDown(latch));
+    ExecutorService executor = newCachedThreadPool();
+    AtomicBoolean failed = new AtomicBoolean(false);
+    Test test = suite("")
+        .add(countDown(latch, failed))
+        .add(countDown(latch, failed))
+        .add(countDown(latch, failed));
 
-    // when
     runIn(executor, test);
 
-    // then
-    assertTrue(!failed);
+    assertTrue(!failed.get());
 
-    // tear down
     executor.shutdown();
     assertTrue(executor.awaitTermination(1, SECONDS));
   }
 
-  private Case countDown(final CountDownLatch latch) {
-    return new Case("") {
+  private static Case countDown(final CountDownLatch latch, final AtomicBoolean failed) {
+    return new Case("countDown") {
       public void run() throws InterruptedException {
         latch.countDown();
         if (!latch.await(1, SECONDS)) {
-          failed = true;
+          failed.set(true);
         }
       }
     };

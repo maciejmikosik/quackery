@@ -29,6 +29,19 @@ public class Testing {
     }
   }
 
+  public static void assertNotEquals(Object actual, Object expected) {
+    if (deepEquals(actual, expected)) {
+      throw new AssertionError(format(""
+          + "\n"
+          + "  expected not equal to\n"
+          + "    %s\n"
+          + "  but was\n"
+          + "    %s\n",
+          expected,
+          actual));
+    }
+  }
+
   public static void fail() {
     throw new AssertionError();
   }

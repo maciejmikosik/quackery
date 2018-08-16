@@ -1,94 +1,103 @@
 package org.quackery.run;
 
 import static org.quackery.run.Runners.classLoaderScoped;
+import static org.quackery.run.TestingVisitors.visitor_preserves_case_result;
+import static org.quackery.run.TestingVisitors.visitor_preserves_names_and_structure;
+import static org.quackery.run.TestingVisitors.visitor_validates_arguments;
 import static org.quackery.testing.Testing.assertEquals;
-import static org.quackery.testing.Testing.assertTrue;
+import static org.quackery.testing.Testing.assertNotEquals;
 import static org.quackery.testing.Testing.mockCase;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.quackery.Case;
 import org.quackery.Test;
 
-public class TestRunnersClassLoaderScoped extends TestVisitor {
-  private final String name = "name";
-  private final Throwable throwable = new Throwable();
-  private ClassLoader original, scoped, parent;
-  private Test test;
+public class TestRunnersClassLoaderScoped {
+  public static void test_runners_class_loader_scoped() throws Throwable {
+    Visitor visitor = new Visitor() {
+      public Test visit(Test visiting) {
+        return classLoaderScoped(visiting);
+      }
+    };
 
-  protected Test visit(Test visiting) {
-    return classLoaderScoped(visiting);
+    visitor_preserves_names_and_structure(visitor);
+    visitor_preserves_case_result(visitor);
+    visitor_validates_arguments(visitor);
+
+    Thread thread = Thread.currentThread();
+    ClassLoader original = thread.getContextClassLoader();
+    scope_is_not_context_classloader();
+    thread.setContextClassLoader(original);
+    scope_is_not_current_classloader();
+    thread.setContextClassLoader(original);
+    scope_is_child_of_context_classloader();
+    thread.setContextClassLoader(original);
+    restores_context_class_loader_if_successful();
+    thread.setContextClassLoader(original);
+    restores_context_class_loader_if_failed();
+    thread.setContextClassLoader(original);
   }
 
-  public void scoped_is_not_context() throws Throwable {
-    original = Thread.currentThread().getContextClassLoader();
-    test = classLoaderScoped(new Case(name) {
+  private static void scope_is_not_context_classloader() throws Throwable {
+    ClassLoader original = Thread.currentThread().getContextClassLoader();
+    final AtomicReference<ClassLoader> scope = new AtomicReference<ClassLoader>();
+    Test test = classLoaderScoped(new Case("name") {
       public void run() {
-        scoped = Thread.currentThread().getContextClassLoader();
+        scope.set(Thread.currentThread().getContextClassLoader());
       }
     });
 
-    // when
     ((Case) test).run();
 
-    // then
-    assertTrue(scoped != original);
+    assertNotEquals(scope.get(), original);
   }
 
-  public void scoped_is_not_current() throws Throwable {
-    original = getClass().getClassLoader();
-    test = classLoaderScoped(new Case(name) {
+  private static void scope_is_not_current_classloader() throws Throwable {
+    ClassLoader original = TestRunnersThreadScoped.class.getClassLoader();
+    final AtomicReference<ClassLoader> scope = new AtomicReference<ClassLoader>();
+    Test test = classLoaderScoped(new Case("name") {
       public void run() {
-        scoped = Thread.currentThread().getContextClassLoader();
+        scope.set(Thread.currentThread().getContextClassLoader());
       }
     });
 
-    // when
     ((Case) test).run();
 
-    // then
-    assertTrue(scoped != original);
+    assertNotEquals(scope.get(), original);
   }
 
-  public void scoped_is_child_of_context() throws Throwable {
-    original = getClass().getClassLoader();
-    parent = new ClassLoader() {};
-    Thread.currentThread().setContextClassLoader(parent);
-    test = classLoaderScoped(new Case(name) {
+  private static void scope_is_child_of_context_classloader() throws Throwable {
+    ClassLoader original = TestRunnersClassLoaderScoped.class.getClassLoader();
+    final AtomicReference<ClassLoader> scope = new AtomicReference<ClassLoader>();
+    Test test = classLoaderScoped(new Case("name") {
       public void run() {
-        scoped = Thread.currentThread().getContextClassLoader();
+        scope.set(Thread.currentThread().getContextClassLoader());
       }
     });
 
-    // when
     ((Case) test).run();
 
-    // then
-    assertTrue(scoped.getParent() == parent);
-
-    // tear down
-    Thread.currentThread().setContextClassLoader(original);
+    assertEquals(scope.get().getParent(), original);
   }
 
-  public void restores_context_if_successful() throws Throwable {
-    original = Thread.currentThread().getContextClassLoader();
-    test = classLoaderScoped(mockCase(name));
+  private static void restores_context_class_loader_if_successful() throws Throwable {
+    ClassLoader original = Thread.currentThread().getContextClassLoader();
+    Test test = classLoaderScoped(mockCase("name"));
 
-    // when
     ((Case) test).run();
 
-    // then
     assertEquals(Thread.currentThread().getContextClassLoader(), original);
   }
 
-  public void restores_context_if_failed() {
-    original = Thread.currentThread().getContextClassLoader();
-    test = classLoaderScoped(mockCase(name, throwable));
+  private static void restores_context_class_loader_if_failed() {
+    ClassLoader original = Thread.currentThread().getContextClassLoader();
+    Test test = classLoaderScoped(mockCase("name", new Throwable()));
 
-    // when
     try {
       ((Case) test).run();
     } catch (Throwable t) {}
 
-    // then
     assertEquals(Thread.currentThread().getContextClassLoader(), original);
   }
 }

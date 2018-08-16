@@ -5,6 +5,10 @@ import static java.math.RoundingMode.HALF_UP;
 import static net.bytebuddy.TestByteBuddy.test_byte_buddy;
 import static org.quackery.TestCase.test_case;
 import static org.quackery.TestSuite.test_suite;
+import static org.quackery.run.TestRunnersClassLoaderScoped.test_runners_class_loader_scoped;
+import static org.quackery.run.TestRunnersRun.test_runners_run;
+import static org.quackery.run.TestRunnersRunIn.test_runners_run_in;
+import static org.quackery.run.TestRunnersThreadScoped.test_runners_thread_scoped;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -27,10 +31,6 @@ import org.quackery.junit.TestQuackeryRunnerJunitTestAnnotation;
 import org.quackery.junit.TestQuackeryRunnerQuackeryAnnotation;
 import org.quackery.report.TestReportsCountThrowables;
 import org.quackery.report.TestReportsFormat;
-import org.quackery.run.TestRunnersClassLoaderScoped;
-import org.quackery.run.TestRunnersRun;
-import org.quackery.run.TestRunnersRunIn;
-import org.quackery.run.TestRunnersThreadScoped;
 
 public class TestAll {
   private static List<Throwable> failures = new ArrayList<Throwable>();
@@ -44,10 +44,11 @@ public class TestAll {
     test_case();
     test_suite();
 
-    runTestsIn(TestRunnersRun.class);
-    runTestsIn(TestRunnersRunIn.class);
-    runTestsIn(TestRunnersThreadScoped.class);
-    runTestsIn(TestRunnersClassLoaderScoped.class);
+    test_runners_run();
+    test_runners_run_in();
+    test_runners_thread_scoped();
+    test_runners_class_loader_scoped();
+
     runTestsIn(TestReportsCountThrowables.class);
     runTestsIn(TestReportsFormat.class);
 

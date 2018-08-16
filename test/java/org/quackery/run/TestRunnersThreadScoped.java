@@ -1,55 +1,66 @@
 package org.quackery.run;
 
 import static org.quackery.run.Runners.threadScoped;
-import static org.quackery.testing.Testing.assertTrue;
+import static org.quackery.run.TestingVisitors.visitor_preserves_case_result;
+import static org.quackery.run.TestingVisitors.visitor_preserves_names_and_structure;
+import static org.quackery.run.TestingVisitors.visitor_validates_arguments;
+import static org.quackery.testing.Testing.assertNotEquals;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.quackery.Case;
 import org.quackery.Test;
 
-public class TestRunnersThreadScoped extends TestVisitor {
-  private final String name = "name";
-  private Test test, testA, testB;
-  private Thread callerThread, scopingThread, scopingThreadA, scopingThreadB;
+public class TestRunnersThreadScoped {
+  public static void test_runners_thread_scoped() throws Throwable {
+    Visitor visitor = new Visitor() {
+      public Test visit(Test visiting) {
+        return threadScoped(visiting);
+      }
+    };
 
-  protected Test visit(Test visiting) {
-    return threadScoped(visiting);
+    visitor_preserves_names_and_structure(visitor);
+    visitor_preserves_case_result(visitor);
+    visitor_validates_arguments(visitor);
+
+    runs_test_in_different_thread_than_caller();
+    runs_each_test_in_different_thread();
   }
 
-  public void runs_test_in_different_thread_than_caller() throws Throwable {
-    callerThread = Thread.currentThread();
-    test = threadScoped(new Case(name) {
+  private static void runs_test_in_different_thread_than_caller() throws Throwable {
+    Thread callerThread = Thread.currentThread();
+    final AtomicReference<Thread> scope = new AtomicReference<>();
+    Test test = threadScoped(new Case("case") {
       public void run() {
-        scopingThread = Thread.currentThread();
+        scope.set(Thread.currentThread());
       }
     });
 
-    // when
     ((Case) test).run();
 
-    // then
-    assertTrue(scopingThread != null);
-    assertTrue(scopingThread != callerThread);
+    assertNotEquals(scope.get(), null);
+    assertNotEquals(scope.get(), callerThread);
   }
 
-  public void runs_each_test_in_different_thread() throws Throwable {
-    testA = threadScoped(new Case(name) {
+  private static void runs_each_test_in_different_thread() throws Throwable {
+    final AtomicReference<Thread> scopeA = new AtomicReference<>();
+    final AtomicReference<Thread> scopeB = new AtomicReference<>();
+    Test testA = threadScoped(new Case("caseA") {
       public void run() {
-        scopingThreadA = Thread.currentThread();
+        scopeA.set(Thread.currentThread());
       }
     });
-    testB = threadScoped(new Case(name) {
+    Test testB = threadScoped(new Case("caseB") {
       public void run() {
-        scopingThreadB = Thread.currentThread();
+        scopeB.set(Thread.currentThread());
       }
     });
 
-    // when
     ((Case) testA).run();
     ((Case) testB).run();
 
-    // then
-    assertTrue(scopingThreadA != null);
-    assertTrue(scopingThreadB != null);
-    assertTrue(scopingThreadA != scopingThreadB);
+    assertNotEquals(scopeA.get(), null);
+    assertNotEquals(scopeB.get(), null);
+    assertNotEquals(scopeB.get(), scopeA.get());
   }
 }
