@@ -98,8 +98,8 @@ public class QuackeryRunner extends Runner {
           throw e.getCause();
         }
       };
-    } catch (ReflectiveOperationException e) {
-      throw new QuackeryException(e);
+    } catch (IllegalAccessException e) {
+      throw new Error(e);
     }
   }
 

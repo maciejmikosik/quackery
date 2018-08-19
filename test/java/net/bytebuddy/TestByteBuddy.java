@@ -2,50 +2,51 @@ package net.bytebuddy;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.lang.reflect.Modifier.PUBLIC;
-import static org.quackery.testing.Assertions.assertTrue;
+import static net.bytebuddy.dynamic.loading.ClassLoadingStrategy.Default.WRAPPER;
+import static org.quackery.testing.Testing.assertTrue;
 
 import java.lang.annotation.Retention;
 import java.lang.reflect.Modifier;
 
-import net.bytebuddy.dynamic.DynamicType.Builder;
-import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.implementation.SuperMethodCall;
 
 public class TestByteBuddy {
-  public void can_redefine_inner_class_as_public_with_default_constructor() throws Exception {
-    class Inner {}
+  public static void test_byte_buddy() throws Exception {
+    can_redefine_inner_class_as_public_with_default_constructor();
+    redefining_class_preserves_annotation_on_methods();
+  }
 
-    // when
-    Class<?> type = load(new ByteBuddy()
+  private static void can_redefine_inner_class_as_public_with_default_constructor() throws Exception {
+    Class<?> type = new ByteBuddy()
         .redefine(Inner.class)
         .modifiers(PUBLIC)
         .defineConstructor(PUBLIC)
-        .intercept(SuperMethodCall.INSTANCE));
+        .intercept(SuperMethodCall.INSTANCE)
+        .name("Redefined")
+        .make()
+        .load(Thread.currentThread().getContextClassLoader(), WRAPPER)
+        .getLoaded();
 
-    // then
     assertTrue(type.getConstructor().newInstance() != null);
     assertTrue(Modifier.isPublic(type.getModifiers()));
   }
 
-  public void redefining_class_preserves_annotation_on_methods() throws Exception {
+  private class Inner {}
+
+  private static void redefining_class_preserves_annotation_on_methods() throws Exception {
     class TestClass {
       @TestAnnotation
       void method() {}
     }
 
-    // when
-    Class<?> type = load(new ByteBuddy().redefine(TestClass.class));
-
-    // then
-    assertTrue(type.getDeclaredMethod("method").isAnnotationPresent(TestAnnotation.class));
-  }
-
-  private static Class<?> load(Builder<?> builder) {
-    return builder
+    Class<?> type = new ByteBuddy()
+        .redefine(TestClass.class)
         .name("Redefined")
         .make()
-        .load(Thread.currentThread().getContextClassLoader(), ClassLoadingStrategy.Default.WRAPPER)
+        .load(Thread.currentThread().getContextClassLoader(), WRAPPER)
         .getLoaded();
+
+    assertTrue(type.getDeclaredMethod("method").isAnnotationPresent(TestAnnotation.class));
   }
 
   @Retention(RUNTIME)

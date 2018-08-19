@@ -11,7 +11,7 @@ import java.util.List;
 import org.quackery.contract.collection.bug.alien.AlienBugs;
 import org.quackery.contract.collection.bug.collection.CollectionBugs;
 import org.quackery.contract.collection.bug.collection.allowingNull.CollectionAllowingNullBugs;
-import org.quackery.contract.collection.bug.collection.constructor.CollectionConstructorBugsBugs;
+import org.quackery.contract.collection.bug.collection.constructor.CollectionConstructorBugs;
 import org.quackery.contract.collection.bug.collection.factory.CollectionFactoryBugs;
 import org.quackery.contract.collection.bug.collection.forbiddingNull.CollectionForbiddingNullBugs;
 import org.quackery.contract.collection.bug.collection.immutable.CollectionImmutableBugs;
@@ -59,7 +59,7 @@ public class Bugs {
     List<Class<?>> commonBugs = new LinkedList<>();
 
     bugs.addAll(onlyIf(true, AlienBugs.BUGS));
-    bugs.addAll(onlyIf(factory == null, CollectionConstructorBugsBugs.BUGS));
+    bugs.addAll(onlyIf(factory == null, CollectionConstructorBugs.BUGS));
     bugs.addAll(onlyIf(factory != null, CollectionFactoryBugs.BUGS));
     bugs.addAll(onlyIf(isList && factory != null, ListFactoryBugs.BUGS));
 

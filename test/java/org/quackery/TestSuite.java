@@ -2,129 +2,187 @@ package org.quackery;
 
 import static java.util.Arrays.asList;
 import static org.quackery.Suite.suite;
-import static org.quackery.testing.Assertions.assertEquals;
-import static org.quackery.testing.Assertions.assertTrue;
-import static org.quackery.testing.Assertions.fail;
-import static org.quackery.testing.Mocks.mockCase;
-import static org.quackery.testing.Mocks.mockContract;
-import static org.quackery.testing.Mocks.mockObject;
-import static org.quackery.testing.Mocks.mockTest;
+import static org.quackery.testing.Testing.assertEquals;
+import static org.quackery.testing.Testing.assertTrue;
+import static org.quackery.testing.Testing.fail;
+import static org.quackery.testing.Testing.mockCase;
+import static org.quackery.testing.Testing.mockContract;
+import static org.quackery.testing.Testing.mockObject;
+
+import java.util.List;
 
 public class TestSuite {
-  private String name = "name";
-  private final Test testA = mockCase("testA"),
-      testB = mockCase("testB"),
-      testC = mockCase("testC"),
-      testD = mockCase("testD");
-  private final Object itemA = mockObject("itemA"),
-      itemB = mockObject("itemB"),
-      itemC = mockObject("itemC"),
-      itemD = mockObject("itemD");
-  private final Contract<Object> contractA = mockContract("contractA"),
-      contractB = mockContract("contractB"),
-      contractC = mockContract("contractC");
-  private Suite suite;
+  public static void test_suite() {
+    implements_test_interface();
+    creates_empty_suite();
+    adds_test();
+    adds_tests_from_iterable();
+    adds_tests_from_array();
+    adds_test_produced_by_contract_and_item();
+    adds_tests_produced_by_contract_and_items_from_iterable();
+    adds_tests_produced_by_contract_and_items_from_array();
+    allows_wildcards();
+    implements_to_string();
+    validates_arguments();
+  }
 
-  public void implements_test_interface() {
+  private static void implements_test_interface() {
     assertTrue(Test.class.isAssignableFrom(Suite.class));
   }
 
-  public void creates_empty_suite() {
-    suite = suite(name);
+  private static void creates_empty_suite() {
+    String name = "name";
+    Suite suite = suite(name);
+
+    assertEquals(suite.name, name);
     assertEquals(suite.tests, asList());
   }
 
-  public void has_name() {
-    suite = suite(name);
-    assertEquals(suite.name, name);
-  }
+  private static void adds_test() {
+    Test testA = mockCase("caseA");
+    Test testB = mockCase("caseB");
+    Test testC = mockCase("caseC");
 
-  public void adds_test() {
-    suite = suite(name)
+    Suite suite = suite("suite")
         .add(testA)
         .add(testB)
         .add(testC);
+
     assertEquals(suite.tests, asList(testA, testB, testC));
   }
 
-  public void adds_tests_from_iterable() {
-    suite = suite(name)
+  private static void adds_tests_from_iterable() {
+    Test testA = mockCase("caseA");
+    Test testB = mockCase("caseB");
+    Test testC = mockCase("caseC");
+    Test testD = mockCase("caseD");
+
+    Suite suite = suite("suite")
         .addAll(asList(testA, testB))
         .addAll(asList(testC, testD));
+
     assertEquals(suite.tests, asList(testA, testB, testC, testD));
   }
 
-  public void adds_tests_from_array() {
-    suite = suite(name)
+  private static void adds_tests_from_array() {
+    Test testA = mockCase("caseA");
+    Test testB = mockCase("caseB");
+    Test testC = mockCase("caseC");
+    Test testD = mockCase("caseD");
+
+    Suite suite = suite("suite")
         .addAll(new Test[] { testA, testB })
         .addAll(new Test[] { testC, testD });
+
     assertEquals(suite.tests, asList(testA, testB, testC, testD));
   }
 
-  public void adds_test_produced_by_contract_and_item() {
-    suite = suite(name)
+  private static void adds_test_produced_by_contract_and_item() {
+    Object itemA = mockObject("itemA");
+    Object itemB = mockObject("itemB");
+    Object itemC = mockObject("itemC");
+    Contract<Object> contractA = mockContract("contractA");
+    Contract<Object> contractB = mockContract("contractB");
+    Contract<Object> contractC = mockContract("contractC");
+
+    Suite suite = suite("suite")
         .add(itemA, contractA)
         .add(itemB, contractB)
         .add(itemC, contractC);
+
     assertEquals(suite.tests, asList(
-        mockTest(itemA, contractA),
-        mockTest(itemB, contractB),
-        mockTest(itemC, contractC)));
+        contractA.test(itemA),
+        contractB.test(itemB),
+        contractC.test(itemC)));
   }
 
-  public void adds_tests_produced_by_contract_and_items_from_iterable() {
-    suite = suite(name)
+  private static void adds_tests_produced_by_contract_and_items_from_iterable() {
+    Object itemA = mockObject("itemA");
+    Object itemB = mockObject("itemB");
+    Object itemC = mockObject("itemC");
+    Object itemD = mockObject("itemD");
+    Contract<Object> contractA = mockContract("contractA");
+    Contract<Object> contractB = mockContract("contractB");
+
+    Suite suite = suite("suite")
         .addAll(asList(itemA, itemB), contractA)
         .addAll(asList(itemC, itemD), contractB);
+
     assertEquals(suite.tests, asList(
-        mockTest(itemA, contractA),
-        mockTest(itemB, contractA),
-        mockTest(itemC, contractB),
-        mockTest(itemD, contractB)));
+        contractA.test(itemA),
+        contractA.test(itemB),
+        contractB.test(itemC),
+        contractB.test(itemD)));
   }
 
-  public void adds_tests_produced_by_contract_and_items_from_array() {
-    suite = suite(name)
+  private static void adds_tests_produced_by_contract_and_items_from_array() {
+    Object itemA = mockObject("itemA");
+    Object itemB = mockObject("itemB");
+    Object itemC = mockObject("itemC");
+    Object itemD = mockObject("itemD");
+    Contract<Object> contractA = mockContract("contractA");
+    Contract<Object> contractB = mockContract("contractB");
+
+    Suite suite = suite("suite")
         .addAll(new Object[] { itemA, itemB }, contractA)
         .addAll(new Object[] { itemC, itemD }, contractB);
+
     assertEquals(suite.tests, asList(
-        mockTest(itemA, contractA),
-        mockTest(itemB, contractA),
-        mockTest(itemC, contractB),
-        mockTest(itemD, contractB)));
+        contractA.test(itemA),
+        contractA.test(itemB),
+        contractB.test(itemC),
+        contractB.test(itemD)));
   }
 
-  public void lists_are_covariant() {
-    class Foo {}
-    class Bar extends Foo {}
-    final Bar bar = null;
-    final Contract<Foo> fooContract = null;
+  private static void allows_wildcards() {
+    class Item {}
+    class SubItem extends Item {}
 
-    // don't run, just compile
-    new Runnable() {
-      public void run() {
-        suite(name)
-            .addAll(asList(new Case[0]))
-            .addAll(asList(bar), fooContract);
-      }
-    };
+    List<Case> cases = asList(mockCase("case"));
+    List<Suite> suites = asList(suite("suite"));
+    List<Test> tests = asList(suite("suite"), mockCase("case"));
+    List<? extends Test> covariantTests = asList(suite("suite"), mockCase("case"));
+
+    List<Item> items = asList(new Item());
+    List<SubItem> subItems = asList(new SubItem());
+    List<? extends Item> covariantItems = asList(new Item(), new SubItem());
+
+    Contract<Item> contract = mockContract("contract");
+    Contract<? super Item> contravariantContract = mockContract("covariantContract");
+
+    suite("suite")
+        .addAll(cases)
+        .addAll(suites)
+        .addAll(tests)
+        .addAll(covariantTests)
+        .addAll(items, contract)
+        .addAll(subItems, contract)
+        .addAll(covariantItems, contract)
+        .addAll(items, contravariantContract)
+        .addAll(subItems, contravariantContract)
+        .addAll(covariantItems, contravariantContract);
   }
 
-  public void to_string_returns_name() {
-    suite = suite(name);
-    assertEquals(name, suite.toString());
+  private static void implements_to_string() {
+    String name = "name";
+
+    Suite suite = suite(name);
+
+    assertEquals(suite.toString(), name);
   }
 
-  public void name_cannot_be_null() {
-    name = null;
+  private static void validates_arguments() {
+    Suite suite = suite("suite");
+    Case testA = mockCase("testA");
+    Case testB = mockCase("testB");
+    Contract<Object> contract = mockContract("contract");
+    Object item = mockObject("item");
+
     try {
-      suite(name);
+      suite(null);
       fail();
     } catch (QuackeryException e) {}
-  }
 
-  public void test_cannot_be_null() {
-    suite = suite(name);
     try {
       suite.add(null);
       fail();
@@ -145,24 +203,18 @@ public class TestSuite {
       suite.addAll(new Test[] { testA, null, testB });
       fail();
     } catch (QuackeryException e) {}
-  }
 
-  public void items_cannot_be_null() {
-    suite = suite(name);
     try {
-      suite.addAll((Iterable<Object>) null, contractA);
+      suite.addAll((Iterable<Object>) null, contract);
       fail();
     } catch (QuackeryException e) {}
     try {
-      suite.addAll((Object[]) null, contractA);
+      suite.addAll((Object[]) null, contract);
       fail();
     } catch (QuackeryException e) {}
-  }
 
-  public void contract_cannot_be_null() {
-    suite = suite(name);
     try {
-      suite.add(itemA, (Contract<Object>) null);
+      suite.add(item, (Contract<Object>) null);
       fail();
     } catch (QuackeryException e) {}
     try {
