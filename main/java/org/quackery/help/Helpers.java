@@ -7,6 +7,20 @@ import org.quackery.Suite;
 import org.quackery.Test;
 
 public class Helpers {
+  public static Case successfulCase(String name) {
+    return new Case(name) {
+      public void run() {}
+    };
+  }
+
+  public static Case failingCase(String name, final Throwable throwable) {
+    return new Case(name) {
+      public void run() throws Throwable {
+        throw throwable;
+      }
+    };
+  }
+
   public static Test rename(String name, final Test test) {
     return test instanceof Case
         ? rename(name, (Case) test)

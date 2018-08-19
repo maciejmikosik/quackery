@@ -1,6 +1,7 @@
 package org.quackery.junit;
 
 import static org.quackery.help.Helpers.rename;
+import static org.quackery.help.Helpers.successfulCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,12 +53,6 @@ public class FixBugs {
       }
 
     }.visit(test);
-  }
-
-  private static Case successfulCase(String name) {
-    return new Case(name) {
-      public void run() {}
-    };
   }
 
   private static Test fixEmptyNameBug(Test test) {

@@ -1,5 +1,8 @@
 package org.quackery.run;
 
+import static org.quackery.help.Helpers.failingCase;
+import static org.quackery.help.Helpers.successfulCase;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.FutureTask;
@@ -19,16 +22,10 @@ public class Runners {
   private static Case run(Case visiting) {
     try {
       visiting.run();
-    } catch (final Throwable throwable) {
-      return new Case(visiting.name) {
-        public void run() throws Throwable {
-          throw throwable;
-        }
-      };
+    } catch (Throwable throwable) {
+      return failingCase(visiting.name, throwable);
     }
-    return new Case(visiting.name) {
-      public void run() {}
-    };
+    return successfulCase(visiting.name);
   }
 
   public static Test runIn(final Executor executor, Test test) {

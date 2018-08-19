@@ -6,6 +6,7 @@ import static java.util.Arrays.asList;
 import static org.junit.runner.Description.createSuiteDescription;
 import static org.junit.runner.Description.createTestDescription;
 import static org.quackery.Suite.suite;
+import static org.quackery.help.Helpers.failingCase;
 import static org.quackery.junit.FixBugs.fixBugs;
 
 import java.io.Serializable;
@@ -82,56 +83,40 @@ public class QuackeryRunner extends Runner {
 
   private static Test instantiateQuackeryTestReturnedBy(Method method) {
     if (!isPublic(method.getModifiers())) {
-      return failingCase(method, "method must be public");
+      return fail(method, "method must be public");
     } else if (!isStatic(method.getModifiers())) {
-      return failingCase(method, "method must be static");
+      return fail(method, "method must be static");
     } else if (!Test.class.isAssignableFrom(method.getReturnType())) {
-      return failingCase(method, "method return type must be assignable to " + Test.class.getName());
+      return fail(method, "method return type must be assignable to " + Test.class.getName());
     } else if (method.getParameterTypes().length > 0) {
-      return failingCase(method, "method cannot have parameters");
+      return fail(method, "method cannot have parameters");
     }
     try {
       return (Test) method.invoke(null);
-    } catch (final InvocationTargetException e) {
-      return new Case(method.getName()) {
-        public void run() throws Throwable {
-          throw e.getCause();
-        }
-      };
+    } catch (InvocationTargetException e) {
+      return failingCase(method.getName(), e.getCause());
     } catch (IllegalAccessException e) {
       throw new Error(e);
     }
   }
 
-  private static Test failingCase(Method method, final String message) {
-    return new Case(method.getName()) {
-      public void run() {
-        throw new QuackeryException(message);
-      }
-    };
+  private static Case fail(Method method, String message) {
+    return failingCase(method.getName(), new QuackeryException(message));
   }
 
   private static List<Test> instantiateFailingTestsExplainingCausesOf(InitializationError error) {
     boolean hasJunitTestMethods = hasJunitTestMethods(error);
 
     List<Test> testsExplainingErrors = new ArrayList<>();
-    for (final Throwable cause : error.getCauses()) {
+    for (Throwable cause : error.getCauses()) {
       if (noRunnableMethods(cause)) {
         continue;
       } else if (noPublicDefaultConstructor(cause) && !hasJunitTestMethods) {
         continue;
       } else if (incorrectJunitTestMethod(cause)) {
-        testsExplainingErrors.add(new Case(junitTestMethodName(cause)) {
-          public void run() throws Throwable {
-            throw cause;
-          }
-        });
+        testsExplainingErrors.add(failingCase(junitTestMethodName(cause), cause));
       } else {
-        testsExplainingErrors.add(new Case(cause.getMessage()) {
-          public void run() throws Throwable {
-            throw cause;
-          }
-        });
+        testsExplainingErrors.add(failingCase(cause.getMessage(), cause));
       }
     }
     return testsExplainingErrors;
