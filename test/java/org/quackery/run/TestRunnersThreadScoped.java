@@ -1,29 +1,30 @@
 package org.quackery.run;
 
 import static org.quackery.run.Runners.threadScoped;
-import static org.quackery.run.TestingVisitors.visitor_preserves_case_result;
-import static org.quackery.run.TestingVisitors.visitor_preserves_names_and_structure;
-import static org.quackery.run.TestingVisitors.visitor_runs_cases_lazily;
-import static org.quackery.run.TestingVisitors.visitor_validates_arguments;
+import static org.quackery.run.TestingDecorators.decorator_preserves_case_result;
+import static org.quackery.run.TestingDecorators.decorator_preserves_names_and_structure;
+import static org.quackery.run.TestingDecorators.decorator_runs_cases_lazily;
+import static org.quackery.run.TestingDecorators.decorator_validates_arguments;
 import static org.quackery.testing.Testing.assertNotEquals;
 
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.quackery.Case;
 import org.quackery.Test;
+import org.quackery.help.Decorator;
 
 public class TestRunnersThreadScoped {
   public static void test_runners_thread_scoped() throws Throwable {
-    Visitor visitor = new Visitor() {
-      public Test visit(Test visiting) {
-        return threadScoped(visiting);
+    Decorator decorator = new Decorator() {
+      public Test decorate(Test test) {
+        return threadScoped(test);
       }
     };
 
-    visitor_preserves_names_and_structure(visitor);
-    visitor_preserves_case_result(visitor);
-    visitor_validates_arguments(visitor);
-    visitor_runs_cases_lazily(visitor);
+    decorator_preserves_names_and_structure(decorator);
+    decorator_preserves_case_result(decorator);
+    decorator_validates_arguments(decorator);
+    decorator_runs_cases_lazily(decorator);
 
     runs_test_in_different_thread_than_caller();
     runs_each_test_in_different_thread();
