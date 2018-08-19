@@ -14,14 +14,15 @@ import org.quackery.Case;
 import org.quackery.QuackeryException;
 import org.quackery.Suite;
 import org.quackery.Test;
+import org.quackery.help.Decorator;
 
-public class TestingVisitors {
-  public static void visitor_preserves_names_and_structure(Visitor visitor) throws Throwable {
-    visitor_preserves_names_and_structure(visitor, mockCase("case"));
-    visitor_preserves_names_and_structure(visitor, mockCase("case", new Throwable()));
-    visitor_preserves_names_and_structure(visitor, suite("suite").add(mockCase("case")));
-    visitor_preserves_names_and_structure(visitor, suite("suite"));
-    visitor_preserves_names_and_structure(visitor, suite("suiteA")
+public class TestingDecorators {
+  public static void decorator_preserves_names_and_structure(Decorator decorator) throws Throwable {
+    decorator_preserves_names_and_structure(decorator, mockCase("case"));
+    decorator_preserves_names_and_structure(decorator, mockCase("case", new Throwable()));
+    decorator_preserves_names_and_structure(decorator, suite("suite").add(mockCase("case")));
+    decorator_preserves_names_and_structure(decorator, suite("suite"));
+    decorator_preserves_names_and_structure(decorator, suite("suiteA")
         .add(suite("suiteB")
             .add(mockCase("caseA"))
             .add(mockCase("caseB")))
@@ -30,8 +31,8 @@ public class TestingVisitors {
             .add(mockCase("caseD"))));
   }
 
-  private static void visitor_preserves_names_and_structure(Visitor visitor, Test test) {
-    assertEqualNamesAndStructure(visitor.visit(test), test);
+  private static void decorator_preserves_names_and_structure(Decorator decorator, Test test) {
+    assertEqualNamesAndStructure(decorator.decorate(test), test);
   }
 
   private static void assertEqualNamesAndStructure(Test actual, Test expected) {
@@ -76,19 +77,19 @@ public class TestingVisitors {
         : Case.class;
   }
 
-  public static void visitor_preserves_case_result(Visitor visitor) throws Throwable {
-    visitor_preserves_case_result_if_successful(visitor);
-    visitor_preserves_case_result_if_failed(visitor);
+  public static void decorator_preserves_case_result(Decorator decorator) throws Throwable {
+    decorator_preserves_case_result_if_successful(decorator);
+    decorator_preserves_case_result_if_failed(decorator);
   }
 
-  private static void visitor_preserves_case_result_if_successful(Visitor visitor) throws Throwable {
-    Test test = visitor.visit(mockCase("name"));
+  private static void decorator_preserves_case_result_if_successful(Decorator decorator) throws Throwable {
+    Test test = decorator.decorate(mockCase("name"));
     ((Case) test).run();
   }
 
-  private static void visitor_preserves_case_result_if_failed(Visitor visitor) {
+  private static void decorator_preserves_case_result_if_failed(Decorator decorator) {
     Throwable throwable = new Throwable();
-    Test test = visitor.visit(mockCase("name", throwable));
+    Test test = decorator.decorate(mockCase("name", throwable));
 
     try {
       ((Case) test).run();
@@ -98,26 +99,26 @@ public class TestingVisitors {
     }
   }
 
-  public static void visitor_validates_arguments(Visitor visitor) {
+  public static void decorator_validates_arguments(Decorator decorator) {
     try {
-      visitor.visit((Test) null);
+      decorator.decorate((Test) null);
       fail();
     } catch (QuackeryException e) {}
   }
 
-  public static void visitor_runs_cases_eagerly(Visitor visitor) throws Throwable {
-    visitor_runs_case(1, visitor);
-    visitor_runs_successful_visited(0, visitor);
-    visitor_runs_failed_visited(0, visitor);
+  public static void decorator_runs_cases_eagerly(Decorator decorator) throws Throwable {
+    decorator_runs_case(1, decorator);
+    decorator_runs_successful_decorated(0, decorator);
+    decorator_runs_failed_decorated(0, decorator);
   }
 
-  public static void visitor_runs_cases_lazily(Visitor visitor) throws Throwable {
-    visitor_runs_case(0, visitor);
-    visitor_runs_successful_visited(1, visitor);
-    visitor_runs_failed_visited(1, visitor);
+  public static void decorator_runs_cases_lazily(Decorator decorator) throws Throwable {
+    decorator_runs_case(0, decorator);
+    decorator_runs_successful_decorated(1, decorator);
+    decorator_runs_failed_decorated(1, decorator);
   }
 
-  private static void visitor_runs_case(int count, Visitor visitor) {
+  private static void decorator_runs_case(int count, Decorator decorator) {
     final AtomicInteger invoked = new AtomicInteger();
     Test test = new Case("name") {
       public void run() {
@@ -125,27 +126,27 @@ public class TestingVisitors {
       }
     };
 
-    visitor.visit(test);
+    decorator.decorate(test);
 
     assertEquals(invoked.get(), count);
   }
 
-  private static void visitor_runs_successful_visited(int count, Visitor visitor) throws Throwable {
+  private static void decorator_runs_successful_decorated(int count, Decorator decorator) throws Throwable {
     final AtomicInteger invoked = new AtomicInteger();
     Test test = new Case("name") {
       public void run() {
         invoked.incrementAndGet();
       }
     };
-    Test visited = visitor.visit(test);
+    Test decorated = decorator.decorate(test);
     invoked.set(0);
 
-    ((Case) visited).run();
+    ((Case) decorated).run();
 
     assertEquals(invoked.get(), count);
   }
 
-  private static void visitor_runs_failed_visited(int count, Visitor visitor) {
+  private static void decorator_runs_failed_decorated(int count, Decorator decorator) {
     final AtomicInteger invoked = new AtomicInteger();
     Test test = new Case("name") {
       public void run() {
@@ -153,11 +154,11 @@ public class TestingVisitors {
         throw new RuntimeException();
       }
     };
-    Test visited = visitor.visit(test);
+    Test decorated = decorator.decorate(test);
     invoked.set(0);
 
     try {
-      ((Case) visited).run();
+      ((Case) decorated).run();
     } catch (Throwable t) {}
 
     assertEquals(invoked.get(), count);

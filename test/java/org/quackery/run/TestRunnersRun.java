@@ -1,24 +1,25 @@
 package org.quackery.run;
 
 import static org.quackery.run.Runners.run;
-import static org.quackery.run.TestingVisitors.visitor_preserves_case_result;
-import static org.quackery.run.TestingVisitors.visitor_preserves_names_and_structure;
-import static org.quackery.run.TestingVisitors.visitor_runs_cases_eagerly;
-import static org.quackery.run.TestingVisitors.visitor_validates_arguments;
+import static org.quackery.run.TestingDecorators.decorator_preserves_case_result;
+import static org.quackery.run.TestingDecorators.decorator_preserves_names_and_structure;
+import static org.quackery.run.TestingDecorators.decorator_runs_cases_eagerly;
+import static org.quackery.run.TestingDecorators.decorator_validates_arguments;
 
 import org.quackery.Test;
+import org.quackery.help.Decorator;
 
 public class TestRunnersRun {
   public static void test_runners_run() throws Throwable {
-    Visitor visitor = new Visitor() {
-      public Test visit(Test visiting) {
-        return run(visiting);
+    Decorator decorate = new Decorator() {
+      public Test decorate(Test test) {
+        return run(test);
       }
     };
 
-    visitor_preserves_names_and_structure(visitor);
-    visitor_preserves_case_result(visitor);
-    visitor_validates_arguments(visitor);
-    visitor_runs_cases_eagerly(visitor);
+    decorator_preserves_names_and_structure(decorate);
+    decorator_preserves_case_result(decorate);
+    decorator_validates_arguments(decorate);
+    decorator_runs_cases_eagerly(decorate);
   }
 }
