@@ -3,7 +3,8 @@ package org.quackery.run;
 import static java.util.concurrent.Executors.newCachedThreadPool;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.quackery.Suite.suite;
-import static org.quackery.run.Runners.runIn;
+import static org.quackery.run.Runners.in;
+import static org.quackery.run.Runners.run;
 import static org.quackery.run.TestingDecorators.decorator_preserves_case_result;
 import static org.quackery.run.TestingDecorators.decorator_preserves_names_and_structure;
 import static org.quackery.run.TestingDecorators.decorator_runs_cases_eagerly;
@@ -26,7 +27,7 @@ public class TestRunnersRunIn {
   public static void test_runners_run_in() throws Throwable {
     Decorator decorator = new Decorator() {
       public Test decorate(Test test) {
-        return runIn(currentThreadExecutor(), test);
+        return run(in(currentThreadExecutor(), test));
       }
     };
 
@@ -48,7 +49,7 @@ public class TestRunnersRunIn {
         .add(countDown(latch, failed))
         .add(countDown(latch, failed));
 
-    runIn(executor, test);
+    run(in(executor, test));
 
     assertTrue(!failed.get());
 
@@ -67,19 +68,22 @@ public class TestRunnersRunIn {
     };
   }
 
+  private static void validates_arguments() {
+    try {
+      in(null, mockCase("case"));
+      fail();
+    } catch (QuackeryException e) {}
+    try {
+      in(currentThreadExecutor(), null);
+      fail();
+    } catch (QuackeryException e) {}
+  }
+
   private static Executor currentThreadExecutor() {
     return new Executor() {
       public void execute(Runnable runnable) {
         runnable.run();
       }
     };
-  }
-
-  private static void validates_arguments() {
-    Case test = mockCase("case");
-    try {
-      runIn(null, test);
-      fail();
-    } catch (QuackeryException e) {}
   }
 }

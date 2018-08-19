@@ -31,15 +31,14 @@ public class Runners {
     return successfulCase(cas.name);
   }
 
-  public static Test runIn(final Executor executor, Test root) {
+  public static Test in(final Executor executor, Test root) {
     check(root != null);
     check(executor != null);
-    Test futureTest = new TraversingDecorator() {
+    return new TraversingDecorator() {
       protected Case decorateCase(Case cas) {
         return futureCase(executor, cas);
       }
     }.decorate(root);
-    return run(futureTest);
   }
 
   private static Case futureCase(final Executor executor, final Case test) {
