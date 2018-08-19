@@ -9,6 +9,8 @@ import static org.quackery.run.TestingDecorators.decorator_preserves_names_and_s
 import static org.quackery.run.TestingDecorators.decorator_runs_cases_eagerly;
 import static org.quackery.run.TestingDecorators.decorator_validates_arguments;
 import static org.quackery.testing.Testing.assertTrue;
+import static org.quackery.testing.Testing.fail;
+import static org.quackery.testing.Testing.mockCase;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
@@ -16,6 +18,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.quackery.Case;
+import org.quackery.QuackeryException;
 import org.quackery.Test;
 import org.quackery.help.Decorator;
 
@@ -33,6 +36,7 @@ public class TestRunnersRunIn {
     decorator_runs_cases_eagerly(decorator);
 
     submits_asynchronously_to_executor();
+    validates_arguments();
   }
 
   private static void submits_asynchronously_to_executor() throws InterruptedException {
@@ -69,5 +73,13 @@ public class TestRunnersRunIn {
         runnable.run();
       }
     };
+  }
+
+  private static void validates_arguments() {
+    Case test = mockCase("case");
+    try {
+      runIn(null, test);
+      fail();
+    } catch (QuackeryException e) {}
   }
 }

@@ -1,5 +1,6 @@
 package org.quackery.run;
 
+import static org.quackery.QuackeryException.check;
 import static org.quackery.help.Helpers.failingCase;
 import static org.quackery.help.Helpers.successfulCase;
 
@@ -9,31 +10,35 @@ import java.util.concurrent.FutureTask;
 
 import org.quackery.Case;
 import org.quackery.Test;
+import org.quackery.help.TraversingDecorator;
 
 public class Runners {
-  public static Test run(Test test) {
-    return new Visitor() {
-      protected Case visit(Case visiting) {
-        return run(visiting);
+  public static Test run(Test root) {
+    check(root != null);
+    return new TraversingDecorator() {
+      protected Test decorateCase(Case cas) {
+        return run(cas);
       }
-    }.visit(test);
+    }.decorate(root);
   }
 
-  private static Case run(Case visiting) {
+  private static Case run(Case cas) {
     try {
-      visiting.run();
+      cas.run();
     } catch (Throwable throwable) {
-      return failingCase(visiting.name, throwable);
+      return failingCase(cas.name, throwable);
     }
-    return successfulCase(visiting.name);
+    return successfulCase(cas.name);
   }
 
-  public static Test runIn(final Executor executor, Test test) {
-    Test futureTest = new Visitor() {
-      protected Case visit(Case visiting) {
-        return futureCase(executor, visiting);
+  public static Test runIn(final Executor executor, Test root) {
+    check(root != null);
+    check(executor != null);
+    Test futureTest = new TraversingDecorator() {
+      protected Case decorateCase(Case cas) {
+        return futureCase(executor, cas);
       }
-    }.visit(test);
+    }.decorate(root);
     return run(futureTest);
   }
 
@@ -51,23 +56,24 @@ public class Runners {
     };
   }
 
-  public static Test threadScoped(Test test) {
-    return new Visitor() {
-      protected Case visit(final Case visiting) {
-        return threadScoped(visiting);
+  public static Test threadScoped(Test root) {
+    check(root != null);
+    return new TraversingDecorator() {
+      protected Test decorateCase(Case cas) {
+        return threadScoped(cas);
       }
-    }.visit(test);
+    }.decorate(root);
   }
 
-  private static Case threadScoped(final Case visiting) {
-    return new Case(visiting.name) {
+  private static Case threadScoped(final Case cas) {
+    return new Case(cas.name) {
       private Throwable throwable;
 
       public void run() throws Throwable {
         Thread thread = new Thread(new Runnable() {
           public void run() {
             try {
-              visiting.run();
+              cas.run();
             } catch (Throwable t) {
               throwable = t;
             }
@@ -82,22 +88,23 @@ public class Runners {
     };
   }
 
-  public static Test classLoaderScoped(Test test) {
-    return new Visitor() {
-      protected Case visit(Case visiting) {
-        return classLoaderScoped(visiting);
+  public static Test classLoaderScoped(Test root) {
+    check(root != null);
+    return new TraversingDecorator() {
+      protected Case decorateCase(Case cas) {
+        return classLoaderScoped(cas);
       }
-    }.visit(test);
+    }.decorate(root);
   }
 
-  private static Case classLoaderScoped(final Case visiting) {
-    return new Case(visiting.name) {
+  private static Case classLoaderScoped(final Case cas) {
+    return new Case(cas.name) {
       public void run() throws Throwable {
         Thread thread = Thread.currentThread();
         ClassLoader original = thread.getContextClassLoader();
         thread.setContextClassLoader(new ClassLoader(original) {});
         try {
-          visiting.run();
+          cas.run();
         } finally {
           thread.setContextClassLoader(original);
         }
