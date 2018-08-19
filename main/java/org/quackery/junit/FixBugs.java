@@ -1,6 +1,6 @@
 package org.quackery.junit;
 
-import static org.quackery.Suite.suite;
+import static org.quackery.help.Helpers.rename;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,16 +27,11 @@ public class FixBugs {
     return new Visitor() {
       protected Test visit(Suite visiting) {
         Suite suite = (Suite) super.visit(visiting);
-        return suite(fixNewlineBug(suite.name))
-            .addAll(suite.tests);
+        return rename(fixNewlineBug(suite.name), suite);
       }
 
-      protected Test visit(final Case visiting) {
-        return new Case(fixNewlineBug(visiting.name)) {
-          public void run() throws Throwable {
-            visiting.run();
-          }
-        };
+      protected Test visit(Case visiting) {
+        return rename(fixNewlineBug(visiting.name), visiting);
       }
     }.visit(test);
   }
@@ -55,6 +50,7 @@ public class FixBugs {
             ? successfulCase(suite.name)
             : suite;
       }
+
     }.visit(test);
   }
 
@@ -68,16 +64,11 @@ public class FixBugs {
     return new Visitor() {
       protected Test visit(Suite visiting) {
         Suite suite = (Suite) super.visit(visiting);
-        return suite(fixEmptyNameBug(suite.name))
-            .addAll(suite.tests);
+        return rename(fixEmptyNameBug(suite.name), suite);
       }
 
-      protected Test visit(final Case visiting) {
-        return new Case(fixEmptyNameBug(visiting.name)) {
-          public void run() throws Throwable {
-            visiting.run();
-          }
-        };
+      protected Test visit(Case visiting) {
+        return rename(fixEmptyNameBug(visiting.name), visiting);
       }
     }.visit(test);
   }
