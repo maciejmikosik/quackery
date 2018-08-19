@@ -30,9 +30,13 @@ class JunitClassBuilder {
   }
 
   public JunitClassBuilder() {
+    this("JunitClass");
+  }
+
+  public JunitClassBuilder(String name) {
     this(new ByteBuddy()
         .subclass(Object.class)
-        .name("JunitClass")
+        .name(name)
         .annotateType(annotationRunWith(QuackeryRunner.class)));
   }
 
@@ -93,7 +97,7 @@ class JunitClassBuilder {
         .annotations(annotationQuackery())
         .modifiers(PUBLIC | STATIC)
         .returnType(Test.class)
-        .name("test")
+        .name("default_quackery_method")
         .parameters();
   }
 
@@ -102,7 +106,7 @@ class JunitClassBuilder {
         .annotations(annotationJunitTest())
         .modifiers(PUBLIC)
         .returnType(void.class)
-        .name("test")
+        .name("default_junit_method")
         .parameters()
         .returning(null);
   }
@@ -119,7 +123,7 @@ class JunitClassBuilder {
     };
   }
 
-  private static Annotation annotationQuackery() {
+  public static Annotation annotationQuackery() {
     return new Quackery() {
       public Class<? extends Annotation> annotationType() {
         return Quackery.class;
