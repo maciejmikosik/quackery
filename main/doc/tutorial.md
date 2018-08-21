@@ -1,7 +1,8 @@
 [built-in contracts](#built-in-contracts) |
 [defining you own contracts](#defining-your-own-contracts) |
 [running](#running) |
-[integration](#integration) |
+[reporting](#reporting) |
+[junit](#junit) |
 [extra](#extra)
 
 # built-in contracts
@@ -171,7 +172,7 @@ Any throwable indicates failed tests. However there are different ways `Case` ca
  - other `Throwable` - any unexpected situation
 
 `AssertException` and `AssumeException` contain methods that throw those exceptions on various conditions.
-If you use other assertions library then read [integration section](#integration).
+If you use other assertions library then read [junit section](#junit).
 
 ### Suite
 
@@ -259,36 +260,35 @@ string is equal to itself
 
 # running
 
-You can run `Case` manually by invoking `Case.run()`.
-However you need to handle possible `Throwable` on your own.
-It's more convenient to run any `Test` using `Runners` class.
+To run all tests in test tree, you would need to traverse the tree, find each `Case` and invoke `Case.run()`, then catch `Throwable` if test failed and prepare some kind of report. Luckily `org.quackery.run.Runners` provides methods for automating it. Additionally, it contains helper methods that allow you to control things like concurrency or test isolation.
 
-    import static org.quackery.run.Runners.run;
-    ....
-    Test test = ...
+The simplest way to run tests is calling `run(test)`. It runs each `Case` eagerly (which may take some time) and caches results. It returns a test identical to argument, with the same tree structure and names. The only difference is that invoking `Case.run()` on any case from the returned tree returns/throws cached result immediately.
+
+### concurrency
+
+To run tests concurrently call `concurrent(test)` method. It starts `Executor` that uses all available processors and schedules tasks for running each `Case`. While executor keeps working, method returns immediately (does not block). To block until executor finishes running tests, use `run(concurrent(test))`. If you don't like configuration of default executor you can provide you own calling `run(in(executor, test))` instead.
+
+### isolation
+
+All tests run in the same jvm and it's possible for them to share state and affect each other. Most of the time it's undesirable, so you want to isolate them.
+
+Sometimes your project's production code (the code you test) loads bytecode dynamically. Running many tests that loads bytecode as a side-effect can cause problems. Bytecode loaded by one test can be visible to another test resulting in namespace collisions. This can be prevented by decorating tests using `classLoaderScoped(test)`. It makes each `Case` to have different context `ClassLoader` (original one being parent). We made an assumption here, that you load bytecode using `Thread.currentThread().getContextClassLoader()`. If you use custom loading policy (which you shouldn't!), isolating test from each other might be impossible.
+
+Using `ThreadLocal` is popular way to avoid synchronization issues for static resources that don't need to be global (cache, network connections pool, etc.). If `ThreadLocal` reference is static, then running 2 tests using the same thread makes one test affecting the other. To isolate them use `threadScoped(test)` which makes each `Case` to be run in different thread. This does not make them run concurrently, because original thread joins new thread (blocks until new thread finishes).
+
+# reporting
+
+Once you run the test and cache results, you are ready to present report.
+
     Test report = run(test);
 
-`Runners.run(Test)` runs each `Case` eagerly (which may take some time) and caches its results.
-It returns a report, that reuses the same interface as `Test`/`Case`/`Suite`.
-The difference is that invoking `Case.run()` on any case from report returns/throws cached result immediately.
+`org.quackery.report.Reports` contains methods related to analyzing results of test. Trying to use `Reports` on `Test` that was not run, will invoke `Case.run()` every time.
 
-`org.quackery.run.Runners` contains methods related to running tests
+All tests passed if `count(Throwable.class, report)` returns `0`. You can also count number of failures of specific type, for example `count(AssertException.class, report)` or `count(AssumeException.class)`.
 
- - `Test run(Test)` - runs each `Case` in same `Thread`
- - `Test runIn(Executor, Test)` - runs each `Case` in specified `Executor`
- - `Test threadScoped(Test)` - wraps test, so each `Case` is run in separate `Thread`, thus isolating `ThreadLocal` variables
- - `Test classLoaderScoped(Test)` - wraps test, so each `Case` is run in separate `ClassLoader`, thus isolating dynamically loaded bytecode
+You can turn test results into `String` using `format(Test)`. String includes test names and structure of whole tree including throwables thrown from them.
 
-`org.quackery.report.Reports` contains methods related to reports of run tests
-
- - `int count(Class<? extends Throwable>, Test)` - counts how many cases thrown specified throwable or its subclass
- - `String format(Test)` - turns test result into `String` including test names and throwables thrown from them
-
-Trying to use `Reports` on `Test` that was not run, will invoke testing logic every time.
-
-# integration
-
-### Junit
+# junit
 
 To run quackery tests with junit use junit's `@RunWith` together with quackery's `org.quackery.junit.QuackeryRunner`.
 
@@ -317,6 +317,24 @@ If test throws non-quackery exception (like `AssertionError` thrown by `org.juni
 then this exception passes through quackery and reaches junit's runner.
 Thus, if you use junit's assertions in combination with junit's runner, then you are fine.
 Otherwise, you are responsible to make sure your runner and assertions library are compatible.
+
+There are many problems that may occur during initialization. Method annotated with `@Quackery` could have incorrect signature, have some parameters or throw exception during invocation. All such problems are caught and represented as failing tests. This way they can be reported together with other tests. 
+
+### decorators
+
+You are free to use all decorators described in [running section](#running) except `run(Test)`. Running tests manually will block junit thread (which is building test hierarchy) until tests finish. Result will still be correct but it will freeze junit runner UI and prevent displaying test progress in real time. 
+If you want to run tests concurrently just use `concurrent(test)` decorator without wrapping it inside `run` method.
+
+    @RunWith(QuackeryRunner.class)
+    public class ArrayListTest {
+      @Quackery
+      public static Test test() {
+          return concurrent(quacksLike(Collection.class)
+              .test(ArrayList.class)));
+      }
+    }
+
+### mixing with junit tests
 
 `QuackeryRunner` adds possibility to run tests annotated with `@Quackery`.
 It also keeps features provided by default junit4 runner.
@@ -347,7 +365,7 @@ public class ArrayListTest {
 }
 ```
 
-There are many problems that may occur during initialization. Method annotated with `@Quackery` could have incorrect signature, have some parameters or throw exception during invocation. All such problems are caught and represented as failing tests. This way they can be reported together with other tests. Default junit runner can detect problems too, missing default constructor for example. Those problems are also caught. However, junit validation happens only if there is at least one method annotated with `@org.junit.Test`. This mean that if you use quackery methods exclusively, you don't even need to provide default constructor.
+Default junit runner can detect problems during initialization too, missing default constructor for example. Those problems are caught. However, junit validation happens only if there is at least one method annotated with `@org.junit.Test`. This mean that if you use quackery methods exclusively, you don't even need to provide default constructor.
 
 `@org.junit.Ignore` does not work on methods annotated with `@Quackery`. However ignoring whole class will ignore also quackery tests.
 

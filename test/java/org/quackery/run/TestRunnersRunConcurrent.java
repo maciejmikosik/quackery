@@ -1,9 +1,8 @@
 package org.quackery.run;
 
-import static java.util.concurrent.Executors.newCachedThreadPool;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.quackery.Suite.suite;
-import static org.quackery.run.Runners.in;
+import static org.quackery.run.Runners.concurrent;
 import static org.quackery.run.Runners.run;
 import static org.quackery.run.TestingDecorators.decorator_preserves_case_result;
 import static org.quackery.run.TestingDecorators.decorator_preserves_names_and_structure;
@@ -11,11 +10,8 @@ import static org.quackery.run.TestingDecorators.decorator_runs_cases_eagerly;
 import static org.quackery.run.TestingDecorators.decorator_validates_arguments;
 import static org.quackery.testing.Testing.assertTrue;
 import static org.quackery.testing.Testing.fail;
-import static org.quackery.testing.Testing.mockCase;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.quackery.Case;
@@ -23,11 +19,11 @@ import org.quackery.QuackeryException;
 import org.quackery.Test;
 import org.quackery.help.Decorator;
 
-public class TestRunnersRunIn {
-  public static void test_runners_run_in() throws Throwable {
+public class TestRunnersRunConcurrent {
+  public static void test_runners_run_concurrent() throws Throwable {
     Decorator decorator = new Decorator() {
       public Test decorate(Test test) {
-        return run(in(currentThreadExecutor(), test));
+        return run(concurrent(test));
       }
     };
 
@@ -36,25 +32,23 @@ public class TestRunnersRunIn {
     decorator_validates_arguments(decorator);
     decorator_runs_cases_eagerly(decorator);
 
-    submits_asynchronously_to_executor();
+    runs_concurrently();
     validates_arguments();
   }
 
-  private static void submits_asynchronously_to_executor() throws InterruptedException {
+  private static void runs_concurrently() {
+    assertTrue(Runtime.getRuntime().availableProcessors() >= 3);
+
     CountDownLatch latch = new CountDownLatch(3);
-    ExecutorService executor = newCachedThreadPool();
     AtomicBoolean failed = new AtomicBoolean(false);
     Test test = suite("")
         .add(countDown(latch, failed))
         .add(countDown(latch, failed))
         .add(countDown(latch, failed));
 
-    run(in(executor, test));
+    run(concurrent(test));
 
     assertTrue(!failed.get());
-
-    executor.shutdown();
-    assertTrue(executor.awaitTermination(1, SECONDS));
   }
 
   private static Case countDown(final CountDownLatch latch, final AtomicBoolean failed) {
@@ -70,20 +64,8 @@ public class TestRunnersRunIn {
 
   private static void validates_arguments() {
     try {
-      in(null, mockCase("case"));
+      concurrent(null);
       fail();
     } catch (QuackeryException e) {}
-    try {
-      in(currentThreadExecutor(), null);
-      fail();
-    } catch (QuackeryException e) {}
-  }
-
-  private static Executor currentThreadExecutor() {
-    return new Executor() {
-      public void execute(Runnable runnable) {
-        runnable.run();
-      }
-    };
   }
 }

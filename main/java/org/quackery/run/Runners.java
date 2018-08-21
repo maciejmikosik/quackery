@@ -1,12 +1,17 @@
 package org.quackery.run;
 
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static org.quackery.QuackeryException.check;
 import static org.quackery.help.Helpers.failingCase;
 import static org.quackery.help.Helpers.successfulCase;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.quackery.Case;
 import org.quackery.Test;
@@ -31,18 +36,37 @@ public class Runners {
     return successfulCase(cas.name);
   }
 
-  public static Test runIn(final Executor executor, Test root) {
+  public static Test in(final Executor executor, Test root) {
     check(root != null);
     check(executor != null);
-    Test futureTest = new TraversingDecorator() {
+    return new TraversingDecorator() {
       protected Case decorateCase(Case cas) {
         return futureCase(executor, cas);
       }
     }.decorate(root);
-    return run(futureTest);
   }
 
-  private static Case futureCase(final Executor executor, final Case test) {
+  public static Test concurrent(Test test) {
+    return in(concurrentExecutor, test);
+  }
+
+  private static final ExecutorService concurrentExecutor = concurrentExecutor();
+
+  private static ThreadPoolExecutor concurrentExecutor() {
+    int availableProcessors = Runtime.getRuntime().availableProcessors();
+    int corePoolSize = availableProcessors;
+    int maximumPoolSize = availableProcessors;
+    int keepAliveTime = 1;
+    TimeUnit keepAliveTimeUnit = NANOSECONDS;
+    ThreadPoolExecutor executor = new ThreadPoolExecutor(
+        corePoolSize, maximumPoolSize,
+        keepAliveTime, keepAliveTimeUnit,
+        new LinkedBlockingQueue<Runnable>());
+    executor.allowCoreThreadTimeOut(true);
+    return executor;
+  }
+
+  private static Case futureCase(Executor executor, final Case test) {
     final FutureTask<Case> future = new FutureTask<Case>(new Callable<Case>() {
       public Case call() {
         return run(test);
