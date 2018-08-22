@@ -104,7 +104,13 @@ public class Runners {
           }
         });
         thread.start();
-        thread.join();
+        try {
+          thread.join();
+        } catch (InterruptedException e) {
+          thread.interrupt();
+          thread.join();
+          throw e;
+        }
         if (throwable != null) {
           throw throwable;
         }

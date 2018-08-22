@@ -6,7 +6,12 @@ import static org.quackery.run.TestingDecorators.decorator_preserves_names_and_s
 import static org.quackery.run.TestingDecorators.decorator_runs_cases_lazily;
 import static org.quackery.run.TestingDecorators.decorator_validates_arguments;
 import static org.quackery.testing.Testing.assertNotEquals;
+import static org.quackery.testing.Testing.assertTrue;
+import static org.quackery.testing.Testing.fail;
+import static org.quackery.testing.Testing.interruptMeAfter;
+import static org.quackery.testing.Testing.sleep;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.quackery.Case;
@@ -25,6 +30,7 @@ public class TestRunnersThreadScoped {
     decorator_preserves_case_result(decorator);
     decorator_validates_arguments(decorator);
     decorator_runs_cases_lazily(decorator);
+    propagates_interruption(decorator);
 
     runs_test_in_different_thread_than_caller();
     runs_each_test_in_different_thread();
@@ -65,5 +71,27 @@ public class TestRunnersThreadScoped {
     assertNotEquals(scopeA.get(), null);
     assertNotEquals(scopeB.get(), null);
     assertNotEquals(scopeB.get(), scopeA.get());
+  }
+
+  private static void propagates_interruption(Decorator decorator) throws Throwable {
+    final AtomicBoolean interrupted = new AtomicBoolean(false);
+    Test test = decorator.decorate(new Case("case") {
+      public void run() throws InterruptedException {
+        try {
+          sleep(1);
+          interrupted.set(false);
+        } catch (InterruptedException e) {
+          interrupted.set(true);
+          throw e;
+        }
+      }
+    });
+
+    interruptMeAfter(0.01);
+    try {
+      ((Case) test).run();
+      fail();
+    } catch (InterruptedException e) {}
+    assertTrue(interrupted.get());
   }
 }

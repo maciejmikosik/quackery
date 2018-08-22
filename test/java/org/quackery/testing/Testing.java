@@ -114,4 +114,23 @@ public class Testing {
       return name;
     }
   }
+
+  public static void interruptMeAfter(final double time) {
+    final Thread caller = Thread.currentThread();
+    Thread interrupter = new Thread(new Runnable() {
+      public void run() {
+        try {
+          sleep(time);
+        } catch (InterruptedException e) {
+          throw new Error(e);
+        }
+        caller.interrupt();
+      }
+    });
+    interrupter.start();
+  }
+
+  public static void sleep(double time) throws InterruptedException {
+    Thread.sleep((long) (time * 1e3));
+  }
 }
