@@ -55,74 +55,53 @@ public class TestQuackeryRunner {
 
   private static void quackery_case_results_are_translated() {
     assertResult(
-        new JunitClassBuilder()
-            .name(className)
-            .define(defaultQuackeryMethod()
-                .returning(mockCase("case"))),
-        suite(className)
-            .add(mockCase("case")));
+        defaultQuackeryMethod()
+            .returning(mockCase("case")),
+        mockCase("case"));
 
     assertResult(
-        new JunitClassBuilder()
-            .name(className)
-            .define(defaultQuackeryMethod()
-                .returning(mockCase("case", new Throwable()))),
-        suite(className)
-            .add(mockCase("case", new Throwable())));
+        defaultQuackeryMethod()
+            .returning(mockCase("case", new Throwable())),
+        mockCase("case", new Throwable()));
 
     assertResult(
-        new JunitClassBuilder()
-            .name(className)
-            .define(defaultQuackeryMethod()
-                .returning(mockCase("case", new AssertException("message")))),
-        suite(className)
-            .add(mockCase("case", new AssertionError("message"))));
+        defaultQuackeryMethod()
+            .returning(mockCase("case", new AssertException("message"))),
+        mockCase("case", new AssertionError("message")));
 
     assertResult(
-        new JunitClassBuilder()
-            .name(className)
-            .define(defaultQuackeryMethod()
-                .returning(mockCase("case", new AssumeException("message")))),
-        suite(className)
-            .add(mockCase("case")));
+        defaultQuackeryMethod()
+            .returning(mockCase("case", new AssumeException("message"))),
+        mockCase("case"));
   }
 
   private static void quackery_test_names_are_simplified() {
     assertResult(
-        new JunitClassBuilder()
-            .name(className)
-            .define(defaultQuackeryMethod()
-                .returning(suite("")
-                    .add(mockCase(""))
-                    .add(mockCase("")))),
-        suite(className)
-            .add(suite("[empty_name]")
-                .add(mockCase("[empty_name]"))
-                .add(mockCase("[empty_name]"))));
+        defaultQuackeryMethod()
+            .returning(suite("")
+                .add(mockCase(""))
+                .add(mockCase(""))),
+        suite("[empty_name]")
+            .add(mockCase("[empty_name]"))
+            .add(mockCase("[empty_name]")));
 
     assertResult(
-        new JunitClassBuilder()
-            .name(className)
-            .define(defaultQuackeryMethod()
-                .returning(suite("suite\nsuite\rsuite")
-                    .add(mockCase("caseA\ncaseA\rcaseA"))
-                    .add(mockCase("caseB\ncaseB\rcaseB")))),
-        suite(className)
-            .add(suite("suite suite suite")
-                .add(mockCase("caseA caseA caseA"))
-                .add(mockCase("caseB caseB caseB"))));
+        defaultQuackeryMethod()
+            .returning(suite("suite\nsuite\rsuite")
+                .add(mockCase("caseA\ncaseA\rcaseA"))
+                .add(mockCase("caseB\ncaseB\rcaseB"))),
+        suite("suite suite suite")
+            .add(mockCase("caseA caseA caseA"))
+            .add(mockCase("caseB caseB caseB")));
 
     assertResult(
-        new JunitClassBuilder()
-            .name(className)
-            .define(defaultQuackeryMethod()
-                .returning(suite("suite")
-                    .add(mockCase("case"))
-                    .add(mockCase("case")))),
-        suite(className)
-            .add(suite("suite")
+        defaultQuackeryMethod()
+            .returning(suite("suite")
                 .add(mockCase("case"))
-                .add(mockCase("case"))));
+                .add(mockCase("case"))),
+        suite("suite")
+            .add(mockCase("case"))
+            .add(mockCase("case")));
 
     assertEquals(
         new QuackeryRunner(new JunitClassBuilder()
@@ -137,21 +116,15 @@ public class TestQuackeryRunner {
 
   private static void junit_tests_are_included() {
     assertResult(
-        new JunitClassBuilder()
-            .name(className)
-            .define(defaultJunitMethod()
-                .name("junit_method")),
-        suite(className)
-            .add(mockCase("junit_method")));
+        defaultJunitMethod()
+            .name("junit_method"),
+        mockCase("junit_method"));
 
     assertResult(
-        new JunitClassBuilder()
-            .name(className)
-            .define(defaultJunitMethod()
-                .name("junit_method")
-                .throwing(IOException.class)),
-        suite(className)
-            .add(mockCase("junit_method", new IOException())));
+        defaultJunitMethod()
+            .name("junit_method")
+            .throwing(IOException.class),
+        mockCase("junit_method", new IOException()));
   }
 
   private static void junit_ignore_annotation_is_handled() {
@@ -252,99 +225,69 @@ public class TestQuackeryRunner {
 
   private static void class_definition_is_validated() {
     assertResult(
-        new JunitClassBuilder()
-            .name(className)
-            .define(defaultQuackeryMethod()
-                .name("quackery_method")
-                .modifiers(STATIC)
-                .returning(mockCase("case"))),
-        suite(className)
-            .add(mockCase("quackery_method", new QuackeryException("method must be public"))));
+        defaultQuackeryMethod()
+            .name("quackery_method")
+            .modifiers(STATIC)
+            .returning(mockCase("case")),
+        mockCase("quackery_method", new QuackeryException("method must be public")));
 
     assertResult(
-        new JunitClassBuilder()
-            .name(className)
-            .define(defaultQuackeryMethod()
-                .name("quackery_method")
-                .modifiers(PUBLIC)
-                .returning(mockCase("case"))),
-        suite(className)
-            .add(mockCase("quackery_method", new QuackeryException("method must be static"))));
+        defaultQuackeryMethod()
+            .name("quackery_method")
+            .modifiers(PUBLIC)
+            .returning(mockCase("case")),
+        mockCase("quackery_method", new QuackeryException("method must be static")));
 
     assertResult(
-        new JunitClassBuilder()
-            .name(className)
-            .define(defaultQuackeryMethod()
-                .name("quackery_method")
-                .returnType(Object.class)
-                .returning(mockCase("case"))),
-        suite(className)
-            .add(mockCase("quackery_method", new QuackeryException(
-                "method return type must be assignable to " + Test.class.getName()))));
+        defaultQuackeryMethod()
+            .name("quackery_method")
+            .returnType(Object.class)
+            .returning(mockCase("case")),
+        mockCase("quackery_method", new QuackeryException(
+            "method return type must be assignable to " + Test.class.getName())));
     assertResult(
-        new JunitClassBuilder()
-            .name(className)
-            .define(defaultQuackeryMethod()
-                .returnType(Suite.class)
-                .returning(suite("suite")
-                    .add(mockCase("case")))),
-        suite(className)
-            .add(suite("suite")
-                .add(mockCase("case"))));
-    assertResult(
-        new JunitClassBuilder()
-            .name(className)
-            .define(defaultQuackeryMethod()
-                .returnType(Case.class)
-                .returning(mockCase("case"))),
-        suite(className)
+        defaultQuackeryMethod()
+            .returnType(Suite.class)
+            .returning(suite("suite")
+                .add(mockCase("case"))),
+        suite("suite")
             .add(mockCase("case")));
+    assertResult(
+        defaultQuackeryMethod()
+            .returnType(Case.class)
+            .returning(mockCase("case")),
+        mockCase("case"));
 
     assertResult(
-        new JunitClassBuilder()
-            .name(className)
-            .define(defaultQuackeryMethod()
-                .name("quackery_method")
-                .parameters(Object.class)
-                .returning(mockCase("case"))),
-        suite(className)
-            .add(mockCase("quackery_method", new QuackeryException("method cannot have parameters"))));
+        defaultQuackeryMethod()
+            .name("quackery_method")
+            .parameters(Object.class)
+            .returning(mockCase("case")),
+        mockCase("quackery_method", new QuackeryException("method cannot have parameters")));
 
     assertResult(
-        new JunitClassBuilder()
-            .name(className)
-            .define(defaultJunitMethod()
-                .name("junit_method")
-                .modifiers(PRIVATE)),
-        suite(className)
-            .add(mockCase("junit_method", new Exception("Method junit_method() should be public"))));
+        defaultJunitMethod()
+            .name("junit_method")
+            .modifiers(PRIVATE),
+        mockCase("junit_method", new Exception("Method junit_method() should be public")));
 
     assertResult(
-        new JunitClassBuilder()
-            .name(className)
-            .define(defaultJunitMethod()
-                .name("junit_method")
-                .modifiers(PUBLIC | STATIC)),
-        suite(className)
-            .add(mockCase("junit_method", new Exception("Method junit_method() should not be static"))));
+        defaultJunitMethod()
+            .name("junit_method")
+            .modifiers(PUBLIC | STATIC),
+        mockCase("junit_method", new Exception("Method junit_method() should not be static")));
 
     assertResult(
-        new JunitClassBuilder()
-            .name(className)
-            .define(defaultJunitMethod()
-                .name("junit_method")
-                .returnType(Object.class)),
-        suite(className)
-            .add(mockCase("junit_method", new Exception("Method junit_method() should be void"))));
+        defaultJunitMethod()
+            .name("junit_method")
+            .returnType(Object.class),
+        mockCase("junit_method", new Exception("Method junit_method() should be void")));
 
     assertResult(
-        new JunitClassBuilder()
-            .name(className)
-            .define(defaultJunitMethod()
-                .name("junit_method")
-                .parameters(Object.class)),
-        suite(className)
-            .add(mockCase("junit_method", new Exception("Method junit_method should have no parameters"))));
+        defaultJunitMethod()
+            .name("junit_method")
+            .parameters(Object.class),
+        mockCase("junit_method", new Exception("Method junit_method should have no parameters")));
 
     assertResult(
         new JunitClassBuilder(NO_CONSTRUCTORS)
