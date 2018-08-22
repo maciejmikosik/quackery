@@ -27,6 +27,8 @@ import org.quackery.report.AssertException;
 import org.quackery.report.AssumeException;
 
 public class TestQuackeryRunner {
+  private static final String className = "a.b.AnnotatedClass";
+
   public static void test_quackery_runner() {
     quackery_cases_are_run_once();
     quackery_case_results_are_translated();
@@ -110,38 +112,38 @@ public class TestQuackeryRunner {
 
     assertEquals(
         new QuackeryRunner(new JunitClassBuilder()
-            .name("a.b.AnnotatedClass")
+            .name(className)
             .define(defaultQuackeryMethod()
                 .returning(mockCase("case")))
             .load())
                 .getDescription()
                 .getDisplayName(),
-        "case(a.b.AnnotatedClass)");
+        "case(" + className + ")");
   }
 
   private static void junit_tests_are_included() {
     assertResult(
         new JunitClassBuilder()
-            .name("a.b.AnnotatedClass")
+            .name(className)
             .define(defaultJunitMethod()
                 .name("junit_method")),
-        suite("a.b.AnnotatedClass")
+        suite(className)
             .add(mockCase("junit_method")));
 
     assertResult(
         new JunitClassBuilder()
-            .name("a.b.AnnotatedClass")
+            .name(className)
             .define(defaultJunitMethod()
                 .name("junit_method")
                 .throwing(IOException.class)),
-        suite("a.b.AnnotatedClass")
+        suite(className)
             .add(mockCase("junit_method", new IOException())));
   }
 
   private static void junit_ignore_annotation_is_handled() {
     assertResult(
         new JunitClassBuilder()
-            .name("a.b.AnnotatedClass")
+            .name(className)
             .define(defaultQuackeryMethod()
                 .annotations(annotationQuackery(), annotationIgnore(""))
                 .returning(mockCase("case", new IOException())))
@@ -149,13 +151,13 @@ public class TestQuackeryRunner {
                 .name("junit_method")
                 .annotations(annotationJunitTest(), annotationIgnore(""))
                 .throwing(IOException.class)),
-        suite("a.b.AnnotatedClass")
+        suite(className)
             .add(mockCase("junit_method"))
             .add(mockCase("case", new IOException())));
 
     Result result = new JUnitCore()
         .run(new JunitClassBuilder()
-            .name("a.b.AnnotatedClass")
+            .name(className)
             .annotate(annotationIgnore(""))
             .define(defaultQuackeryMethod()
                 .name("quackeryA")
@@ -178,48 +180,48 @@ public class TestQuackeryRunner {
   private static void annotated_methods_are_combined_into_one_tree() {
     assertResult(
         new JunitClassBuilder()
-            .name("a.b.AnnotatedClass"),
-        mockCase("a.b.AnnotatedClass"));
+            .name(className),
+        mockCase(className));
 
     assertResult(
         new JunitClassBuilder()
-            .name("a.b.AnnotatedClass")
+            .name(className)
             .define(defaultQuackeryMethod()
                 .returning(suite("suite"))),
         mockCase("suite"));
 
     assertResult(
         new JunitClassBuilder()
-            .name("a.b.AnnotatedClass")
+            .name(className)
             .define(defaultQuackeryMethod()
                 .name("quackeryA")
                 .returning(mockCase("caseA")))
             .define(defaultQuackeryMethod()
                 .name("quackeryB")
                 .returning(mockCase("caseB"))),
-        suite("a.b.AnnotatedClass")
+        suite(className)
             .add(mockCase("caseA"))
             .add(mockCase("caseB")));
 
     assertResult(
         new JunitClassBuilder()
-            .name("a.b.AnnotatedClass")
+            .name(className)
             .define(defaultQuackeryMethod()
                 .returning(mockCase("case")))
             .define(defaultJunitMethod()
                 .name("junit")),
-        suite("a.b.AnnotatedClass")
+        suite(className)
             .add(mockCase("junit"))
             .add(mockCase("case")));
 
     assertResult(
         new JunitClassBuilder()
-            .name("a.b.AnnotatedClass")
+            .name(className)
             .define(defaultJunitMethod()
                 .name("junitA"))
             .define(defaultJunitMethod()
                 .name("junitB")),
-        suite("a.b.AnnotatedClass")
+        suite(className)
             .add(mockCase("junitA"))
             .add(mockCase("junitB")));
 
