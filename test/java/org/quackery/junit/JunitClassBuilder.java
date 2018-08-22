@@ -30,13 +30,9 @@ class JunitClassBuilder {
   }
 
   public JunitClassBuilder() {
-    this("JunitClass");
-  }
-
-  public JunitClassBuilder(String name) {
     this(new ByteBuddy()
         .subclass(Object.class)
-        .name(name)
+        .name("JunitClass")
         .annotateType(annotationRunWith(QuackeryRunner.class)));
   }
 
@@ -45,6 +41,10 @@ class JunitClassBuilder {
         .subclass(Object.class, strategy)
         .name("JunitClass")
         .annotateType(annotationRunWith(QuackeryRunner.class)));
+  }
+
+  public JunitClassBuilder name(String name) {
+    return new JunitClassBuilder(builder.name(name));
   }
 
   public JunitClassBuilder annotate(Annotation annotation) {

@@ -2,6 +2,7 @@ package org.quackery.junit;
 
 import static java.lang.String.format;
 import static java.util.Objects.deepEquals;
+import static org.quackery.Suite.suite;
 
 import java.util.Iterator;
 import java.util.List;
@@ -23,6 +24,16 @@ public class TestingJunit {
         runner.getDescription(),
         result.getFailures(),
         expected);
+  }
+
+  public static void assertResult(MethodDefinition methodDefinition, Test expected) {
+    String name = "a.b.AnnotatedClass";
+    assertResult(
+        new JunitClassBuilder()
+            .name(name)
+            .define(methodDefinition),
+        suite(name)
+            .add(expected));
   }
 
   private static void assertRecursively(Description description, List<Failure> failures, Test expected) {

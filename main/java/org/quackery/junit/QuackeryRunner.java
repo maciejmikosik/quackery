@@ -2,7 +2,6 @@ package org.quackery.junit;
 
 import static java.lang.reflect.Modifier.isPublic;
 import static java.lang.reflect.Modifier.isStatic;
-import static java.util.Arrays.asList;
 import static org.junit.runner.Description.createSuiteDescription;
 import static org.junit.runner.Description.createTestDescription;
 import static org.quackery.Suite.suite;
@@ -27,34 +26,31 @@ import org.quackery.Quackery;
 import org.quackery.QuackeryException;
 import org.quackery.Suite;
 import org.quackery.Test;
+import org.quackery.help.TraversingDecorator;
 import org.quackery.report.AssertException;
 import org.quackery.report.AssumeException;
+import org.quackery.run.Runners;
 
 public class QuackeryRunner extends Runner {
   private final Class<?> annotatedClass;
   private Description description;
   private Runner junitRunner;
-  private List<Test> quackeryTests;
+  private Test quackeryTest;
 
   /** This constructor is required by Runner contract and is invoked by junit. */
   public QuackeryRunner(Class<?> annotatedClass) {
     this.annotatedClass = annotatedClass;
-    quackeryTests = instantiateQuackeryTestsDeclaredIn(annotatedClass);
     try {
       junitRunner = new BlockJUnit4ClassRunner(annotatedClass);
       description = junitRunner.getDescription();
-      quackeryTests = fixBugs(quackeryTests);
-      for (Test quackeryTest : quackeryTests) {
-        description.addChild(describe(quackeryTest));
+      quackeryTest = fixBugs(instantiateQuackerySuite(annotatedClass));
+      for (Description childDescription : describe(quackeryTest).getChildren()) {
+        description.addChild(childDescription);
       }
     } catch (InitializationError error) {
-      quackeryTests.addAll(instantiateFailingTestsExplainingCausesOf(error));
-      Test root = fixBugs(quackeryTests.size() == 1
-          ? quackeryTests.get(0)
-          : suite(annotatedClass.getName())
-              .addAll(quackeryTests));
-      quackeryTests = asList(root);
-      description = describe(root);
+      quackeryTest = fixBugs(instantiateQuackerySuite(annotatedClass)
+          .addAll(instantiateFailingTestsExplainingCausesOf(error)));
+      description = describe(quackeryTest);
     }
   }
 
@@ -62,23 +58,49 @@ public class QuackeryRunner extends Runner {
     return description;
   }
 
-  public void run(RunNotifier notifier) {
-    for (Test test : quackeryTests) {
-      run(test, notifier);
-    }
+  public void run(final RunNotifier notifier) {
+    Runners.run(new TraversingDecorator() {
+      protected Case decorateCase(Case cas) {
+        return notifying(notifier, cas);
+      }
+    }.decorate(quackeryTest));
+
     if (junitRunner != null) {
       junitRunner.run(notifier);
     }
   }
 
-  private List<Test> instantiateQuackeryTestsDeclaredIn(Class<?> testClass) {
+  private Case notifying(final RunNotifier notifier, final Case cas) {
+    return new Case(cas.name) {
+      public void run() throws Throwable {
+        Description described = describe(cas);
+        notifier.fireTestStarted(described);
+        try {
+          cas.run();
+        } catch (AssertException e) {
+          Throwable wrapper = new AssertionError(e.getMessage(), e);
+          notifier.fireTestFailure(new Failure(described, wrapper));
+        } catch (AssumeException e) {
+          Throwable wrapper = new AssumptionViolatedException(e.getMessage(), e);
+          notifier.fireTestAssumptionFailed(new Failure(described, wrapper));
+        } catch (Throwable throwable) {
+          notifier.fireTestFailure(new Failure(described, throwable));
+        } finally {
+          notifier.fireTestFinished(described);
+        }
+      }
+    };
+  }
+
+  private static Suite instantiateQuackerySuite(Class<?> testClass) {
     List<Test> tests = new ArrayList<>();
     for (Method method : testClass.getDeclaredMethods()) {
       if (method.isAnnotationPresent(Quackery.class)) {
         tests.add(instantiateQuackeryTestReturnedBy(method));
       }
     }
-    return tests;
+    return suite(testClass.getName())
+        .addAll(tests);
   }
 
   private static Test instantiateQuackeryTestReturnedBy(Method method) {
@@ -176,40 +198,6 @@ public class QuackeryRunner extends Runner {
 
   private Description describe(Case cas) {
     return createTestDescription(annotatedClass.getName(), cas.name, id(cas));
-  }
-
-  private void run(Test test, RunNotifier notifier) {
-    if (test instanceof Suite) {
-      run((Suite) test, notifier);
-    } else if (test instanceof Case) {
-      run((Case) test, notifier);
-    } else {
-      throw new QuackeryException();
-    }
-  }
-
-  private void run(Suite suite, RunNotifier notifier) {
-    for (Test child : suite.tests) {
-      run(child, notifier);
-    }
-  }
-
-  private void run(Case cas, RunNotifier notifier) {
-    Description described = describe(cas);
-    notifier.fireTestStarted(described);
-    try {
-      cas.run();
-    } catch (AssertException e) {
-      Throwable wrapper = new AssertionError(e.getMessage(), e);
-      notifier.fireTestFailure(new Failure(described, wrapper));
-    } catch (AssumeException e) {
-      Throwable wrapper = new AssumptionViolatedException(e.getMessage(), e);
-      notifier.fireTestAssumptionFailed(new Failure(described, wrapper));
-    } catch (Throwable throwable) {
-      notifier.fireTestFailure(new Failure(described, throwable));
-    } finally {
-      notifier.fireTestFinished(described);
-    }
   }
 
   private static Serializable id(Test test) {
