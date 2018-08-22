@@ -49,10 +49,8 @@ public class QuackeryRunner extends Runner {
       }
     } catch (InitializationError error) {
       quackeryTests.addAll(instantiateFailingTestsExplainingCausesOf(error));
-      Test root = fixBugs(quackeryTests.size() == 1
-          ? quackeryTests.get(0)
-          : suite(annotatedClass.getName())
-              .addAll(quackeryTests));
+      Test root = fixBugs(suite(annotatedClass.getName())
+          .addAll(quackeryTests));
       quackeryTests = asList(root);
       description = describe(root);
     }

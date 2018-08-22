@@ -301,9 +301,7 @@ To run quackery tests with junit use junit's `@RunWith` together with quackery's
       }
     }
 
-Define factory method and annotate it with `@Quackery`.
-Method must be `public`, `static`, have no parameters and return `Test` (or its subclass).
-If there is more than 1 annotated method, then tests returned by them are aggregated in ad hoc `Suite`.
+Define factory method and annotate it with `@Quackery`. Method must be `public`, `static`, have no parameters and return `Test` (or its subclass). You can define more than one method. All tests returned by those methods are aggregated in one root `Suite`.
 
 If test throws one of quackery exceptions (like tests from built-in contracts do)
 and you run this test using junit,
