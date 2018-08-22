@@ -3,9 +3,6 @@ package org.quackery.junit;
 import static org.quackery.help.Helpers.rename;
 import static org.quackery.help.Helpers.successfulCase;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.quackery.Suite;
 import org.quackery.Test;
 import org.quackery.help.TraversingDecorator;
@@ -13,14 +10,6 @@ import org.quackery.help.TraversingDecorator;
 public class FixBugs {
   public static Test fixBugs(Test root) {
     return fixNewlineBug(fixEmptySuiteBug(fixEmptyNameBug(root)));
-  }
-
-  public static List<Test> fixBugs(List<Test> roots) {
-    List<Test> fixed = new ArrayList<>();
-    for (Test test : roots) {
-      fixed.add(fixBugs(test));
-    }
-    return fixed;
   }
 
   private static Test fixNewlineBug(Test root) {
