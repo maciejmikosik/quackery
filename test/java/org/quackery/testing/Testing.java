@@ -133,4 +133,10 @@ public class Testing {
   public static void sleep(double time) throws InterruptedException {
     Thread.sleep((long) (time * 1e3));
   }
+
+  public static void sleepBusy(double time) {
+    long nanos = (long) (time * 1e9);
+    long start = System.nanoTime();
+    while (System.nanoTime() - start < nanos) {}
+  }
 }

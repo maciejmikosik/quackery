@@ -276,6 +276,10 @@ Sometimes your project's production code (the code you test) loads bytecode dyna
 
 Using `ThreadLocal` is popular way to avoid synchronization issues for static resources that don't need to be global (cache, network connections pool, etc.). If `ThreadLocal` reference is static, then running 2 tests using the same thread makes one test affecting the other. To isolate them use `threadScoped(test)` which makes each `Case` to be run in different thread. This does not make them run concurrently, because original thread joins new thread (blocks until new thread finishes).
 
+### timeout
+
+Tests can take a long time to finish. Sometimes they can take forever because of buggy code. You can limit maximum time they have using `timeout(time, test)`. If `Case` takes longer than specified `time` in seconds, then `Case` is interrupted. Tested code is responsive to interruption if it blocks on method throwing `InterruptedException` or if it checks interruption flag `Thread.interrupted()` manually. If code is responsive to interruption, then `Case.run()` is aborted and `InterruptedException` is propagated as test result. If code is not responsive to interruption then `Case.run()` call has to block until test finishes. However result of this finished test is ignored and `InterruptedException` is being thrown instead.
+
 # reporting
 
 Once you run the test and cache results, you are ready to present report.

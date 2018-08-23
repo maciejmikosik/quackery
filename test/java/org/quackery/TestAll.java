@@ -13,6 +13,7 @@ import static org.quackery.run.TestRunnersRun.test_runners_run;
 import static org.quackery.run.TestRunnersRunConcurrent.test_runners_run_concurrent;
 import static org.quackery.run.TestRunnersRunIn.test_runners_run_in;
 import static org.quackery.run.TestRunnersThreadScoped.test_runners_thread_scoped;
+import static org.quackery.run.TestRunnersTimeout.test_runners_timeout;
 
 public class TestAll {
   public static void main(String[] args) throws Throwable {
@@ -26,6 +27,7 @@ public class TestAll {
     test_runners_run();
     test_runners_run_in();
     test_runners_run_concurrent();
+    test_runners_timeout();
     test_runners_thread_scoped();
     test_runners_class_loader_scoped();
 

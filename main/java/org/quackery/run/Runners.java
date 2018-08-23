@@ -10,6 +10,9 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -79,6 +82,42 @@ public class Runners {
       }
     };
   }
+
+  public static Test timeout(final double time, Test test) {
+    check(time >= 0);
+    check(test != null);
+    return new TraversingDecorator() {
+      protected Case decorateCase(Case cas) {
+        return timeout(time, cas);
+      }
+    }.decorate(test);
+  }
+
+  private static Case timeout(final double time, final Case cas) {
+    return new Case(cas.name) {
+      public void run() throws Throwable {
+        final Thread caller = Thread.currentThread();
+        ScheduledFuture<?> alarm = timeoutScheduler.schedule(
+            new Runnable() {
+              public void run() {
+                caller.interrupt();
+              }
+            },
+            (long) (time * 1e9),
+            NANOSECONDS);
+        try {
+          cas.run();
+        } finally {
+          alarm.cancel(true);
+          if (Thread.interrupted()) {
+            throw new InterruptedException();
+          }
+        }
+      }
+    };
+  }
+
+  private static final ScheduledExecutorService timeoutScheduler = new ScheduledThreadPoolExecutor(0);
 
   public static Test threadScoped(Test root) {
     check(root != null);
