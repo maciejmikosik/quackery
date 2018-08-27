@@ -44,7 +44,7 @@ Example usage looks like this.
         .withFactory("copyOf");
         .test(com.google.common.collect.ImmutableList.class);
 
-Generated tests can be run using junit runner.
+Generated tests can be run using [junit runner](#junit).
 
     @RunWith(QuackeryRunner.class)
     public class ArrayListTest {
