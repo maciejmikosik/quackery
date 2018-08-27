@@ -280,6 +280,26 @@ Using `ThreadLocal` is popular way to avoid synchronization issues for static re
 
 Tests can take a long time to finish. Sometimes they can take forever because of buggy code. You can limit maximum time they have using `timeout(time, test)`. If `Case` takes longer than specified `time` in seconds, then `Case` is interrupted. Tested code is responsive to interruption if it blocks on method throwing `InterruptedException` or if it checks interruption flag `Thread.interrupted()` manually. If code is responsive to interruption, then `Case.run()` is aborted and `InterruptedException` is propagated as test result. If code is not responsive to interruption then `Case.run()` call has to block until test finishes. However result of this finished test is ignored and `InterruptedException` is being thrown instead.
 
+### expecting exception
+
+Methods in production code often validate arguments or object state. They throw exception if preconditions are not met. To test this behavior test needs to catch exception and check if its of expected type. Popular idiom looks like this.
+
+```
+try {
+  method(null, "b", "c");
+  Assert.fail();
+} catch (NullPointerException e) {}
+```
+
+You can pack those tests in same suite and use decorator to add boilerplate code to each test.
+
+```
+expect(NullPointerException.class, suite("validates arguments")
+    .add(newCase("first", () -> method(null, "b", "c")))
+    .add(newCase("second", () -> method("a", null, "c")))
+    .add(newCase("third", () -> method("a", "b", null))));
+```
+
 # reporting
 
 Once you run the test and cache results, you are ready to present report.

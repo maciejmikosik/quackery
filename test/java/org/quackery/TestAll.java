@@ -9,6 +9,7 @@ import static org.quackery.junit.TestQuackeryRunner.test_quackery_runner;
 import static org.quackery.report.TestReportsCountThrowables.test_reports_count_throwables;
 import static org.quackery.report.TestReportsFormat.test_reports_format;
 import static org.quackery.run.TestRunnersClassLoaderScoped.test_runners_class_loader_scoped;
+import static org.quackery.run.TestRunnersExpect.test_runners_expect;
 import static org.quackery.run.TestRunnersRun.test_runners_run;
 import static org.quackery.run.TestRunnersRunConcurrent.test_runners_run_concurrent;
 import static org.quackery.run.TestRunnersRunIn.test_runners_run_in;
@@ -27,6 +28,7 @@ public class TestAll {
     test_runners_run();
     test_runners_run_in();
     test_runners_run_concurrent();
+    test_runners_expect();
     test_runners_timeout();
     test_runners_thread_scoped();
     test_runners_class_loader_scoped();

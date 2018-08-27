@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import org.quackery.Case;
 import org.quackery.Test;
 import org.quackery.help.TraversingDecorator;
+import org.quackery.report.AssertException;
 
 public class Runners {
   public static Test run(Test root) {
@@ -79,6 +80,34 @@ public class Runners {
     return new Case(test.name) {
       public void run() throws Throwable {
         future.get().run();
+      }
+    };
+  }
+
+  public static Test expect(final Class<? extends Throwable> throwable, Test test) {
+    check(test != null);
+    return new TraversingDecorator() {
+      protected Test decorateCase(Case cas) {
+        return expect(throwable, cas);
+      }
+    }.decorate(test);
+  }
+
+  private static Case expect(final Class<? extends Throwable> expected, final Case cas) {
+    return new Case(cas.name) {
+      public void run() throws Throwable {
+        Throwable thrown = null;
+        try {
+          cas.run();
+        } catch (Throwable throwable) {
+          thrown = throwable;
+        }
+        if (thrown == null) {
+          throw new AssertException("nothing thrown");
+        }
+        if (!expected.isAssignableFrom(thrown.getClass())) {
+          throw new AssertException(thrown);
+        }
       }
     };
   }
