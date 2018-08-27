@@ -141,7 +141,9 @@ public class TestingDecorators {
     Test decorated = decorator.decorate(test);
     invoked.set(0);
 
-    ((Case) decorated).run();
+    try {
+      ((Case) decorated).run();
+    } catch (Throwable t) {}
 
     assertEquals(invoked.get(), count);
   }
