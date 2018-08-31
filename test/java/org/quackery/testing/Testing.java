@@ -48,6 +48,16 @@ public class Testing {
 
   public static Object mockObject(final String name) {
     return new Object() {
+      public boolean equals(Object object) {
+        return object != null
+            && getClass() == object.getClass()
+            && toString().equals(object.toString());
+      }
+
+      public int hashCode() {
+        return name.hashCode();
+      }
+
       public String toString() {
         return name;
       }

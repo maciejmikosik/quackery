@@ -3,6 +3,8 @@ package org.quackery.report;
 import static java.lang.String.format;
 import static java.util.Objects.deepEquals;
 
+import java.util.Arrays;
+
 public class AssertException extends ReportException {
   public AssertException() {}
 
@@ -26,15 +28,22 @@ public class AssertException extends ReportException {
 
   public static void assertEquals(Object actual, Object expected) {
     if (!deepEquals(actual, expected)) {
-      throw new AssertException(format(""
-          + "\n"
-          + "  expected that\n"
+      throw new AssertException(format("\n"
+          + "  expected equal to\n"
           + "    %s\n"
-          + "  is equal to\n"
+          + "  but was\n"
           + "    %s\n",
-          actual,
-          expected));
+          print(expected),
+          print(actual)));
     }
+  }
+
+  private static String print(Object object) {
+    return object == null
+        ? "null"
+        : object.getClass().isArray()
+            ? Arrays.deepToString((Object[]) object)
+            : object.toString();
   }
 
   public static void fail() {

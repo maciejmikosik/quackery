@@ -6,6 +6,8 @@ import static org.quackery.TestCase.test_case;
 import static org.quackery.TestSuite.test_suite;
 import static org.quackery.contract.collection.TestCollectionContract.test_collection_contract;
 import static org.quackery.junit.TestQuackeryRunner.test_quackery_runner;
+import static org.quackery.report.TestAssertException.test_assert_exception;
+import static org.quackery.report.TestAssumeException.test_assume_exception;
 import static org.quackery.report.TestReportsCountThrowables.test_reports_count_throwables;
 import static org.quackery.report.TestReportsFormat.test_reports_format;
 import static org.quackery.run.TestRunnersClassLoaderScoped.test_runners_class_loader_scoped;
@@ -33,6 +35,8 @@ public class TestAll {
     test_runners_thread_scoped();
     test_runners_class_loader_scoped();
 
+    test_assert_exception();
+    test_assume_exception();
     test_reports_count_throwables();
     test_reports_format();
 
