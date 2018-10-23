@@ -1,0 +1,27 @@
+actions
+  creates instance
+  assigns fields
+  null arguments
+  illegal argument
+
+methods
+  isReturning
+  isThrowing
+
+Idioms
+  object methods
+  structure
+  value object
+
+structure
+  class not final
+  public
+  toString
+  equals
+  hashCode
+  no inner class
+  no final methods
+  field types and factory parameters match
+  defensive copy collections, date
+  pack fields using unmodifiable
+  override Date throwing UnsupportedOperationException
