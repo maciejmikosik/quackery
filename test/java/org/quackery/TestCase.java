@@ -37,19 +37,15 @@ public class TestCase {
   private static void factory_assigns_name() {
     String name = "name";
 
-    Test test = newCase(name, new Body() {
-      public void run() {}
-    });
+    Test test = newCase(name, () -> {});
 
     assertEquals(nameOf(test), name);
   }
 
   private static void factory_body_is_run_once() throws Throwable {
     AtomicInteger invoked = new AtomicInteger();
-    Test test = newCase("name", new Body() {
-      public void run() {
-        invoked.incrementAndGet();
-      }
+    Test test = newCase("name", () -> {
+      invoked.incrementAndGet();
     });
 
     runAndThrow(test);
@@ -59,10 +55,8 @@ public class TestCase {
 
   private static void factory_body_is_run_each_time() throws Throwable {
     AtomicInteger invoked = new AtomicInteger();
-    Test test = newCase("name", new Body() {
-      public void run() {
-        invoked.incrementAndGet();
-      }
+    Test test = newCase("name", () -> {
+      invoked.incrementAndGet();
     });
 
     runAndThrow(test);
@@ -74,10 +68,8 @@ public class TestCase {
 
   private static void factory_body_can_throw_exception() {
     Throwable throwable = new Throwable();
-    Test test = newCase("name", new Body() {
-      public void run() throws Throwable {
-        throw throwable;
-      }
+    Test test = newCase("name", () -> {
+      throw throwable;
     });
 
     try {
@@ -96,9 +88,7 @@ public class TestCase {
       fail();
     } catch (QuackeryException e) {}
     try {
-      newCase(null, new Body() {
-        public void run() {}
-      });
+      newCase(null, () -> {});
       fail();
     } catch (QuackeryException e) {}
     try {
