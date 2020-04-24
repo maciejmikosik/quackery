@@ -59,7 +59,7 @@ public class QuackeryRunner extends Runner {
     return description;
   }
 
-  public void run(final RunNotifier notifier) {
+  public void run(RunNotifier notifier) {
     Test notifyingQuackeryTest = traverse(quackeryTest,
         test -> test.visit(
             (name, body) -> newCase(name, notifying(notifier, describe(test), body)),
@@ -188,7 +188,7 @@ public class QuackeryRunner extends Runner {
   }
 
   private static Serializable id(Test test) {
-    final int id = System.identityHashCode(test);
+    int id = System.identityHashCode(test);
     return new Serializable() {
       public boolean equals(Object obj) {
         return getClass() == obj.getClass() && hashCode() == obj.hashCode();

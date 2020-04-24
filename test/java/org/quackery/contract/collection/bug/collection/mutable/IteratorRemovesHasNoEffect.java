@@ -13,7 +13,7 @@ public class IteratorRemovesHasNoEffect<E> extends MutableList<E> {
   }
 
   public Iterator<E> iterator() {
-    final Iterator<E> iterator = super.iterator();
+    Iterator<E> iterator = super.iterator();
     return new Iterator<E>() {
       public boolean hasNext() {
         return iterator.hasNext();

@@ -36,7 +36,7 @@ public class Runners {
     return () -> {};
   }
 
-  public static Test in(final Executor executor, Test root) {
+  public static Test in(Executor executor, Test root) {
     check(root != null);
     check(executor != null);
     return traverseBodies(root, body -> futureBody(executor, body));
@@ -98,7 +98,7 @@ public class Runners {
 
   private static Body timeout(double time, Body body) {
     return () -> {
-      final Thread caller = Thread.currentThread();
+      Thread caller = Thread.currentThread();
       ScheduledFuture<?> alarm = timeoutScheduler.schedule(
           () -> caller.interrupt(),
           (long) (time * 1e9),

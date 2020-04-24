@@ -105,7 +105,7 @@ public class Testing {
     throw new AssertionError();
   }
 
-  public static Object mockObject(final String name) {
+  public static Object mockObject(String name) {
     return new Object() {
       public boolean equals(Object object) {
         return object != null
@@ -133,7 +133,7 @@ public class Testing {
     });
   }
 
-  public static <T> Contract<T> mockContract(final String name) {
+  public static <T> Contract<T> mockContract(String name) {
     return new Contract<T>() {
       public Test test(T item) {
         return new MockTest(item, this);
@@ -179,8 +179,8 @@ public class Testing {
     }
   }
 
-  public static void interruptMeAfter(final double time) {
-    final Thread caller = Thread.currentThread();
+  public static void interruptMeAfter(double time) {
+    Thread caller = Thread.currentThread();
     Thread interrupter = new Thread(new Runnable() {
       public void run() {
         try {

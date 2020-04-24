@@ -13,7 +13,7 @@ public class IteratorSkipsFirstElement<E> extends MutableList<E> {
   }
 
   public Iterator<E> iterator() {
-    final Iterator<E> iterator = super.iterator();
+    Iterator<E> iterator = super.iterator();
     if (iterator.hasNext()) {
       iterator.next();
     }

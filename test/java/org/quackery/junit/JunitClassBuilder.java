@@ -111,7 +111,7 @@ class JunitClassBuilder {
         .returning(null);
   }
 
-  public static Annotation annotationRunWith(final Class<? extends Runner> type) {
+  public static Annotation annotationRunWith(Class<? extends Runner> type) {
     return new RunWith() {
       public Class<? extends Annotation> annotationType() {
         return RunWith.class;
@@ -147,7 +147,7 @@ class JunitClassBuilder {
     };
   }
 
-  public static Annotation annotationIgnore(final String reason) {
+  public static Annotation annotationIgnore(String reason) {
     return new Ignore() {
       public Class<? extends Annotation> annotationType() {
         return Ignore.class;

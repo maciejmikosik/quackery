@@ -13,7 +13,7 @@ public class IteratorInsertsLastElement<E> extends MutableList<E> {
   }
 
   public Iterator<E> iterator() {
-    final Iterator<E> iterator = super.iterator();
+    Iterator<E> iterator = super.iterator();
     return new Iterator<E>() {
       private boolean usedExtra = false;
 

@@ -13,7 +13,7 @@ public class IteratorRemovesElement<E> extends ImmutableList<E> {
   }
 
   public Iterator<E> iterator() {
-    final Iterator<E> iterator = delegate.iterator();
+    Iterator<E> iterator = delegate.iterator();
     return new Iterator<E>() {
       public boolean hasNext() {
         return iterator.hasNext();
