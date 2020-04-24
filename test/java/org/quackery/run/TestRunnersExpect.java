@@ -7,11 +7,11 @@ import static org.quackery.run.TestingDecorators.decorator_runs_cases_lazily;
 import static org.quackery.run.TestingDecorators.decorator_validates_arguments;
 import static org.quackery.testing.Testing.assertEquals;
 import static org.quackery.testing.Testing.fail;
+import static org.quackery.testing.Testing.runAndThrow;
 
 import java.io.IOException;
 import java.util.function.Function;
 
-import org.quackery.Case;
 import org.quackery.Test;
 import org.quackery.report.AssertException;
 
@@ -33,14 +33,14 @@ public class TestRunnersExpect {
     Test test = expect(SuperException.class, newCase("case", () -> {
       throw new SuperException();
     }));
-    ((Case) test).run();
+    runAndThrow(test);
   }
 
   private static void case_succeeds_if_thrown_subtype_of_expected_throwable() throws Throwable {
     Test test = expect(SuperException.class, newCase("case", () -> {
       throw new SubException();
     }));
-    ((Case) test).run();
+    runAndThrow(test);
   }
 
   private static void case_fails_if_thrown_supertype_of_expected_throwable() throws Throwable {
@@ -49,7 +49,7 @@ public class TestRunnersExpect {
       throw thrown;
     }));
     try {
-      ((Case) test).run();
+      runAndThrow(test);
       fail();
     } catch (AssertException e) {
       assertEquals(e.getCause(), thrown);
@@ -59,7 +59,7 @@ public class TestRunnersExpect {
   private static void case_fails_if_thrown_nothing() throws Throwable {
     Test test = expect(IOException.class, newCase("case", () -> {}));
     try {
-      ((Case) test).run();
+      runAndThrow(test);
       fail();
     } catch (AssertException e) {
       assertEquals(e.getMessage(), "nothing thrown");

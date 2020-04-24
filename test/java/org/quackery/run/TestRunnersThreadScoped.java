@@ -10,13 +10,13 @@ import static org.quackery.testing.Testing.assertNotEquals;
 import static org.quackery.testing.Testing.assertTrue;
 import static org.quackery.testing.Testing.fail;
 import static org.quackery.testing.Testing.interruptMeAfter;
+import static org.quackery.testing.Testing.runAndThrow;
 import static org.quackery.testing.Testing.sleep;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
-import org.quackery.Case;
 import org.quackery.Test;
 
 public class TestRunnersThreadScoped {
@@ -40,7 +40,7 @@ public class TestRunnersThreadScoped {
       scope.set(Thread.currentThread());
     }));
 
-    ((Case) test).run();
+    runAndThrow(test);
 
     assertNotEquals(scope.get(), null);
     assertNotEquals(scope.get(), callerThread);
@@ -56,8 +56,8 @@ public class TestRunnersThreadScoped {
       scopeB.set(Thread.currentThread());
     }));
 
-    ((Case) testA).run();
-    ((Case) testB).run();
+    runAndThrow(testA);
+    runAndThrow(testB);
 
     assertNotEquals(scopeA.get(), null);
     assertNotEquals(scopeB.get(), null);
@@ -78,7 +78,7 @@ public class TestRunnersThreadScoped {
 
     interruptMeAfter(0.01);
     try {
-      ((Case) test).run();
+      runAndThrow(test);
       fail();
     } catch (InterruptedException e) {}
     assertTrue(interrupted.get());

@@ -6,6 +6,7 @@ import static java.util.Objects.hash;
 import static org.quackery.Case.newCase;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 import org.quackery.Body;
@@ -44,6 +45,28 @@ public class Testing {
           expected,
           actual));
     }
+  }
+
+  public static void runAndThrow(Test test) throws Throwable {
+    Optional<Throwable> thrown = runAndCatch(test);
+    if (thrown.isPresent()) {
+      throw thrown.get();
+    }
+  }
+
+  public static Optional<Throwable> runAndCatch(Test test) {
+    return test.visit(
+        (name, body) -> {
+          try {
+            body.run();
+          } catch (Throwable throwable) {
+            return Optional.of(throwable);
+          }
+          return Optional.empty();
+        },
+        (name, children) -> {
+          throw new IllegalArgumentException();
+        });
   }
 
   public static void fail() {

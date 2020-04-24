@@ -9,11 +9,11 @@ import static org.quackery.run.TestingDecorators.decorator_validates_arguments;
 import static org.quackery.testing.Testing.assertEquals;
 import static org.quackery.testing.Testing.assertNotEquals;
 import static org.quackery.testing.Testing.mockCase;
+import static org.quackery.testing.Testing.runAndThrow;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
-import org.quackery.Case;
 import org.quackery.Test;
 
 public class TestRunnersClassLoaderScoped {
@@ -46,7 +46,7 @@ public class TestRunnersClassLoaderScoped {
       scope.set(Thread.currentThread().getContextClassLoader());
     }));
 
-    ((Case) test).run();
+    runAndThrow(test);
 
     assertNotEquals(scope.get(), original);
   }
@@ -58,7 +58,7 @@ public class TestRunnersClassLoaderScoped {
       scope.set(Thread.currentThread().getContextClassLoader());
     }));
 
-    ((Case) test).run();
+    runAndThrow(test);
 
     assertNotEquals(scope.get(), original);
   }
@@ -70,7 +70,7 @@ public class TestRunnersClassLoaderScoped {
       scope.set(Thread.currentThread().getContextClassLoader());
     }));
 
-    ((Case) test).run();
+    runAndThrow(test);
 
     assertEquals(scope.get().getParent(), original);
   }
@@ -79,7 +79,7 @@ public class TestRunnersClassLoaderScoped {
     ClassLoader original = Thread.currentThread().getContextClassLoader();
     Test test = classLoaderScoped(mockCase("name"));
 
-    ((Case) test).run();
+    runAndThrow(test);
 
     assertEquals(Thread.currentThread().getContextClassLoader(), original);
   }
@@ -89,7 +89,7 @@ public class TestRunnersClassLoaderScoped {
     Test test = classLoaderScoped(mockCase("name", new Throwable()));
 
     try {
-      ((Case) test).run();
+      runAndThrow(test);
     } catch (Throwable t) {}
 
     assertEquals(Thread.currentThread().getContextClassLoader(), original);

@@ -4,6 +4,7 @@ import static org.junit.Assert.fail;
 import static org.quackery.Case.newCase;
 import static org.quackery.testing.Testing.assertEquals;
 import static org.quackery.testing.Testing.assertTrue;
+import static org.quackery.testing.Testing.runAndThrow;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -50,7 +51,7 @@ public class TestCase {
       }
     });
 
-    test.run();
+    runAndThrow(test);
 
     assertEquals(invoked.get(), 1);
   }
@@ -63,9 +64,9 @@ public class TestCase {
       }
     });
 
-    test.run();
-    test.run();
-    test.run();
+    runAndThrow(test);
+    runAndThrow(test);
+    runAndThrow(test);
 
     assertEquals(invoked.get(), 3);
   }
@@ -79,7 +80,7 @@ public class TestCase {
     });
 
     try {
-      test.run();
+      runAndThrow(test);
       fail();
     } catch (Throwable e) {
       assertEquals(e, throwable);

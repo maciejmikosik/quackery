@@ -4,6 +4,7 @@ import static java.lang.String.format;
 import static java.util.Objects.deepEquals;
 import static org.quackery.Suite.suite;
 import static org.quackery.help.Helpers.type;
+import static org.quackery.testing.Testing.runAndCatch;
 
 import java.util.Iterator;
 import java.util.List;
@@ -103,12 +104,8 @@ public class TestingJunit {
   }
 
   private static Throwable thrownBy(Case test) {
-    try {
-      test.run();
-    } catch (Throwable throwable) {
-      return throwable;
-    }
-    return new NoThrowable();
+    return runAndCatch(test)
+        .orElse(new NoThrowable());
   }
 
   private static Throwable thrownBy(Description description, List<Failure> failures) {

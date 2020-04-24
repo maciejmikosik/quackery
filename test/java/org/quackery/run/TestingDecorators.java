@@ -8,12 +8,12 @@ import static org.quackery.help.Helpers.type;
 import static org.quackery.testing.Testing.assertEquals;
 import static org.quackery.testing.Testing.fail;
 import static org.quackery.testing.Testing.mockCase;
+import static org.quackery.testing.Testing.runAndThrow;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
-import org.quackery.Case;
 import org.quackery.QuackeryException;
 import org.quackery.Suite;
 import org.quackery.Test;
@@ -80,7 +80,7 @@ public class TestingDecorators {
 
   private static void decorator_preserves_case_result_if_successful(Function<Test, Test> decorator) throws Throwable {
     Test test = decorator.apply(mockCase("name"));
-    ((Case) test).run();
+    runAndThrow(test);
   }
 
   private static void decorator_preserves_case_result_if_failed(Function<Test, Test> decorator) {
@@ -88,7 +88,7 @@ public class TestingDecorators {
     Test test = decorator.apply(mockCase("name", throwable));
 
     try {
-      ((Case) test).run();
+      runAndThrow(test);
       fail();
     } catch (Throwable t) {
       assertEquals(t, throwable);
@@ -134,7 +134,7 @@ public class TestingDecorators {
     invoked.set(0);
 
     try {
-      ((Case) decorated).run();
+      runAndThrow(decorated);
     } catch (Throwable t) {}
 
     assertEquals(invoked.get(), count);
@@ -150,7 +150,7 @@ public class TestingDecorators {
     invoked.set(0);
 
     try {
-      ((Case) decorated).run();
+      runAndThrow(decorated);
     } catch (Throwable t) {}
 
     assertEquals(invoked.get(), count);

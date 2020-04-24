@@ -9,6 +9,7 @@ import static org.quackery.run.TestingDecorators.decorator_runs_cases_lazily;
 import static org.quackery.run.TestingDecorators.decorator_validates_arguments;
 import static org.quackery.testing.Testing.fail;
 import static org.quackery.testing.Testing.mockCase;
+import static org.quackery.testing.Testing.runAndThrow;
 import static org.quackery.testing.Testing.sleep;
 import static org.quackery.testing.Testing.sleepBusy;
 
@@ -47,7 +48,7 @@ public class TestRunnersTimeout {
     }));
 
     try {
-      ((Case) test).run();
+      runAndThrow(test);
       fail();
     } catch (InterruptedException e) {}
     assertTrue(interrupted.get());
@@ -59,7 +60,7 @@ public class TestRunnersTimeout {
     }));
 
     try {
-      ((Case) test).run();
+      runAndThrow(test);
       fail();
     } catch (InterruptedException e) {}
   }
@@ -71,7 +72,7 @@ public class TestRunnersTimeout {
     }));
 
     try {
-      ((Case) test).run();
+      runAndThrow(test);
       fail();
     } catch (InterruptedException e) {}
   }
