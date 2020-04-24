@@ -1,6 +1,7 @@
 package org.quackery.run;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.quackery.Case.newCase;
 import static org.quackery.Suite.suite;
 import static org.quackery.run.Runners.concurrent;
 import static org.quackery.run.Runners.run;
@@ -47,15 +48,13 @@ public class TestRunnersRunConcurrent {
     assertTrue(!failed.get());
   }
 
-  private static Case countDown(final CountDownLatch latch, final AtomicBoolean failed) {
-    return new Case("countDown") {
-      public void run() throws InterruptedException {
-        latch.countDown();
-        if (!latch.await(1, SECONDS)) {
-          failed.set(true);
-        }
+  private static Case countDown(CountDownLatch latch, AtomicBoolean failed) {
+    return newCase("countDown", () -> {
+      latch.countDown();
+      if (!latch.await(1, SECONDS)) {
+        failed.set(true);
       }
-    };
+    });
   }
 
   private static void validates_arguments() {

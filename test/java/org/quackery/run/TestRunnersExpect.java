@@ -1,5 +1,6 @@
 package org.quackery.run;
 
+import static org.quackery.Case.newCase;
 import static org.quackery.run.Runners.expect;
 import static org.quackery.run.TestingDecorators.decorator_preserves_names_and_structure;
 import static org.quackery.run.TestingDecorators.decorator_runs_cases_lazily;
@@ -29,30 +30,24 @@ public class TestRunnersExpect {
   }
 
   private static void case_succeeds_if_thrown_expected_throwable() throws Throwable {
-    Test test = Runners.expect(SuperException.class, new Case("case") {
-      public void run() {
-        throw new SuperException();
-      }
-    });
+    Test test = expect(SuperException.class, newCase("case", () -> {
+      throw new SuperException();
+    }));
     ((Case) test).run();
   }
 
   private static void case_succeeds_if_thrown_subtype_of_expected_throwable() throws Throwable {
-    Test test = Runners.expect(SuperException.class, new Case("case") {
-      public void run() {
-        throw new SubException();
-      }
-    });
+    Test test = expect(SuperException.class, newCase("case", () -> {
+      throw new SubException();
+    }));
     ((Case) test).run();
   }
 
   private static void case_fails_if_thrown_supertype_of_expected_throwable() throws Throwable {
-    final SuperException thrown = new SuperException();
-    Test test = Runners.expect(SubException.class, new Case("case") {
-      public void run() {
-        throw thrown;
-      }
-    });
+    SuperException thrown = new SuperException();
+    Test test = expect(SubException.class, newCase("case", () -> {
+      throw thrown;
+    }));
     try {
       ((Case) test).run();
       fail();
@@ -62,9 +57,7 @@ public class TestRunnersExpect {
   }
 
   private static void case_fails_if_thrown_nothing() throws Throwable {
-    Test test = Runners.expect(IOException.class, new Case("case") {
-      public void run() {}
-    });
+    Test test = expect(IOException.class, newCase("case", () -> {}));
     try {
       ((Case) test).run();
       fail();

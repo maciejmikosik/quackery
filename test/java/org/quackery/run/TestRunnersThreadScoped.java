@@ -1,5 +1,6 @@
 package org.quackery.run;
 
+import static org.quackery.Case.newCase;
 import static org.quackery.run.Runners.threadScoped;
 import static org.quackery.run.TestingDecorators.decorator_preserves_case_result;
 import static org.quackery.run.TestingDecorators.decorator_preserves_names_and_structure;
@@ -34,12 +35,10 @@ public class TestRunnersThreadScoped {
 
   private static void runs_test_in_different_thread_than_caller() throws Throwable {
     Thread callerThread = Thread.currentThread();
-    final AtomicReference<Thread> scope = new AtomicReference<>();
-    Test test = threadScoped(new Case("case") {
-      public void run() {
-        scope.set(Thread.currentThread());
-      }
-    });
+    AtomicReference<Thread> scope = new AtomicReference<>();
+    Test test = threadScoped(newCase("case", () -> {
+      scope.set(Thread.currentThread());
+    }));
 
     ((Case) test).run();
 
@@ -48,18 +47,14 @@ public class TestRunnersThreadScoped {
   }
 
   private static void runs_each_test_in_different_thread() throws Throwable {
-    final AtomicReference<Thread> scopeA = new AtomicReference<>();
-    final AtomicReference<Thread> scopeB = new AtomicReference<>();
-    Test testA = threadScoped(new Case("caseA") {
-      public void run() {
-        scopeA.set(Thread.currentThread());
-      }
-    });
-    Test testB = threadScoped(new Case("caseB") {
-      public void run() {
-        scopeB.set(Thread.currentThread());
-      }
-    });
+    AtomicReference<Thread> scopeA = new AtomicReference<>();
+    AtomicReference<Thread> scopeB = new AtomicReference<>();
+    Test testA = threadScoped(newCase("caseA", () -> {
+      scopeA.set(Thread.currentThread());
+    }));
+    Test testB = threadScoped(newCase("caseB", () -> {
+      scopeB.set(Thread.currentThread());
+    }));
 
     ((Case) testA).run();
     ((Case) testB).run();
@@ -70,18 +65,16 @@ public class TestRunnersThreadScoped {
   }
 
   private static void propagates_interruption() throws Throwable {
-    final AtomicBoolean interrupted = new AtomicBoolean(false);
-    Test test = threadScoped(new Case("case") {
-      public void run() throws InterruptedException {
-        try {
-          sleep(1);
-          interrupted.set(false);
-        } catch (InterruptedException e) {
-          interrupted.set(true);
-          throw e;
-        }
+    AtomicBoolean interrupted = new AtomicBoolean(false);
+    Test test = threadScoped(newCase("case", () -> {
+      try {
+        sleep(1);
+        interrupted.set(false);
+      } catch (InterruptedException e) {
+        interrupted.set(true);
+        throw e;
       }
-    });
+    }));
 
     interruptMeAfter(0.01);
     try {

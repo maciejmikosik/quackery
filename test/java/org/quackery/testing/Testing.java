@@ -3,6 +3,7 @@ package org.quackery.testing;
 import static java.lang.String.format;
 import static java.util.Objects.deepEquals;
 import static java.util.Objects.hash;
+import static org.quackery.Case.newCase;
 
 import java.util.List;
 import java.util.function.BiFunction;
@@ -67,24 +68,14 @@ public class Testing {
     };
   }
 
-  public static Body mockBody() {
-    return new Body() {
-      public void run() {}
-    };
-  }
-
   public static Case mockCase(String name) {
-    return new Case(name) {
-      public void run() {}
-    };
+    return newCase(name, () -> {});
   }
 
-  public static Case mockCase(String name, final Throwable throwable) {
-    return new Case(name) {
-      public void run() throws Throwable {
-        throw throwable.fillInStackTrace();
-      }
-    };
+  public static Case mockCase(String name, Throwable throwable) {
+    return newCase(name, () -> {
+      throw throwable.fillInStackTrace();
+    });
   }
 
   public static <T> Contract<T> mockContract(final String name) {

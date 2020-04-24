@@ -2,6 +2,7 @@ package org.quackery.run;
 
 import static java.lang.String.format;
 import static java.util.Objects.deepEquals;
+import static org.quackery.Case.newCase;
 import static org.quackery.Suite.suite;
 import static org.quackery.help.Helpers.type;
 import static org.quackery.testing.Testing.assertEquals;
@@ -114,12 +115,10 @@ public class TestingDecorators {
   }
 
   private static void decorator_runs_case(int count, Function<Test, Test> decorator) {
-    final AtomicInteger invoked = new AtomicInteger();
-    Test test = new Case("name") {
-      public void run() {
-        invoked.incrementAndGet();
-      }
-    };
+    AtomicInteger invoked = new AtomicInteger();
+    Test test = newCase("name", () -> {
+      invoked.incrementAndGet();
+    });
 
     decorator.apply(test);
 
@@ -127,12 +126,10 @@ public class TestingDecorators {
   }
 
   private static void decorator_runs_successful_decorated(int count, Function<Test, Test> decorator) throws Throwable {
-    final AtomicInteger invoked = new AtomicInteger();
-    Test test = new Case("name") {
-      public void run() {
-        invoked.incrementAndGet();
-      }
-    };
+    AtomicInteger invoked = new AtomicInteger();
+    Test test = newCase("name", () -> {
+      invoked.incrementAndGet();
+    });
     Test decorated = decorator.apply(test);
     invoked.set(0);
 
@@ -144,13 +141,11 @@ public class TestingDecorators {
   }
 
   private static void decorator_runs_failed_decorated(int count, Function<Test, Test> decorator) {
-    final AtomicInteger invoked = new AtomicInteger();
-    Test test = new Case("name") {
-      public void run() {
-        invoked.incrementAndGet();
-        throw new RuntimeException();
-      }
-    };
+    AtomicInteger invoked = new AtomicInteger();
+    Test test = newCase("name", () -> {
+      invoked.incrementAndGet();
+      throw new RuntimeException();
+    });
     Test decorated = decorator.apply(test);
     invoked.set(0);
 

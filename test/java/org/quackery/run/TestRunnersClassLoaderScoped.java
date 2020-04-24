@@ -1,5 +1,6 @@
 package org.quackery.run;
 
+import static org.quackery.Case.newCase;
 import static org.quackery.run.Runners.classLoaderScoped;
 import static org.quackery.run.TestingDecorators.decorator_preserves_case_result;
 import static org.quackery.run.TestingDecorators.decorator_preserves_names_and_structure;
@@ -40,12 +41,10 @@ public class TestRunnersClassLoaderScoped {
 
   private static void scope_is_not_context_classloader() throws Throwable {
     ClassLoader original = Thread.currentThread().getContextClassLoader();
-    final AtomicReference<ClassLoader> scope = new AtomicReference<ClassLoader>();
-    Test test = classLoaderScoped(new Case("name") {
-      public void run() {
-        scope.set(Thread.currentThread().getContextClassLoader());
-      }
-    });
+    AtomicReference<ClassLoader> scope = new AtomicReference<ClassLoader>();
+    Test test = classLoaderScoped(newCase("name", () -> {
+      scope.set(Thread.currentThread().getContextClassLoader());
+    }));
 
     ((Case) test).run();
 
@@ -54,12 +53,10 @@ public class TestRunnersClassLoaderScoped {
 
   private static void scope_is_not_current_classloader() throws Throwable {
     ClassLoader original = TestRunnersThreadScoped.class.getClassLoader();
-    final AtomicReference<ClassLoader> scope = new AtomicReference<ClassLoader>();
-    Test test = classLoaderScoped(new Case("name") {
-      public void run() {
-        scope.set(Thread.currentThread().getContextClassLoader());
-      }
-    });
+    AtomicReference<ClassLoader> scope = new AtomicReference<ClassLoader>();
+    Test test = classLoaderScoped(newCase("name", () -> {
+      scope.set(Thread.currentThread().getContextClassLoader());
+    }));
 
     ((Case) test).run();
 
@@ -68,12 +65,10 @@ public class TestRunnersClassLoaderScoped {
 
   private static void scope_is_child_of_context_classloader() throws Throwable {
     ClassLoader original = TestRunnersClassLoaderScoped.class.getClassLoader();
-    final AtomicReference<ClassLoader> scope = new AtomicReference<ClassLoader>();
-    Test test = classLoaderScoped(new Case("name") {
-      public void run() {
-        scope.set(Thread.currentThread().getContextClassLoader());
-      }
-    });
+    AtomicReference<ClassLoader> scope = new AtomicReference<ClassLoader>();
+    Test test = classLoaderScoped(newCase("name", () -> {
+      scope.set(Thread.currentThread().getContextClassLoader());
+    }));
 
     ((Case) test).run();
 

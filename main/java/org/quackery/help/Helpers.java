@@ -16,17 +16,13 @@ import org.quackery.Test;
 
 public class Helpers {
   public static Case successfulCase(String name) {
-    return new Case(name) {
-      public void run() {}
-    };
+    return newCase(name, () -> {});
   }
 
-  public static Case failingCase(String name, final Throwable throwable) {
-    return new Case(name) {
-      public void run() throws Throwable {
-        throw throwable;
-      }
-    };
+  public static Case failingCase(String name, Throwable throwable) {
+    return newCase(name, () -> {
+      throw throwable;
+    });
   }
 
   public static Class<? extends Test> type(Test test) {

@@ -4,6 +4,7 @@ import static java.lang.reflect.Modifier.PRIVATE;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static java.lang.reflect.Modifier.STATIC;
 import static net.bytebuddy.dynamic.scaffold.subclass.ConstructorStrategy.Default.NO_CONSTRUCTORS;
+import static org.quackery.Case.newCase;
 import static org.quackery.Suite.suite;
 import static org.quackery.junit.JunitClassBuilder.annotationIgnore;
 import static org.quackery.junit.JunitClassBuilder.annotationJunitTest;
@@ -40,15 +41,13 @@ public class TestQuackeryRunner {
   }
 
   private static void quackery_cases_are_run_once() {
-    final AtomicInteger invoked = new AtomicInteger();
+    AtomicInteger invoked = new AtomicInteger();
     new JUnitCore()
         .run(new JunitClassBuilder()
             .define(defaultQuackeryMethod()
-                .returning(new Case("case") {
-                  public void run() {
-                    invoked.incrementAndGet();
-                  }
-                }))
+                .returning(newCase("case", () -> {
+                  invoked.incrementAndGet();
+                })))
             .load());
     assertEquals(invoked.get(), 1);
   }
