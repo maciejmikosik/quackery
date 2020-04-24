@@ -13,25 +13,21 @@ import static org.quackery.testing.Testing.sleep;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 import org.quackery.Case;
 import org.quackery.Test;
-import org.quackery.help.Decorator;
 
 public class TestRunnersThreadScoped {
   public static void test_runners_thread_scoped() throws Throwable {
-    Decorator decorator = new Decorator() {
-      public Test decorate(Test test) {
-        return threadScoped(test);
-      }
-    };
+    Function<Test, Test> decorator = test -> threadScoped(test);
 
     decorator_preserves_names_and_structure(decorator);
     decorator_preserves_case_result(decorator);
     decorator_validates_arguments(decorator);
     decorator_runs_cases_lazily(decorator);
-    propagates_interruption(decorator);
 
+    propagates_interruption();
     runs_test_in_different_thread_than_caller();
     runs_each_test_in_different_thread();
   }
@@ -73,9 +69,9 @@ public class TestRunnersThreadScoped {
     assertNotEquals(scopeB.get(), scopeA.get());
   }
 
-  private static void propagates_interruption(Decorator decorator) throws Throwable {
+  private static void propagates_interruption() throws Throwable {
     final AtomicBoolean interrupted = new AtomicBoolean(false);
-    Test test = decorator.decorate(new Case("case") {
+    Test test = threadScoped(new Case("case") {
       public void run() throws InterruptedException {
         try {
           sleep(1);

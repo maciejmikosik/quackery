@@ -8,19 +8,15 @@ import static org.quackery.testing.Testing.assertEquals;
 import static org.quackery.testing.Testing.fail;
 
 import java.io.IOException;
+import java.util.function.Function;
 
 import org.quackery.Case;
 import org.quackery.Test;
-import org.quackery.help.Decorator;
 import org.quackery.report.AssertException;
 
 public class TestRunnersExpect {
   public static void test_runners_expect() throws Throwable {
-    Decorator decorator = new Decorator() {
-      public Test decorate(Test test) {
-        return expect(Throwable.class, test);
-      }
-    };
+    Function<Test, Test> decorator = test -> expect(Throwable.class, test);
 
     decorator_preserves_names_and_structure(decorator);
     decorator_validates_arguments(decorator);

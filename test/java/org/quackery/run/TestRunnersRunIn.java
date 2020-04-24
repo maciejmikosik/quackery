@@ -17,19 +17,15 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 import org.quackery.Case;
 import org.quackery.QuackeryException;
 import org.quackery.Test;
-import org.quackery.help.Decorator;
 
 public class TestRunnersRunIn {
   public static void test_runners_run_in() throws Throwable {
-    Decorator decorator = new Decorator() {
-      public Test decorate(Test test) {
-        return run(in(currentThreadExecutor(), test));
-      }
-    };
+    Function<Test, Test> decorator = test -> run(in(currentThreadExecutor(), test));
 
     decorator_preserves_names_and_structure(decorator);
     decorator_preserves_case_result(decorator);

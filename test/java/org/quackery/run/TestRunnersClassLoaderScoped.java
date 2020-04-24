@@ -10,18 +10,14 @@ import static org.quackery.testing.Testing.assertNotEquals;
 import static org.quackery.testing.Testing.mockCase;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 import org.quackery.Case;
 import org.quackery.Test;
-import org.quackery.help.Decorator;
 
 public class TestRunnersClassLoaderScoped {
   public static void test_runners_class_loader_scoped() throws Throwable {
-    Decorator decorator = new Decorator() {
-      public Test decorate(Test test) {
-        return classLoaderScoped(test);
-      }
-    };
+    Function<Test, Test> decorator = test -> classLoaderScoped(test);
 
     decorator_preserves_names_and_structure(decorator);
     decorator_preserves_case_result(decorator);

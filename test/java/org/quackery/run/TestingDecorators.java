@@ -9,15 +9,15 @@ import static org.quackery.testing.Testing.mockCase;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 import org.quackery.Case;
 import org.quackery.QuackeryException;
 import org.quackery.Suite;
 import org.quackery.Test;
-import org.quackery.help.Decorator;
 
 public class TestingDecorators {
-  public static void decorator_preserves_names_and_structure(Decorator decorator) throws Throwable {
+  public static void decorator_preserves_names_and_structure(Function<Test, Test> decorator) throws Throwable {
     decorator_preserves_names_and_structure(decorator, mockCase("case"));
     decorator_preserves_names_and_structure(decorator, mockCase("case", new Throwable()));
     decorator_preserves_names_and_structure(decorator, suite("suite").add(mockCase("case")));
@@ -31,8 +31,8 @@ public class TestingDecorators {
             .add(mockCase("caseD"))));
   }
 
-  private static void decorator_preserves_names_and_structure(Decorator decorator, Test test) {
-    assertEqualNamesAndStructure(decorator.decorate(test), test);
+  private static void decorator_preserves_names_and_structure(Function<Test, Test> decorator, Test test) {
+    assertEqualNamesAndStructure(decorator.apply(test), test);
   }
 
   private static void assertEqualNamesAndStructure(Test actual, Test expected) {
@@ -78,19 +78,19 @@ public class TestingDecorators {
         (name, children) -> Suite.class);
   }
 
-  public static void decorator_preserves_case_result(Decorator decorator) throws Throwable {
+  public static void decorator_preserves_case_result(Function<Test, Test> decorator) throws Throwable {
     decorator_preserves_case_result_if_successful(decorator);
     decorator_preserves_case_result_if_failed(decorator);
   }
 
-  private static void decorator_preserves_case_result_if_successful(Decorator decorator) throws Throwable {
-    Test test = decorator.decorate(mockCase("name"));
+  private static void decorator_preserves_case_result_if_successful(Function<Test, Test> decorator) throws Throwable {
+    Test test = decorator.apply(mockCase("name"));
     ((Case) test).run();
   }
 
-  private static void decorator_preserves_case_result_if_failed(Decorator decorator) {
+  private static void decorator_preserves_case_result_if_failed(Function<Test, Test> decorator) {
     Throwable throwable = new Throwable();
-    Test test = decorator.decorate(mockCase("name", throwable));
+    Test test = decorator.apply(mockCase("name", throwable));
 
     try {
       ((Case) test).run();
@@ -100,26 +100,26 @@ public class TestingDecorators {
     }
   }
 
-  public static void decorator_validates_arguments(Decorator decorator) {
+  public static void decorator_validates_arguments(Function<Test, Test> decorator) {
     try {
-      decorator.decorate((Test) null);
+      decorator.apply((Test) null);
       fail();
     } catch (QuackeryException e) {}
   }
 
-  public static void decorator_runs_cases_eagerly(Decorator decorator) throws Throwable {
+  public static void decorator_runs_cases_eagerly(Function<Test, Test> decorator) throws Throwable {
     decorator_runs_case(1, decorator);
     decorator_runs_successful_decorated(0, decorator);
     decorator_runs_failed_decorated(0, decorator);
   }
 
-  public static void decorator_runs_cases_lazily(Decorator decorator) throws Throwable {
+  public static void decorator_runs_cases_lazily(Function<Test, Test> decorator) throws Throwable {
     decorator_runs_case(0, decorator);
     decorator_runs_successful_decorated(1, decorator);
     decorator_runs_failed_decorated(1, decorator);
   }
 
-  private static void decorator_runs_case(int count, Decorator decorator) {
+  private static void decorator_runs_case(int count, Function<Test, Test> decorator) {
     final AtomicInteger invoked = new AtomicInteger();
     Test test = new Case("name") {
       public void run() {
@@ -127,19 +127,19 @@ public class TestingDecorators {
       }
     };
 
-    decorator.decorate(test);
+    decorator.apply(test);
 
     assertEquals(invoked.get(), count);
   }
 
-  private static void decorator_runs_successful_decorated(int count, Decorator decorator) throws Throwable {
+  private static void decorator_runs_successful_decorated(int count, Function<Test, Test> decorator) throws Throwable {
     final AtomicInteger invoked = new AtomicInteger();
     Test test = new Case("name") {
       public void run() {
         invoked.incrementAndGet();
       }
     };
-    Test decorated = decorator.decorate(test);
+    Test decorated = decorator.apply(test);
     invoked.set(0);
 
     try {
@@ -149,7 +149,7 @@ public class TestingDecorators {
     assertEquals(invoked.get(), count);
   }
 
-  private static void decorator_runs_failed_decorated(int count, Decorator decorator) {
+  private static void decorator_runs_failed_decorated(int count, Function<Test, Test> decorator) {
     final AtomicInteger invoked = new AtomicInteger();
     Test test = new Case("name") {
       public void run() {
@@ -157,7 +157,7 @@ public class TestingDecorators {
         throw new RuntimeException();
       }
     };
-    Test decorated = decorator.decorate(test);
+    Test decorated = decorator.apply(test);
     invoked.set(0);
 
     try {
