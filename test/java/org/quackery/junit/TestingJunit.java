@@ -95,10 +95,11 @@ public class TestingJunit {
         : description.getMethodName();
   }
 
+  // TODO use private enum CASE, SUITE instead of Class object
   private static Class<?> type(Test test) {
-    return test instanceof Suite
-        ? Suite.class
-        : Case.class;
+    return test.visit(
+        (name, body) -> Case.class,
+        (name, children) -> Suite.class);
   }
 
   private static Class<?> type(Description description) {

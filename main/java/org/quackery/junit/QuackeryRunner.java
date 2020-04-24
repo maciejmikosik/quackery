@@ -179,25 +179,13 @@ public class QuackeryRunner extends Runner {
   }
 
   private Description describe(Test test) {
-    if (test instanceof Suite) {
-      return describe((Suite) test);
-    } else if (test instanceof Case) {
-      return describe((Case) test);
-    } else {
-      throw new QuackeryException();
-    }
-  }
-
-  private Description describe(Suite suite) {
-    Description parent = createSuiteDescription(suite.name, id(suite));
-    for (Test child : suite.tests) {
-      parent.addChild(describe(child));
-    }
-    return parent;
-  }
-
-  private Description describe(Case cas) {
-    return createTestDescription(annotatedClass.getName(), cas.name, id(cas));
+    return test.visit(
+        (name, body) -> createTestDescription(annotatedClass.getName(), name, id(test)),
+        (name, children) -> {
+          Description described = createSuiteDescription(name, id(test));
+          children.stream().forEach(child -> described.addChild(describe(child)));
+          return described;
+        });
   }
 
   private static Serializable id(Test test) {
