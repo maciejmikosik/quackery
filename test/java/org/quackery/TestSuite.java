@@ -141,7 +141,7 @@ public class TestSuite {
     class Item {}
     class SubItem extends Item {}
 
-    List<Case> cases = asList(mockCase("case"));
+    List<Case> cases = asList((Case) mockCase("case"));
     List<Suite> suites = asList(suite("suite"));
     List<Test> tests = asList(suite("suite"), mockCase("case"));
     List<? extends Test> covariantTests = asList(suite("suite"), mockCase("case"));
@@ -176,8 +176,8 @@ public class TestSuite {
 
   private static void validates_arguments() {
     Suite suite = suite("suite");
-    Case testA = mockCase("testA");
-    Case testB = mockCase("testB");
+    Test testA = mockCase("testA");
+    Test testB = mockCase("testB");
     Contract<Object> contract = mockContract("contract");
     Object item = mockObject("item");
 

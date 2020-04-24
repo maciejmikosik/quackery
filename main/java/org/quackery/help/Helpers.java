@@ -10,15 +10,14 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.quackery.Body;
-import org.quackery.Case;
 import org.quackery.Test;
 
 public class Helpers {
-  public static Case successfulCase(String name) {
+  public static Test successfulCase(String name) {
     return newCase(name, () -> {});
   }
 
-  public static Case failingCase(String name, Throwable throwable) {
+  public static Test failingCase(String name, Throwable throwable) {
     return newCase(name, () -> {
       throw throwable;
     });

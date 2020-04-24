@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 
 import org.quackery.Body;
-import org.quackery.Case;
 import org.quackery.Contract;
 import org.quackery.Test;
 
@@ -124,11 +123,11 @@ public class Testing {
     };
   }
 
-  public static Case mockCase(String name) {
+  public static Test mockCase(String name) {
     return newCase(name, () -> {});
   }
 
-  public static Case mockCase(String name, Throwable throwable) {
+  public static Test mockCase(String name, Throwable throwable) {
     return newCase(name, () -> {
       throw throwable.fillInStackTrace();
     });

@@ -16,7 +16,6 @@ import static org.quackery.testing.Testing.sleepBusy;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
-import org.quackery.Case;
 import org.quackery.QuackeryException;
 import org.quackery.Test;
 
@@ -78,7 +77,7 @@ public class TestRunnersTimeout {
   }
 
   private static void validates_arguments() {
-    Case test = mockCase("case");
+    Test test = mockCase("case");
     try {
       timeout(-0.001, test);
       fail();

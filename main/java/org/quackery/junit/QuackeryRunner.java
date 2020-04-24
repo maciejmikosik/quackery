@@ -24,7 +24,6 @@ import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 import org.quackery.Body;
-import org.quackery.Case;
 import org.quackery.Quackery;
 import org.quackery.QuackeryException;
 import org.quackery.Suite;
@@ -122,7 +121,7 @@ public class QuackeryRunner extends Runner {
     }
   }
 
-  private static Case fail(Method method, String message) {
+  private static Test fail(Method method, String message) {
     return failingCase(method.getName(), new QuackeryException(message));
   }
 

@@ -37,7 +37,7 @@ public class TestCase {
   private static void factory_assigns_name() {
     String name = "name";
 
-    Case test = newCase(name, new Body() {
+    Test test = newCase(name, new Body() {
       public void run() {}
     });
 
@@ -45,8 +45,8 @@ public class TestCase {
   }
 
   private static void factory_body_is_run_once() throws Throwable {
-    final AtomicInteger invoked = new AtomicInteger();
-    Case test = newCase("name", new Body() {
+    AtomicInteger invoked = new AtomicInteger();
+    Test test = newCase("name", new Body() {
       public void run() {
         invoked.incrementAndGet();
       }
@@ -58,8 +58,8 @@ public class TestCase {
   }
 
   private static void factory_body_is_run_each_time() throws Throwable {
-    final AtomicInteger invoked = new AtomicInteger();
-    Case test = newCase("name", new Body() {
+    AtomicInteger invoked = new AtomicInteger();
+    Test test = newCase("name", new Body() {
       public void run() {
         invoked.incrementAndGet();
       }
@@ -73,8 +73,8 @@ public class TestCase {
   }
 
   private static void factory_body_can_throw_exception() {
-    final Throwable throwable = new Throwable();
-    Case test = newCase("name", new Body() {
+    Throwable throwable = new Throwable();
+    Test test = newCase("name", new Body() {
       public void run() throws Throwable {
         throw throwable;
       }

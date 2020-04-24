@@ -20,7 +20,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
-import org.quackery.Case;
 import org.quackery.QuackeryException;
 import org.quackery.Test;
 
@@ -54,7 +53,7 @@ public class TestRunnersRunIn {
     assertTrue(executor.awaitTermination(1, SECONDS));
   }
 
-  private static Case countDown(CountDownLatch latch, AtomicBoolean failed) {
+  private static Test countDown(CountDownLatch latch, AtomicBoolean failed) {
     return newCase("countDown", () -> {
       latch.countDown();
       if (!latch.await(1, SECONDS)) {
