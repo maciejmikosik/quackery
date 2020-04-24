@@ -7,6 +7,7 @@ import static org.quackery.QuackeryException.check;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiFunction;
 
 public class Suite extends Test {
   public final List<Test> tests;
@@ -71,6 +72,12 @@ public class Suite extends Test {
   public <T> Suite addAll(T[] items, Contract<T> contract) {
     check(items != null);
     return addAll(asList(items), contract);
+  }
+
+  public <R> R visit(
+      BiFunction<String, Body, R> caseHandler,
+      BiFunction<String, List<Test>, R> suiteHandler) {
+    return suiteHandler.apply(name, tests);
   }
 
   public String toString() {

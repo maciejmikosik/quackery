@@ -4,6 +4,9 @@ import static java.lang.String.format;
 import static java.util.Objects.deepEquals;
 import static java.util.Objects.hash;
 
+import java.util.List;
+import java.util.function.BiFunction;
+
 import org.quackery.Body;
 import org.quackery.Case;
 import org.quackery.Contract;
@@ -104,6 +107,12 @@ public class Testing {
       super(format("%s.test(%s)", contract, item));
       this.item = item;
       this.contract = contract;
+    }
+
+    public <R> R visit(
+        BiFunction<String, Body, R> caseHandler,
+        BiFunction<String, List<Test>, R> suiteHandler) {
+      throw new UnsupportedOperationException();
     }
 
     public boolean equals(Object object) {
