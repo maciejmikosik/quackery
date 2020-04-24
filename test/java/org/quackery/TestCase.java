@@ -7,8 +7,6 @@ import static org.quackery.testing.Testing.assertTrue;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.quackery.Case.Body;
-
 public class TestCase {
   public static void test_case() throws Throwable {
     implements_test_interface();

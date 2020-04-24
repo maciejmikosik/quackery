@@ -9,10 +9,6 @@ public abstract class Case extends Test {
 
   public abstract void run() throws Throwable;
 
-  public interface Body {
-    void run() throws Throwable;
-  }
-
   public static Case newCase(String name, final Body body) {
     check(body != null);
     return new Case(name) {

@@ -4,8 +4,8 @@ import static java.lang.String.format;
 import static java.util.Objects.deepEquals;
 import static java.util.Objects.hash;
 
+import org.quackery.Body;
 import org.quackery.Case;
-import org.quackery.Case.Body;
 import org.quackery.Contract;
 import org.quackery.Test;
 
