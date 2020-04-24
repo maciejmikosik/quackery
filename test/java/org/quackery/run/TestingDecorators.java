@@ -3,6 +3,7 @@ package org.quackery.run;
 import static java.lang.String.format;
 import static java.util.Objects.deepEquals;
 import static org.quackery.Suite.suite;
+import static org.quackery.help.Helpers.type;
 import static org.quackery.testing.Testing.assertEquals;
 import static org.quackery.testing.Testing.fail;
 import static org.quackery.testing.Testing.mockCase;
@@ -69,13 +70,6 @@ public class TestingDecorators {
         assertEqualNamesAndStructure(actualChildren.get(i), expectedChildren.get(i));
       }
     }
-  }
-
-  // TODO use private enum CASE, SUITE instead of Class object
-  private static Class<?> type(Test test) {
-    return test.visit(
-        (name, body) -> Case.class,
-        (name, children) -> Suite.class);
   }
 
   public static void decorator_preserves_case_result(Function<Test, Test> decorator) throws Throwable {

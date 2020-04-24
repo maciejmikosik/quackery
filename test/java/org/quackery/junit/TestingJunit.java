@@ -3,6 +3,7 @@ package org.quackery.junit;
 import static java.lang.String.format;
 import static java.util.Objects.deepEquals;
 import static org.quackery.Suite.suite;
+import static org.quackery.help.Helpers.type;
 
 import java.util.Iterator;
 import java.util.List;
@@ -38,7 +39,7 @@ public class TestingJunit {
 
   private static void assertRecursively(Description description, List<Failure> failures, Test expected) {
     if (!(deepEquals(name(description), expected.name)
-        && type(description) == type(expected))) {
+        && typeOfJunit(description) == type(expected))) {
       throw new AssertionError(format(""
           + "\n"
           + "  expected %s named\n"
@@ -47,7 +48,7 @@ public class TestingJunit {
           + "    %s\n",
           type(expected).getSimpleName(),
           expected.name,
-          type(description).getSimpleName(),
+          typeOfJunit(description).getSimpleName(),
           name(description)));
     }
     if (description.isTest()) {
@@ -95,14 +96,7 @@ public class TestingJunit {
         : description.getMethodName();
   }
 
-  // TODO use private enum CASE, SUITE instead of Class object
-  private static Class<?> type(Test test) {
-    return test.visit(
-        (name, body) -> Case.class,
-        (name, children) -> Suite.class);
-  }
-
-  private static Class<?> type(Description description) {
+  private static Class<?> typeOfJunit(Description description) {
     return description.isSuite()
         ? Suite.class
         : Case.class;
