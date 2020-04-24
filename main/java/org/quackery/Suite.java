@@ -11,18 +11,18 @@ import java.util.function.BiFunction;
 
 public class Suite implements Test {
   private final String name;
-  private final List<Test> tests;
+  private final List<Test> children;
 
-  private Suite(String name, List<Test> tests) {
+  private Suite(String name, List<Test> children) {
     this.name = name;
-    this.tests = tests;
+    this.children = children;
   }
 
-  private static Suite suite(String name, List<Test> tests) {
+  private static Suite suite(String name, List<Test> children) {
     check(name != null);
-    check(tests != null);
-    Suite suite = new Suite(name, unmodifiableList(new ArrayList<Test>(tests)));
-    check(!suite.tests.contains(null));
+    check(children != null);
+    Suite suite = new Suite(name, unmodifiableList(new ArrayList<Test>(children)));
+    check(!suite.children.contains(null));
     return suite;
   }
 
@@ -31,28 +31,28 @@ public class Suite implements Test {
     return suite(name, Arrays.<Test> asList());
   }
 
-  public Suite add(Test extraTest) {
-    check(extraTest != null);
-    ArrayList<Test> allTests = new ArrayList<>();
-    allTests.addAll(tests);
-    allTests.add(extraTest);
-    return suite(name, allTests);
+  public Suite add(Test newChild) {
+    check(newChild != null);
+    ArrayList<Test> allChildren = new ArrayList<>();
+    allChildren.addAll(children);
+    allChildren.add(newChild);
+    return suite(name, allChildren);
   }
 
-  public Suite addAll(Iterable<? extends Test> extraTests) {
-    check(extraTests != null);
-    ArrayList<Test> allTests = new ArrayList<>();
-    allTests.addAll(tests);
-    for (Test extraTest : extraTests) {
-      check(extraTest != null);
-      allTests.add(extraTest);
+  public Suite addAll(Iterable<? extends Test> newChildren) {
+    check(newChildren != null);
+    ArrayList<Test> allChildren = new ArrayList<>();
+    allChildren.addAll(children);
+    for (Test newChild : newChildren) {
+      check(newChild != null);
+      allChildren.add(newChild);
     }
-    return suite(name, allTests);
+    return suite(name, allChildren);
   }
 
-  public Suite addAll(Test[] extraTests) {
-    check(extraTests != null);
-    return addAll(asList(extraTests));
+  public Suite addAll(Test[] newChildren) {
+    check(newChildren != null);
+    return addAll(asList(newChildren));
   }
 
   public <T> Suite add(T item, Contract<T> contract) {
@@ -63,11 +63,11 @@ public class Suite implements Test {
   public <T> Suite addAll(Iterable<? extends T> items, Contract<T> contract) {
     check(items != null);
     check(contract != null);
-    List<Test> extraTests = new ArrayList<>();
+    List<Test> newChildren = new ArrayList<>();
     for (T item : items) {
-      extraTests.add(contract.test(item));
+      newChildren.add(contract.test(item));
     }
-    return addAll(extraTests);
+    return addAll(newChildren);
   }
 
   public <T> Suite addAll(T[] items, Contract<T> contract) {
@@ -78,7 +78,7 @@ public class Suite implements Test {
   public <R> R visit(
       BiFunction<String, Body, R> caseHandler,
       BiFunction<String, List<Test>, R> suiteHandler) {
-    return suiteHandler.apply(name, tests);
+    return suiteHandler.apply(name, children);
   }
 
   public String toString() {
