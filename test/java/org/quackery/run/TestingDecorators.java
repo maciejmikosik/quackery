@@ -21,7 +21,7 @@ import org.quackery.Suite;
 import org.quackery.Test;
 
 public class TestingDecorators {
-  public static void decorator_preserves_names_and_structure(Function<Test, Test> decorator) throws Throwable {
+  public static void decorator_preserves_names_and_structure(Function<Test, Test> decorator) {
     decorator_preserves_names_and_structure(decorator, mockCase("case"));
     decorator_preserves_names_and_structure(decorator, mockCase("case", new Throwable()));
     decorator_preserves_names_and_structure(decorator, suite("suite").add(mockCase("case")));
@@ -104,13 +104,13 @@ public class TestingDecorators {
     } catch (QuackeryException e) {}
   }
 
-  public static void decorator_runs_cases_eagerly(Function<Test, Test> decorator) throws Throwable {
+  public static void decorator_runs_cases_eagerly(Function<Test, Test> decorator) {
     decorator_runs_case(1, decorator);
     decorator_runs_successful_decorated(0, decorator);
     decorator_runs_failed_decorated(0, decorator);
   }
 
-  public static void decorator_runs_cases_lazily(Function<Test, Test> decorator) throws Throwable {
+  public static void decorator_runs_cases_lazily(Function<Test, Test> decorator) {
     decorator_runs_case(0, decorator);
     decorator_runs_successful_decorated(1, decorator);
     decorator_runs_failed_decorated(1, decorator);
@@ -127,7 +127,7 @@ public class TestingDecorators {
     assertEquals(invoked.get(), count);
   }
 
-  private static void decorator_runs_successful_decorated(int count, Function<Test, Test> decorator) throws Throwable {
+  private static void decorator_runs_successful_decorated(int count, Function<Test, Test> decorator) {
     AtomicInteger invoked = new AtomicInteger();
     Test test = newCase("name", () -> {
       invoked.incrementAndGet();
