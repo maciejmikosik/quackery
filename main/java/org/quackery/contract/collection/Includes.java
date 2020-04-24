@@ -2,6 +2,7 @@ package org.quackery.contract.collection;
 
 import static java.util.stream.Collectors.toList;
 import static org.quackery.Suite.suite;
+import static org.quackery.help.Helpers.traverseSuites;
 
 import org.quackery.Test;
 
@@ -12,12 +13,11 @@ public class Includes {
         : suite("");
   }
 
-  public static Test included(Test test) {
-    return test.visit(
-        (name, body) -> test,
+  public static Test filterIncluded(Test test) {
+    return traverseSuites(test,
         (name, children) -> suite(name)
             .addAll(children.stream()
-                .map(child -> included(child))
+                .map(child -> filterIncluded(child))
                 .filter(child -> !isEmptySuite(child))
                 .collect(toList())));
   }

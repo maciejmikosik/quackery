@@ -10,7 +10,7 @@ import static org.quackery.contract.collection.Element.b;
 import static org.quackery.contract.collection.Element.c;
 import static org.quackery.contract.collection.Element.d;
 import static org.quackery.contract.collection.Includes.includeIf;
-import static org.quackery.contract.collection.Includes.included;
+import static org.quackery.contract.collection.Includes.filterIncluded;
 import static org.quackery.report.AssertException.assertEquals;
 import static org.quackery.report.AssertException.assertTrue;
 import static org.quackery.report.AssertException.fail;
@@ -41,7 +41,7 @@ public class CollectionTests {
     Creator creator = hasConstructor
         ? new ConstructorCreator(type)
         : new FactoryCreator(type, factory);
-    return included(suite(name(type, configuration))
+    return filterIncluded(suite(name(type, configuration))
         .add(includeIf(hasConstructor, implementsCollectionInterface(type)))
         .add(includeIf(hasConstructor, suite("provides default constructor")
             .add(defaultConstructorIsDeclared(type))
