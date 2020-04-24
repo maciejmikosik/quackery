@@ -12,11 +12,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TestCase {
   public static void test_case() throws Throwable {
     implements_test_interface();
-    constructor_assigns_name();
-    factory_assigns_name();
-    factory_body_is_run_once();
-    factory_body_is_run_each_time();
-    factory_body_can_throw_exception();
+    assigns_name();
+    body_is_run_once();
+    body_is_run_each_time();
+    body_can_throw_exception();
     validates_arguments();
   }
 
@@ -24,17 +23,7 @@ public class TestCase {
     assertTrue(Test.class.isAssignableFrom(Case.class));
   }
 
-  private static void constructor_assigns_name() {
-    String name = "name";
-
-    Case test = new Case(name) {
-      public void run() {}
-    };
-
-    assertEquals(nameOf(test), name);
-  }
-
-  private static void factory_assigns_name() {
+  private static void assigns_name() {
     String name = "name";
 
     Test test = newCase(name, () -> {});
@@ -42,7 +31,7 @@ public class TestCase {
     assertEquals(nameOf(test), name);
   }
 
-  private static void factory_body_is_run_once() throws Throwable {
+  private static void body_is_run_once() throws Throwable {
     AtomicInteger invoked = new AtomicInteger();
     Test test = newCase("name", () -> {
       invoked.incrementAndGet();
@@ -53,7 +42,7 @@ public class TestCase {
     assertEquals(invoked.get(), 1);
   }
 
-  private static void factory_body_is_run_each_time() throws Throwable {
+  private static void body_is_run_each_time() throws Throwable {
     AtomicInteger invoked = new AtomicInteger();
     Test test = newCase("name", () -> {
       invoked.incrementAndGet();
@@ -66,7 +55,7 @@ public class TestCase {
     assertEquals(invoked.get(), 3);
   }
 
-  private static void factory_body_can_throw_exception() {
+  private static void body_can_throw_exception() {
     Throwable throwable = new Throwable();
     Test test = newCase("name", () -> {
       throw throwable;
@@ -81,12 +70,6 @@ public class TestCase {
   }
 
   private static void validates_arguments() {
-    try {
-      new Case(null) {
-        public void run() {}
-      };
-      fail();
-    } catch (QuackeryException e) {}
     try {
       newCase(null, () -> {});
       fail();
