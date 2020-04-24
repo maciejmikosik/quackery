@@ -10,10 +10,11 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 public class Suite extends Test {
-  public final List<Test> tests;
+  private final String name;
+  private final List<Test> tests;
 
   private Suite(String name, List<Test> tests) {
-    super(name);
+    this.name = name;
     this.tests = tests;
   }
 

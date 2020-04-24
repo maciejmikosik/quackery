@@ -150,7 +150,6 @@ public class Testing {
     public final Contract<?> contract;
 
     public MockTest(Object item, Contract<?> contract) {
-      super(format("%s.test(%s)", contract, item));
       this.item = item;
       this.contract = contract;
     }
@@ -176,7 +175,7 @@ public class Testing {
     }
 
     public String toString() {
-      return name;
+      return format("%s.test(%s)", contract, item);
     }
   }
 
