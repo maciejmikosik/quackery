@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 
-public class Suite extends Test {
+public class Suite implements Test {
   private final String name;
   private final List<Test> tests;
 

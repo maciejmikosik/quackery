@@ -145,7 +145,7 @@ public class Testing {
     };
   }
 
-  private static class MockTest extends Test {
+  private static class MockTest implements Test {
     public final Object item;
     public final Contract<?> contract;
 

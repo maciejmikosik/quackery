@@ -5,7 +5,7 @@ import static org.quackery.QuackeryException.check;
 import java.util.List;
 import java.util.function.BiFunction;
 
-public class Case extends Test {
+public class Case implements Test {
   private final String name;
   private final Body body;
 
