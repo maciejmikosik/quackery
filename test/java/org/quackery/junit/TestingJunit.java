@@ -3,8 +3,12 @@ package org.quackery.junit;
 import static java.lang.String.format;
 import static java.util.Objects.deepEquals;
 import static org.quackery.Suite.suite;
-import static org.quackery.help.Helpers.type;
+import static org.quackery.testing.Testing.childrenOf;
+import static org.quackery.testing.Testing.nameOf;
 import static org.quackery.testing.Testing.runAndCatch;
+import static org.quackery.testing.Testing.typeOf;
+import static org.quackery.testing.Type.CASE;
+import static org.quackery.testing.Type.SUITE;
 
 import java.util.Iterator;
 import java.util.List;
@@ -15,8 +19,8 @@ import org.junit.runner.Result;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.Failure;
 import org.quackery.Case;
-import org.quackery.Suite;
 import org.quackery.Test;
+import org.quackery.testing.Type;
 
 public class TestingJunit {
   public static void assertResult(JunitClassBuilder junitClassBuilder, Test expected) {
@@ -39,18 +43,18 @@ public class TestingJunit {
   }
 
   private static void assertRecursively(Description description, List<Failure> failures, Test expected) {
-    if (!(deepEquals(name(description), expected.name)
-        && typeOfJunit(description) == type(expected))) {
+    if (!(deepEquals(nameOfJunit(description), nameOf(expected))
+        && typeOfJunit(description) == typeOf(expected))) {
       throw new AssertionError(format(""
           + "\n"
           + "  expected %s named\n"
           + "    %s\n"
           + "  but was %s named\n"
           + "    %s\n",
-          type(expected).getSimpleName(),
-          expected.name,
-          typeOfJunit(description).getSimpleName(),
-          name(description)));
+          typeOf(expected),
+          nameOf(expected),
+          typeOfJunit(description),
+          nameOfJunit(description)));
     }
     if (description.isTest()) {
       Throwable actualThrowable = thrownBy(description, failures);
@@ -65,13 +69,13 @@ public class TestingJunit {
             + "    %s\n"
             + "  but thrown\n"
             + "    %s\n",
-            expected.name,
+            nameOf(expected),
             expectedThrowable,
             actualThrowable));
       }
     } else {
       List<Description> actualChildren = description.getChildren();
-      List<Test> expectedChildren = ((Suite) expected).tests;
+      List<Test> expectedChildren = childrenOf(expected);
       if (actualChildren.size() != expectedChildren.size()) {
         throw new AssertionError(format(""
             + "\n"
@@ -81,7 +85,7 @@ public class TestingJunit {
             + "    %s\n"
             + "  but number of children was\n"
             + "    %s\n",
-            expected.name,
+            nameOf(expected),
             expectedChildren.size(),
             actualChildren.size()));
       }
@@ -91,16 +95,16 @@ public class TestingJunit {
     }
   }
 
-  private static String name(Description description) {
+  private static String nameOfJunit(Description description) {
     return description.isSuite()
         ? description.getDisplayName()
         : description.getMethodName();
   }
 
-  private static Class<?> typeOfJunit(Description description) {
+  private static Type typeOfJunit(Description description) {
     return description.isSuite()
-        ? Suite.class
-        : Case.class;
+        ? SUITE
+        : CASE;
   }
 
   private static Throwable thrownBy(Case test) {

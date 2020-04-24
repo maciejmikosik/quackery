@@ -4,6 +4,8 @@ import static java.lang.String.format;
 import static java.util.Objects.deepEquals;
 import static java.util.Objects.hash;
 import static org.quackery.Case.newCase;
+import static org.quackery.testing.Type.CASE;
+import static org.quackery.testing.Type.SUITE;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +47,37 @@ public class Testing {
           expected,
           actual));
     }
+  }
+
+  public static void assertChildren(Test actualTest, List<Test> expectedChildren) {
+    actualTest.visit(
+        (name, body) -> {
+          throw new AssertionError();
+        },
+        (name, children) -> {
+          assertEquals(children, expectedChildren);
+          return null;
+        });
+  }
+
+  public static Type typeOf(Test test) {
+    return test.visit(
+        (name, body) -> CASE,
+        (name, children) -> SUITE);
+  }
+
+  public static String nameOf(Test test) {
+    return test.visit(
+        (name, body) -> name,
+        (name, children) -> name);
+  }
+
+  public static List<Test> childrenOf(Test test) {
+    return test.visit(
+        (name, body) -> {
+          throw new AssertionError();
+        },
+        (name, children) -> children);
   }
 
   public static void runAndThrow(Test test) throws Throwable {

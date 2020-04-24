@@ -4,6 +4,7 @@ import static org.junit.Assert.fail;
 import static org.quackery.Case.newCase;
 import static org.quackery.testing.Testing.assertEquals;
 import static org.quackery.testing.Testing.assertTrue;
+import static org.quackery.testing.Testing.nameOf;
 import static org.quackery.testing.Testing.runAndThrow;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,7 +31,7 @@ public class TestCase {
       public void run() {}
     };
 
-    assertEquals(test.name, name);
+    assertEquals(nameOf(test), name);
   }
 
   private static void factory_assigns_name() {
@@ -40,7 +41,7 @@ public class TestCase {
       public void run() {}
     });
 
-    assertEquals(test.name, name);
+    assertEquals(nameOf(test), name);
   }
 
   private static void factory_body_is_run_once() throws Throwable {

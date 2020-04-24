@@ -11,7 +11,6 @@ import java.util.function.Function;
 
 import org.quackery.Body;
 import org.quackery.Case;
-import org.quackery.Suite;
 import org.quackery.Test;
 
 public class Helpers {
@@ -23,12 +22,6 @@ public class Helpers {
     return newCase(name, () -> {
       throw throwable;
     });
-  }
-
-  public static Class<? extends Test> type(Test test) {
-    return test.visit(
-        (name, body) -> Case.class,
-        (name, children) -> Suite.class);
   }
 
   public static Optional<Throwable> thrownBy(Body body) {

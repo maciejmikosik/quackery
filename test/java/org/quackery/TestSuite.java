@@ -2,12 +2,15 @@ package org.quackery;
 
 import static java.util.Arrays.asList;
 import static org.quackery.Suite.suite;
+import static org.quackery.testing.Testing.assertChildren;
 import static org.quackery.testing.Testing.assertEquals;
 import static org.quackery.testing.Testing.assertTrue;
+import static org.quackery.testing.Testing.childrenOf;
 import static org.quackery.testing.Testing.fail;
 import static org.quackery.testing.Testing.mockCase;
 import static org.quackery.testing.Testing.mockContract;
 import static org.quackery.testing.Testing.mockObject;
+import static org.quackery.testing.Testing.nameOf;
 
 import java.util.List;
 
@@ -34,8 +37,8 @@ public class TestSuite {
     String name = "name";
     Suite suite = suite(name);
 
-    assertEquals(suite.name, name);
-    assertEquals(suite.tests, asList());
+    assertEquals(nameOf(suite), name);
+    assertChildren(suite, asList());
   }
 
   private static void adds_test() {
@@ -48,7 +51,7 @@ public class TestSuite {
         .add(testB)
         .add(testC);
 
-    assertEquals(suite.tests, asList(testA, testB, testC));
+    assertChildren(suite, asList(testA, testB, testC));
   }
 
   private static void adds_tests_from_iterable() {
@@ -61,7 +64,7 @@ public class TestSuite {
         .addAll(asList(testA, testB))
         .addAll(asList(testC, testD));
 
-    assertEquals(suite.tests, asList(testA, testB, testC, testD));
+    assertChildren(suite, asList(testA, testB, testC, testD));
   }
 
   private static void adds_tests_from_array() {
@@ -74,7 +77,7 @@ public class TestSuite {
         .addAll(new Test[] { testA, testB })
         .addAll(new Test[] { testC, testD });
 
-    assertEquals(suite.tests, asList(testA, testB, testC, testD));
+    assertChildren(suite, asList(testA, testB, testC, testD));
   }
 
   private static void adds_test_produced_by_contract_and_item() {
@@ -90,7 +93,7 @@ public class TestSuite {
         .add(itemB, contractB)
         .add(itemC, contractC);
 
-    assertEquals(suite.tests, asList(
+    assertChildren(suite, asList(
         contractA.test(itemA),
         contractB.test(itemB),
         contractC.test(itemC)));
@@ -108,7 +111,7 @@ public class TestSuite {
         .addAll(asList(itemA, itemB), contractA)
         .addAll(asList(itemC, itemD), contractB);
 
-    assertEquals(suite.tests, asList(
+    assertChildren(suite, asList(
         contractA.test(itemA),
         contractA.test(itemB),
         contractB.test(itemC),
@@ -127,7 +130,7 @@ public class TestSuite {
         .addAll(new Object[] { itemA, itemB }, contractA)
         .addAll(new Object[] { itemC, itemD }, contractB);
 
-    assertEquals(suite.tests, asList(
+    assertEquals(childrenOf(suite), asList(
         contractA.test(itemA),
         contractA.test(itemB),
         contractB.test(itemC),

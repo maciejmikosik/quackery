@@ -4,11 +4,13 @@ import static java.lang.String.format;
 import static java.util.Objects.deepEquals;
 import static org.quackery.Case.newCase;
 import static org.quackery.Suite.suite;
-import static org.quackery.help.Helpers.type;
 import static org.quackery.testing.Testing.assertEquals;
+import static org.quackery.testing.Testing.childrenOf;
 import static org.quackery.testing.Testing.fail;
 import static org.quackery.testing.Testing.mockCase;
+import static org.quackery.testing.Testing.nameOf;
 import static org.quackery.testing.Testing.runAndThrow;
+import static org.quackery.testing.Testing.typeOf;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -38,22 +40,22 @@ public class TestingDecorators {
   }
 
   private static void assertEqualNamesAndStructure(Test actual, Test expected) {
-    if (!deepEquals(actual.name, expected.name)
-        || type(actual) != type(expected)) {
+    if (!deepEquals(nameOf(actual), nameOf(expected))
+        || typeOf(actual) != typeOf(expected)) {
       throw new AssertionError(format(""
           + "\n"
           + "  expected %s named\n"
           + "    %s\n"
           + "  but was %s named\n"
           + "    %s\n",
-          type(expected).getSimpleName(),
-          expected.name,
-          type(actual).getSimpleName(),
-          actual.name));
+          typeOf(expected),
+          nameOf(expected),
+          typeOf(actual),
+          nameOf(actual)));
     }
     if (actual instanceof Suite) {
-      List<Test> actualChildren = ((Suite) actual).tests;
-      List<Test> expectedChildren = ((Suite) expected).tests;
+      List<Test> actualChildren = childrenOf(actual);
+      List<Test> expectedChildren = childrenOf(expected);
       if (actualChildren.size() != expectedChildren.size()) {
         throw new AssertionError(format(""
             + "\n"
@@ -63,7 +65,7 @@ public class TestingDecorators {
             + "    %s\n"
             + "  but number of children was\n"
             + "    %s\n",
-            expected.name,
+            nameOf(expected),
             expectedChildren.size(),
             actualChildren.size()));
       }
