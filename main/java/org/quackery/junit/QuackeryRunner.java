@@ -4,8 +4,10 @@ import static java.lang.reflect.Modifier.isPublic;
 import static java.lang.reflect.Modifier.isStatic;
 import static org.junit.runner.Description.createSuiteDescription;
 import static org.junit.runner.Description.createTestDescription;
+import static org.quackery.Case.newCase;
 import static org.quackery.Suite.suite;
 import static org.quackery.help.Helpers.failingCase;
+import static org.quackery.help.Helpers.traverse;
 import static org.quackery.junit.FixBugs.fixBugs;
 
 import java.io.Serializable;
@@ -21,12 +23,12 @@ import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
+import org.quackery.Body;
 import org.quackery.Case;
 import org.quackery.Quackery;
 import org.quackery.QuackeryException;
 import org.quackery.Suite;
 import org.quackery.Test;
-import org.quackery.help.TraversingDecorator;
 import org.quackery.report.AssertException;
 import org.quackery.report.AssumeException;
 import org.quackery.run.Runners;
@@ -59,35 +61,33 @@ public class QuackeryRunner extends Runner {
   }
 
   public void run(final RunNotifier notifier) {
-    Runners.run(new TraversingDecorator() {
-      protected Case decorateCase(Case cas) {
-        return notifying(notifier, cas);
-      }
-    }.decorate(quackeryTest));
+    Test notifyingQuackeryTest = traverse(quackeryTest,
+        test -> test.visit(
+            (name, body) -> newCase(name, notifying(notifier, describe(test), body)),
+            (name, children) -> test));
+
+    Runners.run(notifyingQuackeryTest);
 
     if (junitRunner != null) {
       junitRunner.run(notifier);
     }
   }
 
-  private Case notifying(final RunNotifier notifier, final Case cas) {
-    return new Case(cas.name) {
-      public void run() throws Throwable {
-        Description described = describe(cas);
-        notifier.fireTestStarted(described);
-        try {
-          cas.run();
-        } catch (AssertException e) {
-          Throwable wrapper = new AssertionError(e.getMessage(), e);
-          notifier.fireTestFailure(new Failure(described, wrapper));
-        } catch (AssumeException e) {
-          Throwable wrapper = new AssumptionViolatedException(e.getMessage(), e);
-          notifier.fireTestAssumptionFailed(new Failure(described, wrapper));
-        } catch (Throwable throwable) {
-          notifier.fireTestFailure(new Failure(described, throwable));
-        } finally {
-          notifier.fireTestFinished(described);
-        }
+  private Body notifying(RunNotifier notifier, Description described, Body body) {
+    return () -> {
+      notifier.fireTestStarted(described);
+      try {
+        body.run();
+      } catch (AssertException e) {
+        Throwable wrapper = new AssertionError(e.getMessage(), e);
+        notifier.fireTestFailure(new Failure(described, wrapper));
+      } catch (AssumeException e) {
+        Throwable wrapper = new AssumptionViolatedException(e.getMessage(), e);
+        notifier.fireTestAssumptionFailed(new Failure(described, wrapper));
+      } catch (Throwable throwable) {
+        notifier.fireTestFailure(new Failure(described, throwable));
+      } finally {
+        notifier.fireTestFinished(described);
       }
     };
   }

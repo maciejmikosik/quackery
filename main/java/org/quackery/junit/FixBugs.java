@@ -1,11 +1,11 @@
 package org.quackery.junit;
 
-import static org.quackery.help.Helpers.rename;
+import static org.quackery.Suite.suite;
 import static org.quackery.help.Helpers.successfulCase;
+import static org.quackery.help.Helpers.traverseNames;
+import static org.quackery.help.Helpers.traverseSuites;
 
-import org.quackery.Suite;
 import org.quackery.Test;
-import org.quackery.help.TraversingDecorator;
 
 public class FixBugs {
   public static Test fixBugs(Test root) {
@@ -13,33 +13,23 @@ public class FixBugs {
   }
 
   private static Test fixNewlineBug(Test root) {
-    return new TraversingDecorator() {
-      protected Test decorateTest(Test test) {
-        String newName = test.name
+    return traverseNames(root,
+        name -> name
             .replace('\n', ' ')
-            .replace('\r', ' ');
-        return rename(newName, test);
-      }
-    }.decorate(root);
+            .replace('\r', ' '));
   }
 
   private static Test fixEmptySuiteBug(Test root) {
-    return new TraversingDecorator() {
-      protected Test decorateSuite(Suite suite) {
-        return suite.tests.isEmpty()
-            ? successfulCase(suite.name)
-            : suite;
-      }
-    }.decorate(root);
+    return traverseSuites(root,
+        (name, children) -> children.isEmpty()
+            ? successfulCase(name)
+            : suite(name).addAll(children));
   }
 
   private static Test fixEmptyNameBug(Test root) {
-    return new TraversingDecorator() {
-      protected Test decorateTest(Test test) {
-        return test.name.isEmpty()
-            ? rename("[empty_name]", test)
-            : test;
-      }
-    }.decorate(root);
+    return traverseNames(root,
+        name -> name.isEmpty()
+            ? "[empty_name]"
+            : name);
   }
 }
