@@ -1,41 +1,69 @@
 package org.quackery.help;
 
+import static java.util.stream.Collectors.toList;
+import static org.quackery.Case.newCase;
 import static org.quackery.Suite.suite;
 
-import org.quackery.Case;
-import org.quackery.Suite;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
+import org.quackery.Body;
 import org.quackery.Test;
 
 public class Helpers {
-  public static Case successfulCase(String name) {
-    return new Case(name) {
-      public void run() {}
-    };
+  public static Test successfulCase(String name) {
+    return newCase(name, () -> {});
   }
 
-  public static Case failingCase(String name, final Throwable throwable) {
-    return new Case(name) {
-      public void run() throws Throwable {
-        throw throwable;
-      }
-    };
+  public static Test failingCase(String name, Throwable throwable) {
+    return newCase(name, () -> {
+      throw throwable;
+    });
   }
 
-  public static Test rename(String name, final Test test) {
-    return test instanceof Case
-        ? rename(name, (Case) test)
-        : rename(name, (Suite) test);
+  public static Optional<Throwable> thrownBy(Body body) {
+    try {
+      body.run();
+      return Optional.empty();
+    } catch (Throwable throwable) {
+      return Optional.of(throwable);
+    }
   }
 
-  public static Case rename(String name, final Case test) {
-    return new Case(name) {
-      public void run() throws Throwable {
-        test.run();
-      }
-    };
+  public static Test traverse(Test test, Function<Test, Test> handler) {
+    return test.visit(
+        (name, body) -> handler.apply(test),
+        (name, children) -> handler.apply(suite(name)
+            .addAll(children.stream()
+                .map(child -> traverse(child, handler))
+                .collect(toList()))));
   }
 
-  public static Suite rename(String name, final Suite test) {
-    return suite(name).addAll(test.tests);
+  public static Test traverseCases(Test root, BiFunction<String, Body, Test> handler) {
+    return traverse(root,
+        test -> test.visit(
+            handler,
+            (name, children) -> test));
+  }
+
+  public static Test traverseSuites(Test root, BiFunction<String, List<Test>, Test> handler) {
+    return traverse(root,
+        test -> test.visit(
+            (name, body) -> test,
+            handler));
+  }
+
+  public static Test traverseNames(Test root, Function<String, String> renamer) {
+    return traverse(root,
+        test -> test.visit(
+            (name, body) -> newCase(renamer.apply(name), body),
+            (name, children) -> suite(renamer.apply(name)).addAll(children)));
+  }
+
+  public static Test traverseBodies(Test root, Function<Body, Body> handler) {
+    return traverseCases(root,
+        (name, body) -> newCase(name, handler.apply(body)));
   }
 }

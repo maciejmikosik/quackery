@@ -4,19 +4,18 @@ import static org.junit.Assert.fail;
 import static org.quackery.Case.newCase;
 import static org.quackery.testing.Testing.assertEquals;
 import static org.quackery.testing.Testing.assertTrue;
+import static org.quackery.testing.Testing.nameOf;
+import static org.quackery.testing.Testing.runAndThrow;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.quackery.Case.Body;
 
 public class TestCase {
   public static void test_case() throws Throwable {
     implements_test_interface();
-    constructor_assigns_name();
-    factory_assigns_name();
-    factory_body_is_run_once();
-    factory_body_is_run_each_time();
-    factory_body_can_throw_exception();
+    assigns_name();
+    body_is_run_once();
+    body_is_run_each_time();
+    body_can_throw_exception();
     validates_arguments();
   }
 
@@ -24,64 +23,46 @@ public class TestCase {
     assertTrue(Test.class.isAssignableFrom(Case.class));
   }
 
-  private static void constructor_assigns_name() {
+  private static void assigns_name() {
     String name = "name";
 
-    Case test = new Case(name) {
-      public void run() {}
-    };
+    Test test = newCase(name, () -> {});
 
-    assertEquals(test.name, name);
+    assertEquals(nameOf(test), name);
   }
 
-  private static void factory_assigns_name() {
-    String name = "name";
-
-    Case test = newCase(name, new Body() {
-      public void run() {}
+  private static void body_is_run_once() throws Throwable {
+    AtomicInteger invoked = new AtomicInteger();
+    Test test = newCase("name", () -> {
+      invoked.incrementAndGet();
     });
 
-    assertEquals(test.name, name);
-  }
-
-  private static void factory_body_is_run_once() throws Throwable {
-    final AtomicInteger invoked = new AtomicInteger();
-    Case test = newCase("name", new Body() {
-      public void run() {
-        invoked.incrementAndGet();
-      }
-    });
-
-    test.run();
+    runAndThrow(test);
 
     assertEquals(invoked.get(), 1);
   }
 
-  private static void factory_body_is_run_each_time() throws Throwable {
-    final AtomicInteger invoked = new AtomicInteger();
-    Case test = newCase("name", new Body() {
-      public void run() {
-        invoked.incrementAndGet();
-      }
+  private static void body_is_run_each_time() throws Throwable {
+    AtomicInteger invoked = new AtomicInteger();
+    Test test = newCase("name", () -> {
+      invoked.incrementAndGet();
     });
 
-    test.run();
-    test.run();
-    test.run();
+    runAndThrow(test);
+    runAndThrow(test);
+    runAndThrow(test);
 
     assertEquals(invoked.get(), 3);
   }
 
-  private static void factory_body_can_throw_exception() {
-    final Throwable throwable = new Throwable();
-    Case test = newCase("name", new Body() {
-      public void run() throws Throwable {
-        throw throwable;
-      }
+  private static void body_can_throw_exception() {
+    Throwable throwable = new Throwable();
+    Test test = newCase("name", () -> {
+      throw throwable;
     });
 
     try {
-      test.run();
+      runAndThrow(test);
       fail();
     } catch (Throwable e) {
       assertEquals(e, throwable);
@@ -90,15 +71,7 @@ public class TestCase {
 
   private static void validates_arguments() {
     try {
-      new Case(null) {
-        public void run() {}
-      };
-      fail();
-    } catch (QuackeryException e) {}
-    try {
-      newCase(null, new Body() {
-        public void run() {}
-      });
+      newCase(null, () -> {});
       fail();
     } catch (QuackeryException e) {}
     try {

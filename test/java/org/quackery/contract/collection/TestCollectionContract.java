@@ -7,6 +7,7 @@ import static org.quackery.contract.TestingContracts.assertSuccess;
 import static org.quackery.contract.collection.Factories.asFactory;
 import static org.quackery.testing.Testing.assertTrue;
 import static org.quackery.testing.Testing.fail;
+import static org.quackery.testing.Testing.nameOf;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -158,7 +159,7 @@ public class TestCollectionContract {
   }
 
   private static void assertNameContains(String string, Test test) {
-    assertTrue(test.name.contains(string));
+    assertTrue(nameOf(test).contains(string));
   }
 
   private static void validates_arguments() {

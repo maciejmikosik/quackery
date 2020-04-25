@@ -144,18 +144,7 @@ Tests list is definitely not complete, but it grows with each release.
 
 ### Case
 
-The most basic concept of quackery library is `Case`.
-It is used to test smallest possible piece of functionality.
-
-You can create case by extending `Case` class and overriding `run` method.
-
-    Case test = new Case("empty string has length of zero") {
-      public void run() {
-        assertTrue("".length() == 0);
-      }
-    };
-
-Or using `newCase` factory method that accepts testing logic in form of a lambda expression.
+The most basic concept of quackery library is `Case`. It is used to test smallest possible piece of functionality. You can create case by using `Case.newCase()` factory method.
 
     import static org.quackery.Case.newCase;
     ...
@@ -163,9 +152,7 @@ Or using `newCase` factory method that accepts testing logic in form of a lambda
         "empty string has length of zero",
         () -> assertTrue("".length() == 0));
 
-`Case` has a human-readable name that is used in reports and a `run` method that encapsulates testing logic.
-`Case` is considered successful if `run` method ends without throwing `Throwable`.
-Any throwable indicates failed tests. However there are different ways `Case` can fail.
+It requires name and `Body`. Name is human-readable description of test displayed in reports. Body is functional interface representing testing logic and can be defined using lambda. `Case` is considered successful if `Body.run()` method ends without throwing `Throwable`. Any throwable indicates failed tests. However there are different ways `Case` can fail.
 
  - `org.quackery.report.AssertException` - feature does not work
  - `org.quackery.report.AssumeException` - feature depends on some other feature that does not work
@@ -260,9 +247,9 @@ string is equal to itself
 
 # running
 
-To run all tests in test tree, you would need to traverse the tree, find each `Case` and invoke `Case.run()`, then catch `Throwable` if test failed and prepare some kind of report. Luckily `org.quackery.run.Runners` provides methods for automating it. Additionally, it contains helper methods that allow you to control things like concurrency or test isolation.
+To run all tests in test tree, you would need to traverse the tree, visit each `Case` and run its body by invoking `Body.run()`, then catch `Throwable` if test failed and prepare some kind of report. Luckily `org.quackery.run.Runners` provides methods for automating it. Additionally, it contains helper methods that allow you to control things like concurrency or test isolation.
 
-The simplest way to run tests is calling `run(test)`. It runs each `Case` eagerly (which may take some time) and caches results. It returns a test identical to argument, with the same tree structure and names. The only difference is that invoking `Case.run()` on any case from the returned tree returns/throws cached result immediately.
+The simplest way to run tests is calling `run(test)`. It runs each `Case` eagerly (which may take some time) and caches results. It returns a test identical to argument, with the same tree structure and names. The only difference is that invoking `Body.run()` of any `Case` from the returned tree returns/throws cached result immediately.
 
 ### concurrency
 
@@ -278,7 +265,7 @@ Using `ThreadLocal` is popular way to avoid synchronization issues for static re
 
 ### timeout
 
-Tests can take a long time to finish. Sometimes they can take forever because of buggy code. You can limit maximum time they have using `timeout(time, test)`. If `Case` takes longer than specified `time` in seconds, then `Case` is interrupted. Tested code is responsive to interruption if it blocks on method throwing `InterruptedException` or if it checks interruption flag `Thread.interrupted()` manually. If code is responsive to interruption, then `Case.run()` is aborted and `InterruptedException` is propagated as test result. If code is not responsive to interruption then `Case.run()` call has to block until test finishes. However result of this finished test is ignored and `InterruptedException` is being thrown instead.
+Tests can take a long time to finish. Sometimes they can take forever because of buggy code. You can limit maximum time they have using `timeout(time, test)`. If `Case` takes longer than specified `time` in seconds, then `Case` is interrupted. Tested code is responsive to interruption if it blocks on method throwing `InterruptedException` or if it checks interruption flag `Thread.interrupted()` manually. If code is responsive to interruption, then `Body.run()` is aborted and `InterruptedException` is propagated as test result. If code is not responsive to interruption then `Body.run()` call has to block until test finishes. However result of this finished test is ignored and `InterruptedException` is being thrown instead.
 
 ### expecting exception
 
@@ -306,7 +293,7 @@ Once you run the test and cache results, you are ready to present report.
 
     Test report = run(test);
 
-`org.quackery.report.Reports` contains methods related to analyzing results of test. Trying to use `Reports` on `Test` that was not run, will invoke `Case.run()` every time.
+`org.quackery.report.Reports` contains methods related to analyzing results of test. Trying to use `Reports` on `Test` that was not run, will invoke `Body.run()` every time.
 
 All tests passed if `count(Throwable.class, report)` returns `0`. You can also count number of failures of specific type, for example `count(AssertException.class, report)` or `count(AssumeException.class)`.
 

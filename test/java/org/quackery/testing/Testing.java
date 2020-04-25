@@ -3,9 +3,15 @@ package org.quackery.testing;
 import static java.lang.String.format;
 import static java.util.Objects.deepEquals;
 import static java.util.Objects.hash;
+import static org.quackery.Case.newCase;
+import static org.quackery.testing.Type.CASE;
+import static org.quackery.testing.Type.SUITE;
 
-import org.quackery.Case;
-import org.quackery.Case.Body;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BiFunction;
+
+import org.quackery.Body;
 import org.quackery.Contract;
 import org.quackery.Test;
 
@@ -42,11 +48,64 @@ public class Testing {
     }
   }
 
+  public static void assertChildren(Test actualTest, List<Test> expectedChildren) {
+    actualTest.visit(
+        (name, body) -> {
+          throw new AssertionError();
+        },
+        (name, children) -> {
+          assertEquals(children, expectedChildren);
+          return null;
+        });
+  }
+
+  public static Type typeOf(Test test) {
+    return test.visit(
+        (name, body) -> CASE,
+        (name, children) -> SUITE);
+  }
+
+  public static String nameOf(Test test) {
+    return test.visit(
+        (name, body) -> name,
+        (name, children) -> name);
+  }
+
+  public static List<Test> childrenOf(Test test) {
+    return test.visit(
+        (name, body) -> {
+          throw new AssertionError();
+        },
+        (name, children) -> children);
+  }
+
+  public static void runAndThrow(Test test) throws Throwable {
+    Optional<Throwable> thrown = runAndCatch(test);
+    if (thrown.isPresent()) {
+      throw thrown.get();
+    }
+  }
+
+  public static Optional<Throwable> runAndCatch(Test test) {
+    return test.visit(
+        (name, body) -> {
+          try {
+            body.run();
+          } catch (Throwable throwable) {
+            return Optional.of(throwable);
+          }
+          return Optional.empty();
+        },
+        (name, children) -> {
+          throw new IllegalArgumentException();
+        });
+  }
+
   public static void fail() {
     throw new AssertionError();
   }
 
-  public static Object mockObject(final String name) {
+  public static Object mockObject(String name) {
     return new Object() {
       public boolean equals(Object object) {
         return object != null
@@ -64,27 +123,17 @@ public class Testing {
     };
   }
 
-  public static Body mockBody() {
-    return new Body() {
-      public void run() {}
-    };
+  public static Test mockCase(String name) {
+    return newCase(name, () -> {});
   }
 
-  public static Case mockCase(String name) {
-    return new Case(name) {
-      public void run() {}
-    };
+  public static Test mockCase(String name, Throwable throwable) {
+    return newCase(name, () -> {
+      throw throwable.fillInStackTrace();
+    });
   }
 
-  public static Case mockCase(String name, final Throwable throwable) {
-    return new Case(name) {
-      public void run() throws Throwable {
-        throw throwable.fillInStackTrace();
-      }
-    };
-  }
-
-  public static <T> Contract<T> mockContract(final String name) {
+  public static <T> Contract<T> mockContract(String name) {
     return new Contract<T>() {
       public Test test(T item) {
         return new MockTest(item, this);
@@ -96,14 +145,19 @@ public class Testing {
     };
   }
 
-  private static class MockTest extends Test {
+  private static class MockTest implements Test {
     public final Object item;
     public final Contract<?> contract;
 
     public MockTest(Object item, Contract<?> contract) {
-      super(format("%s.test(%s)", contract, item));
       this.item = item;
       this.contract = contract;
+    }
+
+    public <R> R visit(
+        BiFunction<String, Body, R> caseHandler,
+        BiFunction<String, List<Test>, R> suiteHandler) {
+      throw new UnsupportedOperationException();
     }
 
     public boolean equals(Object object) {
@@ -121,12 +175,12 @@ public class Testing {
     }
 
     public String toString() {
-      return name;
+      return format("%s.test(%s)", contract, item);
     }
   }
 
-  public static void interruptMeAfter(final double time) {
-    final Thread caller = Thread.currentThread();
+  public static void interruptMeAfter(double time) {
+    Thread caller = Thread.currentThread();
     Thread interrupter = new Thread(new Runnable() {
       public void run() {
         try {

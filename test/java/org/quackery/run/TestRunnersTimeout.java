@@ -1,5 +1,6 @@
 package org.quackery.run;
 
+import static org.quackery.Case.newCase;
 import static org.quackery.report.AssertException.assertTrue;
 import static org.quackery.run.Runners.timeout;
 import static org.quackery.run.TestingDecorators.decorator_preserves_case_result;
@@ -8,23 +9,19 @@ import static org.quackery.run.TestingDecorators.decorator_runs_cases_lazily;
 import static org.quackery.run.TestingDecorators.decorator_validates_arguments;
 import static org.quackery.testing.Testing.fail;
 import static org.quackery.testing.Testing.mockCase;
+import static org.quackery.testing.Testing.runAndThrow;
 import static org.quackery.testing.Testing.sleep;
 import static org.quackery.testing.Testing.sleepBusy;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
-import org.quackery.Case;
 import org.quackery.QuackeryException;
 import org.quackery.Test;
-import org.quackery.help.Decorator;
 
 public class TestRunnersTimeout {
   public static void test_runners_timeout() throws Throwable {
-    Decorator decorator = new Decorator() {
-      public Test decorate(Test test) {
-        return timeout(1, test);
-      }
-    };
+    Function<Test, Test> decorator = test -> timeout(1, test);
 
     decorator_preserves_names_and_structure(decorator);
     decorator_preserves_case_result(decorator);
@@ -38,56 +35,49 @@ public class TestRunnersTimeout {
   }
 
   private static void interrupts_interruptible_case() throws Throwable {
-    final AtomicBoolean interrupted = new AtomicBoolean(false);
-
-    Test test = timeout(0.01, new Case("case") {
-      public void run() throws InterruptedException {
-        try {
-          sleep(0.02);
-          interrupted.set(false);
-        } catch (InterruptedException e) {
-          interrupted.set(true);
-          throw e;
-        }
+    AtomicBoolean interrupted = new AtomicBoolean(false);
+    Test test = timeout(0.01, newCase("case", () -> {
+      try {
+        sleep(0.02);
+        interrupted.set(false);
+      } catch (InterruptedException e) {
+        interrupted.set(true);
+        throw e;
       }
-    });
+    }));
 
     try {
-      ((Case) test).run();
+      runAndThrow(test);
       fail();
     } catch (InterruptedException e) {}
     assertTrue(interrupted.get());
   }
 
   private static void interrupts_uninterruptible_successful_case() throws Throwable {
-    Test test = timeout(0.01, new Case("case") {
-      public void run() {
-        sleepBusy(0.02);
-      }
-    });
+    Test test = timeout(0.01, newCase("case", () -> {
+      sleepBusy(0.02);
+    }));
 
     try {
-      ((Case) test).run();
+      runAndThrow(test);
       fail();
     } catch (InterruptedException e) {}
   }
 
   private static void interrupts_uninterruptible_failing_case() throws Throwable {
-    Test test = timeout(0.01, new Case("case") {
-      public void run() {
-        sleepBusy(0.02);
-        throw new RuntimeException();
-      }
-    });
+    Test test = timeout(0.01, newCase("case", () -> {
+      sleepBusy(0.02);
+      throw new RuntimeException();
+    }));
 
     try {
-      ((Case) test).run();
+      runAndThrow(test);
       fail();
     } catch (InterruptedException e) {}
   }
 
   private static void validates_arguments() {
-    Case test = mockCase("case");
+    Test test = mockCase("case");
     try {
       timeout(-0.001, test);
       fail();

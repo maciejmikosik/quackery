@@ -1,5 +1,6 @@
 package org.quackery.run;
 
+import static org.quackery.Case.newCase;
 import static org.quackery.run.Runners.classLoaderScoped;
 import static org.quackery.run.TestingDecorators.decorator_preserves_case_result;
 import static org.quackery.run.TestingDecorators.decorator_preserves_names_and_structure;
@@ -8,20 +9,16 @@ import static org.quackery.run.TestingDecorators.decorator_validates_arguments;
 import static org.quackery.testing.Testing.assertEquals;
 import static org.quackery.testing.Testing.assertNotEquals;
 import static org.quackery.testing.Testing.mockCase;
+import static org.quackery.testing.Testing.runAndThrow;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
-import org.quackery.Case;
 import org.quackery.Test;
-import org.quackery.help.Decorator;
 
 public class TestRunnersClassLoaderScoped {
   public static void test_runners_class_loader_scoped() throws Throwable {
-    Decorator decorator = new Decorator() {
-      public Test decorate(Test test) {
-        return classLoaderScoped(test);
-      }
-    };
+    Function<Test, Test> decorator = test -> classLoaderScoped(test);
 
     decorator_preserves_names_and_structure(decorator);
     decorator_preserves_case_result(decorator);
@@ -44,42 +41,36 @@ public class TestRunnersClassLoaderScoped {
 
   private static void scope_is_not_context_classloader() throws Throwable {
     ClassLoader original = Thread.currentThread().getContextClassLoader();
-    final AtomicReference<ClassLoader> scope = new AtomicReference<ClassLoader>();
-    Test test = classLoaderScoped(new Case("name") {
-      public void run() {
-        scope.set(Thread.currentThread().getContextClassLoader());
-      }
-    });
+    AtomicReference<ClassLoader> scope = new AtomicReference<ClassLoader>();
+    Test test = classLoaderScoped(newCase("name", () -> {
+      scope.set(Thread.currentThread().getContextClassLoader());
+    }));
 
-    ((Case) test).run();
+    runAndThrow(test);
 
     assertNotEquals(scope.get(), original);
   }
 
   private static void scope_is_not_current_classloader() throws Throwable {
     ClassLoader original = TestRunnersThreadScoped.class.getClassLoader();
-    final AtomicReference<ClassLoader> scope = new AtomicReference<ClassLoader>();
-    Test test = classLoaderScoped(new Case("name") {
-      public void run() {
-        scope.set(Thread.currentThread().getContextClassLoader());
-      }
-    });
+    AtomicReference<ClassLoader> scope = new AtomicReference<ClassLoader>();
+    Test test = classLoaderScoped(newCase("name", () -> {
+      scope.set(Thread.currentThread().getContextClassLoader());
+    }));
 
-    ((Case) test).run();
+    runAndThrow(test);
 
     assertNotEquals(scope.get(), original);
   }
 
   private static void scope_is_child_of_context_classloader() throws Throwable {
     ClassLoader original = TestRunnersClassLoaderScoped.class.getClassLoader();
-    final AtomicReference<ClassLoader> scope = new AtomicReference<ClassLoader>();
-    Test test = classLoaderScoped(new Case("name") {
-      public void run() {
-        scope.set(Thread.currentThread().getContextClassLoader());
-      }
-    });
+    AtomicReference<ClassLoader> scope = new AtomicReference<ClassLoader>();
+    Test test = classLoaderScoped(newCase("name", () -> {
+      scope.set(Thread.currentThread().getContextClassLoader());
+    }));
 
-    ((Case) test).run();
+    runAndThrow(test);
 
     assertEquals(scope.get().getParent(), original);
   }
@@ -88,7 +79,7 @@ public class TestRunnersClassLoaderScoped {
     ClassLoader original = Thread.currentThread().getContextClassLoader();
     Test test = classLoaderScoped(mockCase("name"));
 
-    ((Case) test).run();
+    runAndThrow(test);
 
     assertEquals(Thread.currentThread().getContextClassLoader(), original);
   }
@@ -98,7 +89,7 @@ public class TestRunnersClassLoaderScoped {
     Test test = classLoaderScoped(mockCase("name", new Throwable()));
 
     try {
-      ((Case) test).run();
+      runAndThrow(test);
     } catch (Throwable t) {}
 
     assertEquals(Thread.currentThread().getContextClassLoader(), original);

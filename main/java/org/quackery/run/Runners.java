@@ -2,10 +2,8 @@ package org.quackery.run;
 
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static org.quackery.QuackeryException.check;
-import static org.quackery.help.Helpers.failingCase;
-import static org.quackery.help.Helpers.successfulCase;
+import static org.quackery.help.Helpers.traverseBodies;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
@@ -15,39 +13,39 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
-import org.quackery.Case;
+import org.quackery.Body;
 import org.quackery.Test;
-import org.quackery.help.TraversingDecorator;
 import org.quackery.report.AssertException;
 
 public class Runners {
   public static Test run(Test root) {
     check(root != null);
-    return new TraversingDecorator() {
-      protected Test decorateCase(Case cas) {
-        return run(cas);
-      }
-    }.decorate(root);
+    return traverseBodies(root, body -> run(body));
   }
 
-  private static Case run(Case cas) {
+  private static Body run(Body body) {
     try {
-      cas.run();
+      body.run();
     } catch (Throwable throwable) {
-      return failingCase(cas.name, throwable);
+      return () -> {
+        throw throwable;
+      };
     }
-    return successfulCase(cas.name);
+    return () -> {};
   }
 
-  public static Test in(final Executor executor, Test root) {
+  public static Test in(Executor executor, Test root) {
     check(root != null);
     check(executor != null);
-    return new TraversingDecorator() {
-      protected Case decorateCase(Case cas) {
-        return futureCase(executor, cas);
-      }
-    }.decorate(root);
+    return traverseBodies(root, body -> futureBody(executor, body));
+  }
+
+  private static Body futureBody(Executor executor, Body body) {
+    FutureTask<Body> future = new FutureTask<Body>(() -> run(body));
+    executor.execute(future);
+    return () -> future.get().run();
   }
 
   public static Test concurrent(Test test) {
@@ -70,77 +68,47 @@ public class Runners {
     return executor;
   }
 
-  private static Case futureCase(Executor executor, final Case test) {
-    final FutureTask<Case> future = new FutureTask<Case>(new Callable<Case>() {
-      public Case call() {
-        return run(test);
-      }
-    });
-    executor.execute(future);
-    return new Case(test.name) {
-      public void run() throws Throwable {
-        future.get().run();
-      }
-    };
-  }
-
-  public static Test expect(final Class<? extends Throwable> throwable, Test test) {
+  public static Test expect(Class<? extends Throwable> throwable, Test test) {
     check(test != null);
-    return new TraversingDecorator() {
-      protected Test decorateCase(Case cas) {
-        return expect(throwable, cas);
-      }
-    }.decorate(test);
+    return traverseBodies(test, body -> expect(throwable, body));
   }
 
-  private static Case expect(final Class<? extends Throwable> expected, final Case cas) {
-    return new Case(cas.name) {
-      public void run() throws Throwable {
-        Throwable thrown = null;
-        try {
-          cas.run();
-        } catch (Throwable throwable) {
-          thrown = throwable;
-        }
-        if (thrown == null) {
-          throw new AssertException("nothing thrown");
-        }
-        if (!expected.isAssignableFrom(thrown.getClass())) {
-          throw new AssertException(thrown);
-        }
+  private static Body expect(Class<? extends Throwable> expected, Body body) {
+    return () -> {
+      Throwable thrown = null;
+      try {
+        body.run();
+      } catch (Throwable throwable) {
+        thrown = throwable;
+      }
+      if (thrown == null) {
+        throw new AssertException("nothing thrown");
+      }
+      if (!expected.isAssignableFrom(thrown.getClass())) {
+        throw new AssertException(thrown);
       }
     };
   }
 
-  public static Test timeout(final double time, Test test) {
+  public static Test timeout(double time, Test test) {
     check(time >= 0);
     check(test != null);
-    return new TraversingDecorator() {
-      protected Case decorateCase(Case cas) {
-        return timeout(time, cas);
-      }
-    }.decorate(test);
+    return traverseBodies(test, body -> timeout(time, body));
   }
 
-  private static Case timeout(final double time, final Case cas) {
-    return new Case(cas.name) {
-      public void run() throws Throwable {
-        final Thread caller = Thread.currentThread();
-        ScheduledFuture<?> alarm = timeoutScheduler.schedule(
-            new Runnable() {
-              public void run() {
-                caller.interrupt();
-              }
-            },
-            (long) (time * 1e9),
-            NANOSECONDS);
-        try {
-          cas.run();
-        } finally {
-          alarm.cancel(true);
-          if (Thread.interrupted()) {
-            throw new InterruptedException();
-          }
+  private static Body timeout(double time, Body body) {
+    return () -> {
+      Thread caller = Thread.currentThread();
+      ScheduledFuture<?> alarm = timeoutScheduler.schedule(
+          () -> caller.interrupt(),
+          (long) (time * 1e9),
+          NANOSECONDS);
+      try {
+        body.run();
+      } finally {
+        alarm.cancel(true);
+        if (Thread.interrupted()) {
+          throw new InterruptedException();
         }
       }
     };
@@ -150,62 +118,49 @@ public class Runners {
 
   public static Test threadScoped(Test root) {
     check(root != null);
-    return new TraversingDecorator() {
-      protected Test decorateCase(Case cas) {
-        return threadScoped(cas);
-      }
-    }.decorate(root);
+    return traverseBodies(root, body -> threadScoped(body));
   }
 
-  private static Case threadScoped(final Case cas) {
-    return new Case(cas.name) {
-      private Throwable throwable;
-
-      public void run() throws Throwable {
-        Thread thread = new Thread(new Runnable() {
-          public void run() {
-            try {
-              cas.run();
-            } catch (Throwable t) {
-              throwable = t;
-            }
+  private static Body threadScoped(Body body) {
+    return () -> {
+      AtomicReference<Throwable> throwable = new AtomicReference<>(null);
+      Thread thread = new Thread(new Runnable() {
+        public void run() {
+          try {
+            body.run();
+          } catch (Throwable t) {
+            throwable.set(t);
           }
-        });
-        thread.start();
-        try {
-          thread.join();
-        } catch (InterruptedException e) {
-          thread.interrupt();
-          thread.join();
-          throw e;
         }
-        if (throwable != null) {
-          throw throwable;
-        }
+      });
+      thread.start();
+      try {
+        thread.join();
+      } catch (InterruptedException e) {
+        thread.interrupt();
+        thread.join();
+        throw e;
+      }
+      if (throwable.get() != null) {
+        throw throwable.get();
       }
     };
   }
 
   public static Test classLoaderScoped(Test root) {
     check(root != null);
-    return new TraversingDecorator() {
-      protected Case decorateCase(Case cas) {
-        return classLoaderScoped(cas);
-      }
-    }.decorate(root);
+    return traverseBodies(root, body -> classLoaderScoped(body));
   }
 
-  private static Case classLoaderScoped(final Case cas) {
-    return new Case(cas.name) {
-      public void run() throws Throwable {
-        Thread thread = Thread.currentThread();
-        ClassLoader original = thread.getContextClassLoader();
-        thread.setContextClassLoader(new ClassLoader(original) {});
-        try {
-          cas.run();
-        } finally {
-          thread.setContextClassLoader(original);
-        }
+  private static Body classLoaderScoped(Body body) {
+    return () -> {
+      Thread thread = Thread.currentThread();
+      ClassLoader original = thread.getContextClassLoader();
+      thread.setContextClassLoader(new ClassLoader(original) {});
+      try {
+        body.run();
+      } finally {
+        thread.setContextClassLoader(original);
       }
     };
   }
