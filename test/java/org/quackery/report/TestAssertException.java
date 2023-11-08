@@ -15,7 +15,9 @@ public class TestAssertException {
     fail_fails();
     assert_true_handles_booleans();
     assert_equals_handles_objects();
-    assert_equals_handles_deep_arrays();
+    assert_equals_handles_deep_object_arrays();
+    assert_equals_handles_primitive_arrays();
+    assert_equals_handles_deep_primitive_arrays();
     assert_equals_handles_null();
   }
 
@@ -59,10 +61,58 @@ public class TestAssertException {
     }
   }
 
-  private static void assert_equals_handles_deep_arrays() {
+  private static void assert_equals_handles_deep_object_arrays() {
     String[][] expected = new String[][] { { "expected" } };
     String[][] equal = new String[][] { { "expected" } };
     String[][] notEqual = new String[][] { { "notEqual" } };
+
+    assertEquals(expected, expected);
+    assertEquals(equal, expected);
+
+    try {
+      assertEquals(notEqual, expected);
+      Testing.fail();
+    } catch (AssertException e) {
+      Testing.assertEquals(
+          e.getMessage(),
+          format("\n"
+              + "  expected equal to\n"
+              + "    %s\n"
+              + "  but was\n"
+              + "    %s\n",
+              Arrays.deepToString(expected),
+              Arrays.deepToString(notEqual)));
+    }
+  }
+
+  private static void assert_equals_handles_primitive_arrays() {
+    int[] expected = new int[] { 1, 2, 3 };
+    int[] equal = new int[] { 1, 2, 3 };
+    int[] notEqual = new int[] { 1, 2, 0 };
+
+    assertEquals(expected, expected);
+    assertEquals(equal, expected);
+
+    try {
+      assertEquals(notEqual, expected);
+      Testing.fail();
+    } catch (AssertException e) {
+      Testing.assertEquals(
+          e.getMessage(),
+          format("\n"
+              + "  expected equal to\n"
+              + "    %s\n"
+              + "  but was\n"
+              + "    %s\n",
+              Arrays.toString(expected),
+              Arrays.toString(notEqual)));
+    }
+  }
+
+  private static void assert_equals_handles_deep_primitive_arrays() {
+    int[][] expected = new int[][] { { 1, 2 }, { 3, 4 } };
+    int[][] equal = new int[][] { { 1, 2 }, { 3, 4 } };
+    int[][] notEqual = new int[][] { { 1, 2 }, { 3, 0 } };
 
     assertEquals(expected, expected);
     assertEquals(equal, expected);
