@@ -1,22 +1,19 @@
 package org.quackery.run;
 
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static org.quackery.QuackeryException.check;
+import static org.quackery.common.ExecutorBuilder.executorBuilder;
+import static org.quackery.common.Interrupter.interrupter;
 import static org.quackery.help.Helpers.traverseBodies;
 
+import java.time.Duration;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.quackery.Body;
 import org.quackery.Test;
+import org.quackery.common.Interrupter;
 import org.quackery.report.AssertException;
 
 public class Runners {
@@ -49,23 +46,12 @@ public class Runners {
   }
 
   public static Test concurrent(Test test) {
-    return in(concurrentExecutor, test);
-  }
-
-  private static final ExecutorService concurrentExecutor = concurrentExecutor();
-
-  private static ThreadPoolExecutor concurrentExecutor() {
-    int availableProcessors = Runtime.getRuntime().availableProcessors();
-    int corePoolSize = availableProcessors;
-    int maximumPoolSize = availableProcessors;
-    int keepAliveTime = 1;
-    TimeUnit keepAliveTimeUnit = NANOSECONDS;
-    ThreadPoolExecutor executor = new ThreadPoolExecutor(
-        corePoolSize, maximumPoolSize,
-        keepAliveTime, keepAliveTimeUnit,
-        new LinkedBlockingQueue<Runnable>());
-    executor.allowCoreThreadTimeOut(true);
-    return executor;
+    Executor executor = executorBuilder()
+        .poolSize(Runtime.getRuntime().availableProcessors())
+        .keepAlive(Duration.ofNanos(1))
+        .allowCoreThreadTimeOut(true)
+        .build();
+    return in(executor, test);
   }
 
   public static Test expect(Class<? extends Throwable> throwable, Test test) {
@@ -90,19 +76,15 @@ public class Runners {
     };
   }
 
-  public static Test timeout(double time, Test test) {
-    check(time >= 0);
+  public static Test timeout(Duration duration, Test test) {
+    check(!duration.isNegative());
     check(test != null);
-    return traverseBodies(test, body -> timeout(time, body));
+    return traverseBodies(test, body -> timeout(duration, body, interrupter()));
   }
 
-  private static Body timeout(double time, Body body) {
+  private static Body timeout(Duration duration, Body body, Interrupter interrupter) {
     return () -> {
-      Thread caller = Thread.currentThread();
-      ScheduledFuture<?> alarm = timeoutScheduler.schedule(
-          () -> caller.interrupt(),
-          (long) (time * 1e9),
-          NANOSECONDS);
+      Future<?> alarm = interrupter.interruptMe(duration);
       try {
         body.run();
       } finally {
@@ -113,8 +95,6 @@ public class Runners {
       }
     };
   }
-
-  private static final ScheduledExecutorService timeoutScheduler = new ScheduledThreadPoolExecutor(0);
 
   public static Test threadScoped(Test root) {
     check(root != null);

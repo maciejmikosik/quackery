@@ -7,6 +7,7 @@ import static org.quackery.Case.newCase;
 import static org.quackery.testing.Type.CASE;
 import static org.quackery.testing.Type.SUITE;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -192,6 +193,10 @@ public class Testing {
       }
     });
     interrupter.start();
+  }
+
+  public static Duration seconds(double seconds) {
+    return Duration.ofNanos((long) (seconds * 1_000_000_000));
   }
 
   public static void sleep(double time) throws InterruptedException {

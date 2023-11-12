@@ -11,6 +11,9 @@ import static org.quackery.run.TestingDecorators.decorator_runs_cases_eagerly;
 import static org.quackery.run.TestingDecorators.decorator_validates_arguments;
 import static org.quackery.testing.Testing.assertTrue;
 import static org.quackery.testing.Testing.fail;
+import static org.quackery.testing.Testing.mockCase;
+import static org.quackery.testing.Testing.runAndThrow;
+import static org.quackery.testing.Testing.sleep;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -28,8 +31,15 @@ public class TestRunnersRunConcurrent {
     decorator_validates_arguments(decorator);
     decorator_runs_cases_eagerly(decorator);
 
+    shuts_down_executor();
     runs_concurrently();
     validates_arguments();
+  }
+
+  private static void shuts_down_executor() throws Throwable {
+    runAndThrow(concurrent(mockCase("case")));
+    sleep(0.01);
+    assertTrue(Thread.currentThread().getThreadGroup().activeCount() == 1);
   }
 
   private static void runs_concurrently() {

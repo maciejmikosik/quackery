@@ -265,7 +265,7 @@ Using `ThreadLocal` is popular way to avoid synchronization issues for static re
 
 ### timeout
 
-Tests can take a long time to finish. Sometimes they can take forever because of buggy code. You can limit maximum time they have using `timeout(time, test)`. If `Case` takes longer than specified `time` in seconds, then `Case` is interrupted. Tested code is responsive to interruption if it blocks on method throwing `InterruptedException` or if it checks interruption flag `Thread.interrupted()` manually. If code is responsive to interruption, then `Body.run()` is aborted and `InterruptedException` is propagated as test result. If code is not responsive to interruption then `Body.run()` call has to block until test finishes. However result of this finished test is ignored and `InterruptedException` is being thrown instead.
+Tests can take a long time to finish. Sometimes they can take forever because of buggy code. You can limit maximum time they have using `timeout(duration, test)`. If `Case` takes longer than specified `duration`, then `Case` is interrupted. Tested code is responsive to interruption if it blocks on method throwing `InterruptedException` or if it checks interruption flag `Thread.interrupted()` manually. If code is responsive to interruption, then `Body.run()` is aborted and `InterruptedException` is propagated as test result. If code is not responsive to interruption then `Body.run()` call has to block until test finishes. However result of this finished test is ignored and `InterruptedException` is being thrown instead.
 
 ### expecting exception
 
