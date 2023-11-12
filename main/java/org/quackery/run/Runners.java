@@ -2,6 +2,7 @@ package org.quackery.run;
 
 import static org.quackery.QuackeryException.check;
 import static org.quackery.common.ExecutorBuilder.executorBuilder;
+import static org.quackery.common.Interrupter.interrupter;
 import static org.quackery.help.Helpers.traverseBodies;
 
 import java.time.Duration;
@@ -14,6 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.quackery.Body;
 import org.quackery.Test;
+import org.quackery.common.Interrupter;
 import org.quackery.report.AssertException;
 
 public class Runners {
@@ -89,7 +91,8 @@ public class Runners {
 
   private static Body timeout(double time, Body body) {
     return () -> {
-      Future<?> alarm = interruptIn(time, Thread.currentThread());
+      Future<?> alarm = interrupter.interruptMe(
+          Duration.ofNanos((long) (time * 1_000_000_000)));
       try {
         body.run();
       } finally {
@@ -101,26 +104,7 @@ public class Runners {
     };
   }
 
-  private static Future<?> interruptIn(double time, Thread thread) {
-    return timeoutExecutor.submit(() -> {
-      try {
-        long milliseconds = (long) (time * 1e3);
-        int nanoseconds = (int) (time * 1e9 % 1e6);
-        Thread.sleep(milliseconds, nanoseconds);
-        thread.interrupt();
-      } catch (InterruptedException e) {}
-    });
-  }
-
-  private static final ExecutorService timeoutExecutor = timeoutExecutor();
-
-  private static ThreadPoolExecutor timeoutExecutor() {
-    return executorBuilder()
-        .poolSize(0, 1)
-        .keepAlive(Duration.ofNanos(1))
-        .allowCoreThreadTimeOut(true)
-        .build();
-  }
+  private static Interrupter interrupter = interrupter();
 
   public static Test threadScoped(Test root) {
     check(root != null);
