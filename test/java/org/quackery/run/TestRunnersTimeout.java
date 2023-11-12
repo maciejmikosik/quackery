@@ -1,12 +1,12 @@
 package org.quackery.run;
 
 import static org.quackery.Case.newCase;
-import static org.quackery.report.AssertException.assertTrue;
 import static org.quackery.run.Runners.timeout;
 import static org.quackery.run.TestingDecorators.decorator_preserves_case_result;
 import static org.quackery.run.TestingDecorators.decorator_preserves_names_and_structure;
 import static org.quackery.run.TestingDecorators.decorator_runs_cases_lazily;
 import static org.quackery.run.TestingDecorators.decorator_validates_arguments;
+import static org.quackery.testing.Testing.assertTrue;
 import static org.quackery.testing.Testing.fail;
 import static org.quackery.testing.Testing.mockCase;
 import static org.quackery.testing.Testing.runAndThrow;
