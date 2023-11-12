@@ -1,16 +1,15 @@
 package org.quackery.run;
 
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static org.quackery.QuackeryException.check;
+import static org.quackery.common.ExecutorBuilder.executorBuilder;
 import static org.quackery.help.Helpers.traverseBodies;
 
+import java.time.Duration;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.quackery.Body;
@@ -53,17 +52,11 @@ public class Runners {
   private static final ExecutorService concurrentExecutor = concurrentExecutor();
 
   private static ThreadPoolExecutor concurrentExecutor() {
-    int availableProcessors = Runtime.getRuntime().availableProcessors();
-    int corePoolSize = availableProcessors;
-    int maximumPoolSize = availableProcessors;
-    int keepAliveTime = 1;
-    TimeUnit keepAliveTimeUnit = NANOSECONDS;
-    ThreadPoolExecutor executor = new ThreadPoolExecutor(
-        corePoolSize, maximumPoolSize,
-        keepAliveTime, keepAliveTimeUnit,
-        new LinkedBlockingQueue<Runnable>());
-    executor.allowCoreThreadTimeOut(true);
-    return executor;
+    return executorBuilder()
+        .poolSize(Runtime.getRuntime().availableProcessors())
+        .keepAlive(Duration.ofNanos(1))
+        .allowCoreThreadTimeOut(true)
+        .build();
   }
 
   public static Test expect(Class<? extends Throwable> throwable, Test test) {
@@ -122,16 +115,11 @@ public class Runners {
   private static final ExecutorService timeoutExecutor = timeoutExecutor();
 
   private static ThreadPoolExecutor timeoutExecutor() {
-    int corePoolSize = 0;
-    int maximumPoolSize = 1;
-    int keepAliveTime = 1;
-    TimeUnit keepAliveTimeUnit = NANOSECONDS;
-    ThreadPoolExecutor executor = new ThreadPoolExecutor(
-        corePoolSize, maximumPoolSize,
-        keepAliveTime, keepAliveTimeUnit,
-        new LinkedBlockingQueue<Runnable>());
-    executor.allowCoreThreadTimeOut(true);
-    return executor;
+    return executorBuilder()
+        .poolSize(0, 1)
+        .keepAlive(Duration.ofNanos(1))
+        .allowCoreThreadTimeOut(true)
+        .build();
   }
 
   public static Test threadScoped(Test root) {
