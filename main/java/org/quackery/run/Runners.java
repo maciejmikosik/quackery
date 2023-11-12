@@ -7,10 +7,8 @@ import static org.quackery.help.Helpers.traverseBodies;
 
 import java.time.Duration;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.quackery.Body;
@@ -48,17 +46,12 @@ public class Runners {
   }
 
   public static Test concurrent(Test test) {
-    return in(concurrentExecutor, test);
-  }
-
-  private static final ExecutorService concurrentExecutor = concurrentExecutor();
-
-  private static ThreadPoolExecutor concurrentExecutor() {
-    return executorBuilder()
+    Executor executor = executorBuilder()
         .poolSize(Runtime.getRuntime().availableProcessors())
         .keepAlive(Duration.ofNanos(1))
         .allowCoreThreadTimeOut(true)
         .build();
+    return in(executor, test);
   }
 
   public static Test expect(Class<? extends Throwable> throwable, Test test) {
@@ -86,10 +79,10 @@ public class Runners {
   public static Test timeout(Duration duration, Test test) {
     check(!duration.isNegative());
     check(test != null);
-    return traverseBodies(test, body -> timeout(duration, body));
+    return traverseBodies(test, body -> timeout(duration, body, interrupter()));
   }
 
-  private static Body timeout(Duration duration, Body body) {
+  private static Body timeout(Duration duration, Body body, Interrupter interrupter) {
     return () -> {
       Future<?> alarm = interrupter.interruptMe(duration);
       try {
@@ -102,8 +95,6 @@ public class Runners {
       }
     };
   }
-
-  private static Interrupter interrupter = interrupter();
 
   public static Test threadScoped(Test root) {
     check(root != null);
