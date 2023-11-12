@@ -10,6 +10,7 @@ import static org.quackery.testing.Testing.assertTrue;
 import static org.quackery.testing.Testing.fail;
 import static org.quackery.testing.Testing.mockCase;
 import static org.quackery.testing.Testing.runAndThrow;
+import static org.quackery.testing.Testing.seconds;
 import static org.quackery.testing.Testing.sleep;
 import static org.quackery.testing.Testing.sleepBusy;
 
@@ -21,7 +22,7 @@ import org.quackery.Test;
 
 public class TestRunnersTimeout {
   public static void test_runners_timeout() throws Throwable {
-    Function<Test, Test> decorator = test -> timeout(1, test);
+    Function<Test, Test> decorator = test -> timeout(seconds(1), test);
 
     decorator_preserves_names_and_structure(decorator);
     decorator_preserves_case_result(decorator);
@@ -36,14 +37,14 @@ public class TestRunnersTimeout {
   }
 
   private static void shuts_down_executor() throws Throwable {
-    runAndThrow(timeout(0.1, mockCase("case")));
+    runAndThrow(timeout(seconds(0.1), mockCase("case")));
     sleep(0.01);
     assertTrue(Thread.currentThread().getThreadGroup().activeCount() == 1);
   }
 
   private static void interrupts_interruptible_case() throws Throwable {
     AtomicBoolean interrupted = new AtomicBoolean(false);
-    Test test = timeout(0.01, newCase("case", () -> {
+    Test test = timeout(seconds(0.01), newCase("case", () -> {
       try {
         sleep(0.02);
         interrupted.set(false);
@@ -61,7 +62,7 @@ public class TestRunnersTimeout {
   }
 
   private static void interrupts_uninterruptible_successful_case() throws Throwable {
-    Test test = timeout(0.01, newCase("case", () -> {
+    Test test = timeout(seconds(0.01), newCase("case", () -> {
       sleepBusy(0.02);
     }));
 
@@ -72,7 +73,7 @@ public class TestRunnersTimeout {
   }
 
   private static void interrupts_uninterruptible_failing_case() throws Throwable {
-    Test test = timeout(0.01, newCase("case", () -> {
+    Test test = timeout(seconds(0.01), newCase("case", () -> {
       sleepBusy(0.02);
       throw new RuntimeException();
     }));
@@ -86,7 +87,7 @@ public class TestRunnersTimeout {
   private static void validates_arguments() {
     Test test = mockCase("case");
     try {
-      timeout(-0.001, test);
+      timeout(seconds(-0.001), test);
       fail();
     } catch (QuackeryException e) {}
   }

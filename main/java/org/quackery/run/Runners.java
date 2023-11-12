@@ -83,16 +83,15 @@ public class Runners {
     };
   }
 
-  public static Test timeout(double time, Test test) {
-    check(time >= 0);
+  public static Test timeout(Duration duration, Test test) {
+    check(!duration.isNegative());
     check(test != null);
-    return traverseBodies(test, body -> timeout(time, body));
+    return traverseBodies(test, body -> timeout(duration, body));
   }
 
-  private static Body timeout(double time, Body body) {
+  private static Body timeout(Duration duration, Body body) {
     return () -> {
-      Future<?> alarm = interrupter.interruptMe(
-          Duration.ofNanos((long) (time * 1_000_000_000)));
+      Future<?> alarm = interrupter.interruptMe(duration);
       try {
         body.run();
       } finally {
