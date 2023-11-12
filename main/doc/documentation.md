@@ -295,7 +295,7 @@ Once you run the test and cache results, you are ready to present report.
 
 `org.quackery.report.Reports` contains methods related to analyzing results of test. Trying to use `Reports` on `Test` that was not run, will invoke `Body.run()` every time.
 
-All tests passed if `count(Throwable.class, report)` returns `0`. You can also count number of failures of specific type, for example `count(AssertException.class, report)` or `count(AssumeException.class)`.
+All tests passed if `count(Throwable.class, report)` returns `0`. You can also count number of failures of specific type, for example `count(AssertException.class, report)` or `count(AssumeException.class, report)`.
 
 You can turn test results into `String` using `format(Test)`. String includes test names and structure of whole tree including throwables thrown from them.
 

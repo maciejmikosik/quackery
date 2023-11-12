@@ -39,11 +39,14 @@ public class AssertException extends ReportException {
   }
 
   private static String print(Object object) {
-    return object == null
-        ? "null"
-        : object.getClass().isArray()
-            ? Arrays.deepToString((Object[]) object)
-            : object.toString();
+    if (object == null) {
+      return "null";
+    } else if (object.getClass().isArray()) {
+      String string = Arrays.deepToString(new Object[] { object });
+      return string.substring(1, string.length() - 1);
+    } else {
+      return object.toString();
+    }
   }
 
   public static void fail() {

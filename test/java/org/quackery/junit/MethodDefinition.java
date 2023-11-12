@@ -6,7 +6,6 @@ import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
 
-@SuppressWarnings("hiding")
 class MethodDefinition {
   public final List<Annotation> annotations;
   public final int modifiers;
