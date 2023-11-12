@@ -28,10 +28,17 @@ public class TestRunnersTimeout {
     decorator_validates_arguments(decorator);
     decorator_runs_cases_lazily(decorator);
 
+    shuts_down_executor();
     interrupts_interruptible_case();
     interrupts_uninterruptible_successful_case();
     interrupts_uninterruptible_failing_case();
     validates_arguments();
+  }
+
+  private static void shuts_down_executor() throws Throwable {
+    runAndThrow(timeout(0.1, mockCase("case")));
+    sleep(0.01);
+    assertTrue(Thread.currentThread().getThreadGroup().activeCount() == 1);
   }
 
   private static void interrupts_interruptible_case() throws Throwable {

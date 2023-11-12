@@ -6,11 +6,9 @@ import static org.quackery.help.Helpers.traverseBodies;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -98,11 +96,7 @@ public class Runners {
 
   private static Body timeout(double time, Body body) {
     return () -> {
-      Thread caller = Thread.currentThread();
-      ScheduledFuture<?> alarm = timeoutScheduler.schedule(
-          () -> caller.interrupt(),
-          (long) (time * 1e9),
-          NANOSECONDS);
+      Future<?> alarm = interruptIn(time, Thread.currentThread());
       try {
         body.run();
       } finally {
@@ -114,7 +108,31 @@ public class Runners {
     };
   }
 
-  private static final ScheduledExecutorService timeoutScheduler = new ScheduledThreadPoolExecutor(0);
+  private static Future<?> interruptIn(double time, Thread thread) {
+    return timeoutExecutor.submit(() -> {
+      try {
+        long milliseconds = (long) (time * 1e3);
+        int nanoseconds = (int) (time * 1e9 % 1e6);
+        Thread.sleep(milliseconds, nanoseconds);
+        thread.interrupt();
+      } catch (InterruptedException e) {}
+    });
+  }
+
+  private static final ExecutorService timeoutExecutor = timeoutExecutor();
+
+  private static ThreadPoolExecutor timeoutExecutor() {
+    int corePoolSize = 0;
+    int maximumPoolSize = 1;
+    int keepAliveTime = 1;
+    TimeUnit keepAliveTimeUnit = NANOSECONDS;
+    ThreadPoolExecutor executor = new ThreadPoolExecutor(
+        corePoolSize, maximumPoolSize,
+        keepAliveTime, keepAliveTimeUnit,
+        new LinkedBlockingQueue<Runnable>());
+    executor.allowCoreThreadTimeOut(true);
+    return executor;
+  }
 
   public static Test threadScoped(Test root) {
     check(root != null);
