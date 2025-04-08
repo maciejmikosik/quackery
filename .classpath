@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java-8-openjdk"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java-default-openjdk"/>
 	<classpathentry kind="output" path="bin"/>
 	<classpathentry kind="src" path="main/java"/>
 	<classpathentry kind="lib" path="main/jar/hamcrest-all-1.3.jar" sourcepath="main/jar/hamcrest-all-1.3-sources.jar"/>
