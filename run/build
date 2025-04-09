@@ -19,8 +19,7 @@ mkdir \
 javac \
   -classpath "./main/jar/junit-4.12.jar:./main/jar/hamcrest-all-1.3.jar" \
   -sourcepath "./main/java" \
-  -source 1.8 \
-  -target 1.8 \
+  --release 21 \
   -d "${SINK}" \
   ./main/java/org/quackery/Build.java
 

@@ -22,7 +22,7 @@ public class TestByteBuddy {
         .modifiers(PUBLIC)
         .defineConstructor(PUBLIC)
         .intercept(SuperMethodCall.INSTANCE)
-        .name("Redefined")
+        .name(TestByteBuddy.class.getPackageName() + ".Redefined")
         .make()
         .load(Thread.currentThread().getContextClassLoader(), WRAPPER)
         .getLoaded();
@@ -41,7 +41,7 @@ public class TestByteBuddy {
 
     Class<?> type = new ByteBuddy()
         .redefine(TestClass.class)
-        .name("Redefined")
+        .name(TestByteBuddy.class.getPackageName() + ".Redefined")
         .make()
         .load(Thread.currentThread().getContextClassLoader(), WRAPPER)
         .getLoaded();
