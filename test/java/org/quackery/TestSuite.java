@@ -5,11 +5,8 @@ import static org.quackery.Suite.suite;
 import static org.quackery.testing.Testing.assertChildren;
 import static org.quackery.testing.Testing.assertEquals;
 import static org.quackery.testing.Testing.assertTrue;
-import static org.quackery.testing.Testing.childrenOf;
 import static org.quackery.testing.Testing.fail;
 import static org.quackery.testing.Testing.mockCase;
-import static org.quackery.testing.Testing.mockContract;
-import static org.quackery.testing.Testing.mockObject;
 import static org.quackery.testing.Testing.nameOf;
 
 import java.util.List;
@@ -21,9 +18,6 @@ public class TestSuite {
     adds_test();
     adds_tests_from_iterable();
     adds_tests_from_array();
-    adds_test_produced_by_contract_and_item();
-    adds_tests_produced_by_contract_and_items_from_iterable();
-    adds_tests_produced_by_contract_and_items_from_array();
     allows_wildcards();
     implements_to_string();
     validates_arguments();
@@ -80,90 +74,17 @@ public class TestSuite {
     assertChildren(suite, asList(testA, testB, testC, testD));
   }
 
-  private static void adds_test_produced_by_contract_and_item() {
-    Object itemA = mockObject("itemA");
-    Object itemB = mockObject("itemB");
-    Object itemC = mockObject("itemC");
-    Contract<Object> contractA = mockContract("contractA");
-    Contract<Object> contractB = mockContract("contractB");
-    Contract<Object> contractC = mockContract("contractC");
-
-    Suite suite = suite("suite")
-        .add(itemA, contractA)
-        .add(itemB, contractB)
-        .add(itemC, contractC);
-
-    assertChildren(suite, asList(
-        contractA.test(itemA),
-        contractB.test(itemB),
-        contractC.test(itemC)));
-  }
-
-  private static void adds_tests_produced_by_contract_and_items_from_iterable() {
-    Object itemA = mockObject("itemA");
-    Object itemB = mockObject("itemB");
-    Object itemC = mockObject("itemC");
-    Object itemD = mockObject("itemD");
-    Contract<Object> contractA = mockContract("contractA");
-    Contract<Object> contractB = mockContract("contractB");
-
-    Suite suite = suite("suite")
-        .addAll(asList(itemA, itemB), contractA)
-        .addAll(asList(itemC, itemD), contractB);
-
-    assertChildren(suite, asList(
-        contractA.test(itemA),
-        contractA.test(itemB),
-        contractB.test(itemC),
-        contractB.test(itemD)));
-  }
-
-  private static void adds_tests_produced_by_contract_and_items_from_array() {
-    Object itemA = mockObject("itemA");
-    Object itemB = mockObject("itemB");
-    Object itemC = mockObject("itemC");
-    Object itemD = mockObject("itemD");
-    Contract<Object> contractA = mockContract("contractA");
-    Contract<Object> contractB = mockContract("contractB");
-
-    Suite suite = suite("suite")
-        .addAll(new Object[] { itemA, itemB }, contractA)
-        .addAll(new Object[] { itemC, itemD }, contractB);
-
-    assertEquals(childrenOf(suite), asList(
-        contractA.test(itemA),
-        contractA.test(itemB),
-        contractB.test(itemC),
-        contractB.test(itemD)));
-  }
-
   private static void allows_wildcards() {
-    class Item {}
-    class SubItem extends Item {}
-
     List<Case> cases = asList((Case) mockCase("case"));
     List<Suite> suites = asList(suite("suite"));
     List<Test> tests = asList(suite("suite"), mockCase("case"));
     List<? extends Test> covariantTests = asList(suite("suite"), mockCase("case"));
 
-    List<Item> items = asList(new Item());
-    List<SubItem> subItems = asList(new SubItem());
-    List<? extends Item> covariantItems = asList(new Item(), new SubItem());
-
-    Contract<Item> contract = mockContract("contract");
-    Contract<? super Item> contravariantContract = mockContract("covariantContract");
-
     suite("suite")
         .addAll(cases)
         .addAll(suites)
         .addAll(tests)
-        .addAll(covariantTests)
-        .addAll(items, contract)
-        .addAll(subItems, contract)
-        .addAll(covariantItems, contract)
-        .addAll(items, contravariantContract)
-        .addAll(subItems, contravariantContract)
-        .addAll(covariantItems, contravariantContract);
+        .addAll(covariantTests);
   }
 
   private static void implements_to_string() {
@@ -178,8 +99,6 @@ public class TestSuite {
     Suite suite = suite("suite");
     Test testA = mockCase("testA");
     Test testB = mockCase("testB");
-    Contract<Object> contract = mockContract("contract");
-    Object item = mockObject("item");
 
     try {
       suite(null);
@@ -204,28 +123,6 @@ public class TestSuite {
     } catch (QuackeryException e) {}
     try {
       suite.addAll(new Test[] { testA, null, testB });
-      fail();
-    } catch (QuackeryException e) {}
-
-    try {
-      suite.addAll((Iterable<Object>) null, contract);
-      fail();
-    } catch (QuackeryException e) {}
-    try {
-      suite.addAll((Object[]) null, contract);
-      fail();
-    } catch (QuackeryException e) {}
-
-    try {
-      suite.add(item, (Contract<Object>) null);
-      fail();
-    } catch (QuackeryException e) {}
-    try {
-      suite.addAll(asList(), (Contract<Object>) null);
-      fail();
-    } catch (QuackeryException e) {}
-    try {
-      suite.addAll(new Object[0], (Contract<Object>) null);
       fail();
     } catch (QuackeryException e) {}
   }

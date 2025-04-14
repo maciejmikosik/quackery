@@ -2,7 +2,6 @@ package org.quackery.testing;
 
 import static java.lang.String.format;
 import static java.util.Objects.deepEquals;
-import static java.util.Objects.hash;
 import static org.quackery.Case.newCase;
 import static org.quackery.testing.Type.CASE;
 import static org.quackery.testing.Type.SUITE;
@@ -10,10 +9,7 @@ import static org.quackery.testing.Type.SUITE;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
-import org.quackery.Body;
-import org.quackery.Contract;
 import org.quackery.Test;
 
 public class Testing {
@@ -132,52 +128,6 @@ public class Testing {
     return newCase(name, () -> {
       throw throwable.fillInStackTrace();
     });
-  }
-
-  public static <T> Contract<T> mockContract(String name) {
-    return new Contract<T>() {
-      public Test test(T item) {
-        return new MockTest(item, this);
-      }
-
-      public String toString() {
-        return format("mockContract(%s)", name);
-      }
-    };
-  }
-
-  private static class MockTest implements Test {
-    public final Object item;
-    public final Contract<?> contract;
-
-    public MockTest(Object item, Contract<?> contract) {
-      this.item = item;
-      this.contract = contract;
-    }
-
-    public <R> R visit(
-        BiFunction<String, Body, R> caseHandler,
-        BiFunction<String, List<Test>, R> suiteHandler) {
-      throw new UnsupportedOperationException();
-    }
-
-    public boolean equals(Object object) {
-      return object instanceof MockTest
-          && equals((MockTest) object);
-    }
-
-    public boolean equals(MockTest that) {
-      return item.equals(that.item)
-          && contract.equals(that.contract);
-    }
-
-    public int hashCode() {
-      return hash(item, contract);
-    }
-
-    public String toString() {
-      return format("%s.test(%s)", contract, item);
-    }
   }
 
   public static void interruptMeAfter(double time) {

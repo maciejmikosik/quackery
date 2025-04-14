@@ -55,26 +55,6 @@ public class Suite implements Test {
     return addAll(asList(newChildren));
   }
 
-  public <T> Suite add(T item, Contract<T> contract) {
-    check(contract != null);
-    return add(contract.test(item));
-  }
-
-  public <T> Suite addAll(Iterable<? extends T> items, Contract<T> contract) {
-    check(items != null);
-    check(contract != null);
-    List<Test> newChildren = new ArrayList<>();
-    for (T item : items) {
-      newChildren.add(contract.test(item));
-    }
-    return addAll(newChildren);
-  }
-
-  public <T> Suite addAll(T[] items, Contract<T> contract) {
-    check(items != null);
-    return addAll(asList(items), contract);
-  }
-
   public <R> R visit(
       BiFunction<String, Body, R> caseHandler,
       BiFunction<String, List<Test>, R> suiteHandler) {
