@@ -9,9 +9,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 
-public class Suite implements Test {
-  private final String name;
-  private final List<Test> children;
+public final class Suite implements Test {
+  public final String name;
+  public final List<Test> children;
 
   private Suite(String name, List<Test> children) {
     this.name = name;
