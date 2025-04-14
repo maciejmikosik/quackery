@@ -1,9 +1,11 @@
 package org.quackery.run;
 
 import static org.quackery.QuackeryException.check;
+import static org.quackery.Tests.deep;
+import static org.quackery.Tests.ifCase;
+import static org.quackery.Tests.onBody;
 import static org.quackery.common.ExecutorBuilder.executorBuilder;
 import static org.quackery.common.Interrupter.interrupter;
-import static org.quackery.help.Helpers.traverseBodies;
 
 import java.time.Duration;
 import java.util.concurrent.Executor;
@@ -19,7 +21,8 @@ import org.quackery.report.AssertException;
 public class Runners {
   public static Test run(Test root) {
     check(root != null);
-    return traverseBodies(root, body -> run(body));
+    return deep(ifCase(onBody(Runners::run)))
+        .apply(root);
   }
 
   private static Body run(Body body) {
@@ -36,7 +39,8 @@ public class Runners {
   public static Test in(Executor executor, Test root) {
     check(root != null);
     check(executor != null);
-    return traverseBodies(root, body -> futureBody(executor, body));
+    return deep(ifCase(onBody(body -> futureBody(executor, body))))
+        .apply(root);
   }
 
   private static Body futureBody(Executor executor, Body body) {
@@ -56,7 +60,8 @@ public class Runners {
 
   public static Test expect(Class<? extends Throwable> throwable, Test test) {
     check(test != null);
-    return traverseBodies(test, body -> expect(throwable, body));
+    return deep(ifCase(onBody(body -> expect(throwable, body))))
+        .apply(test);
   }
 
   private static Body expect(Class<? extends Throwable> expected, Body body) {
@@ -79,7 +84,8 @@ public class Runners {
   public static Test timeout(Duration duration, Test test) {
     check(!duration.isNegative());
     check(test != null);
-    return traverseBodies(test, body -> timeout(duration, body, interrupter()));
+    return deep(ifCase(onBody(body -> timeout(duration, body, interrupter()))))
+        .apply(test);
   }
 
   private static Body timeout(Duration duration, Body body, Interrupter interrupter) {
@@ -98,7 +104,8 @@ public class Runners {
 
   public static Test threadScoped(Test root) {
     check(root != null);
-    return traverseBodies(root, body -> threadScoped(body));
+    return deep(ifCase(onBody(Runners::threadScoped)))
+        .apply(root);
   }
 
   private static Body threadScoped(Body body) {
@@ -129,7 +136,8 @@ public class Runners {
 
   public static Test classLoaderScoped(Test root) {
     check(root != null);
-    return traverseBodies(root, body -> classLoaderScoped(body));
+    return deep(ifCase(onBody(Runners::classLoaderScoped)))
+        .apply(root);
   }
 
   private static Body classLoaderScoped(Body body) {

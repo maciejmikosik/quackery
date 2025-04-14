@@ -6,8 +6,9 @@ import static org.junit.runner.Description.createSuiteDescription;
 import static org.junit.runner.Description.createTestDescription;
 import static org.quackery.Case.newCase;
 import static org.quackery.Suite.suite;
+import static org.quackery.Tests.deep;
+import static org.quackery.Tests.ifCase;
 import static org.quackery.help.Helpers.failingCase;
-import static org.quackery.help.Helpers.traverse;
 import static org.quackery.junit.FixBugs.fixBugs;
 
 import java.io.Serializable;
@@ -24,6 +25,7 @@ import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 import org.quackery.Body;
+import org.quackery.Case;
 import org.quackery.Quackery;
 import org.quackery.QuackeryException;
 import org.quackery.Suite;
@@ -60,16 +62,17 @@ public class QuackeryRunner extends Runner {
   }
 
   public void run(RunNotifier notifier) {
-    Test notifyingQuackeryTest = traverse(quackeryTest,
-        test -> test.visit(
-            (name, body) -> newCase(name, notifying(notifier, describe(test), body)),
-            (name, children) -> test));
-
+    var notifyingQuackeryTest = deep(ifCase(cas -> notifying(notifier, cas)))
+        .apply(quackeryTest);
     Runners.run(notifyingQuackeryTest);
 
     if (junitRunner != null) {
       junitRunner.run(notifier);
     }
+  }
+
+  private Case notifying(RunNotifier notifier, Case cas) {
+    return newCase(cas.name, notifying(notifier, describe(cas), cas.body));
   }
 
   private Body notifying(RunNotifier notifier, Description described, Body body) {
