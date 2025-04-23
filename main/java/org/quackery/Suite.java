@@ -7,7 +7,6 @@ import static org.quackery.QuackeryException.check;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiFunction;
 
 public final class Suite implements Test {
   public final String name;
@@ -53,12 +52,6 @@ public final class Suite implements Test {
   public Suite addAll(Test[] newChildren) {
     check(newChildren != null);
     return addAll(asList(newChildren));
-  }
-
-  public <R> R visit(
-      BiFunction<String, Body, R> caseHandler,
-      BiFunction<String, List<Test>, R> suiteHandler) {
-    return suiteHandler.apply(name, children);
   }
 
   public String toString() {

@@ -2,9 +2,6 @@ package org.quackery;
 
 import static org.quackery.QuackeryException.check;
 
-import java.util.List;
-import java.util.function.BiFunction;
-
 public final class Case implements Test {
   public final String name;
   public final Body body;
@@ -18,11 +15,5 @@ public final class Case implements Test {
     check(name != null);
     check(body != null);
     return new Case(name, body);
-  }
-
-  public <R> R visit(
-      BiFunction<String, Body, R> caseHandler,
-      BiFunction<String, List<Test>, R> suiteHandler) {
-    return caseHandler.apply(name, body);
   }
 }

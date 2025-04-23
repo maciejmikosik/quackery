@@ -181,13 +181,14 @@ public class QuackeryRunner extends Runner {
   }
 
   private Description describe(Test test) {
-    return test.visit(
-        (name, body) -> createTestDescription(annotatedClass.getName(), name, id(test)),
-        (name, children) -> {
-          Description described = createSuiteDescription(name, id(test));
-          children.stream().forEach(child -> described.addChild(describe(child)));
-          return described;
-        });
+    return switch (test) {
+      case Case cas -> createTestDescription(annotatedClass.getName(), cas.name, id(test));
+      case Suite suite -> {
+        Description described = createSuiteDescription(suite.name, id(test));
+        suite.children.stream().forEach(child -> described.addChild(describe(child)));
+        yield described;
+      }
+    };
   }
 
   private static Serializable id(Test test) {

@@ -10,6 +10,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 
+import org.quackery.Case;
+import org.quackery.Suite;
 import org.quackery.Test;
 
 public class Testing {
@@ -46,34 +48,33 @@ public class Testing {
   }
 
   public static void assertChildren(Test actualTest, List<Test> expectedChildren) {
-    actualTest.visit(
-        (name, body) -> {
-          throw new AssertionError();
-        },
-        (name, children) -> {
-          assertEquals(children, expectedChildren);
-          return null;
-        });
+    switch (actualTest) {
+      case Case cas -> throw new AssertionError();
+      case Suite suite -> {
+        assertEquals(suite.children, expectedChildren);
+      }
+    }
   }
 
   public static Type typeOf(Test test) {
-    return test.visit(
-        (name, body) -> CASE,
-        (name, children) -> SUITE);
+    return switch (test) {
+      case Case cas -> CASE;
+      case Suite suite -> SUITE;
+    };
   }
 
   public static String nameOf(Test test) {
-    return test.visit(
-        (name, body) -> name,
-        (name, children) -> name);
+    return switch (test) {
+      case Case cas -> cas.name;
+      case Suite suite -> suite.name;
+    };
   }
 
   public static List<Test> childrenOf(Test test) {
-    return test.visit(
-        (name, body) -> {
-          throw new AssertionError();
-        },
-        (name, children) -> children);
+    return switch (test) {
+      case Case cas -> throw new AssertionError();
+      case Suite suite -> suite.children;
+    };
   }
 
   public static void runAndThrow(Test test) throws Throwable {
@@ -84,18 +85,17 @@ public class Testing {
   }
 
   public static Optional<Throwable> runAndCatch(Test test) {
-    return test.visit(
-        (name, body) -> {
-          try {
-            body.run();
-          } catch (Throwable throwable) {
-            return Optional.of(throwable);
-          }
-          return Optional.empty();
-        },
-        (name, children) -> {
-          throw new IllegalArgumentException();
-        });
+    switch (test) {
+      case Case cas -> {
+        try {
+          cas.body.run();
+        } catch (Throwable throwable) {
+          return Optional.of(throwable);
+        }
+        return Optional.empty();
+      }
+      case Suite suite -> throw new IllegalArgumentException();
+    }
   }
 
   public static void fail() {
