@@ -3,13 +3,13 @@ package org.quackery.contract.collection;
 import static org.quackery.Tests.deep;
 import static org.quackery.Tests.ifSuite;
 import static org.quackery.Tests.remove;
-import static org.quackery.help.Helpers.failingCase;
+import static org.quackery.help.Helpers.failingStory;
 
 import org.quackery.QuackeryException;
 import org.quackery.Test;
 
 public class Includes {
-  private static final Test EXCLUDED = failingCase(
+  private static final Test EXCLUDED = failingStory(
       "EXCLUDED",
       new QuackeryException("should be excluded"));
 

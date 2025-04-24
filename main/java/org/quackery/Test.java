@@ -1,5 +1,5 @@
 package org.quackery;
 
-public sealed interface Test permits Case, Suite {
+public sealed interface Test permits Story, Suite {
 
 }

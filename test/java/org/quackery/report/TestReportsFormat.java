@@ -4,15 +4,15 @@ import static org.quackery.Suite.suite;
 import static org.quackery.report.Reports.format;
 import static org.quackery.testing.Testing.assertTrue;
 import static org.quackery.testing.Testing.fail;
-import static org.quackery.testing.Testing.mockCase;
+import static org.quackery.testing.Testing.mockStory;
 
 import org.quackery.QuackeryException;
 import org.quackery.Test;
 
 public class TestReportsFormat {
   public static void test_reports_format() {
-    formats_name_of_single_case();
-    formats_name_of_deep_case();
+    formats_name_of_single_story();
+    formats_name_of_story_in_suite();
     formats_name_of_suite();
     marks_failure();
     marks_error();
@@ -22,21 +22,21 @@ public class TestReportsFormat {
     validates_argument();
   }
 
-  private static void formats_name_of_single_case() {
-    Test report = mockCase("case");
+  private static void formats_name_of_single_story() {
+    Test report = mockStory("story");
 
     String formatted = format(report);
 
-    assertTrue(formatted.contains("case"));
+    assertTrue(formatted.contains("story"));
   }
 
-  private static void formats_name_of_deep_case() {
+  private static void formats_name_of_story_in_suite() {
     Test report = suite("suite")
-        .add(mockCase("case"));
+        .add(mockStory("story"));
 
     String formatted = format(report);
 
-    assertTrue(formatted.contains("case"));
+    assertTrue(formatted.contains("story"));
   }
 
   private static void formats_name_of_suite() {
@@ -48,31 +48,31 @@ public class TestReportsFormat {
   }
 
   private static void marks_failure() {
-    Test report = mockCase("case", new AssertException());
+    Test report = mockStory("story", new AssertException());
 
     String formatted = format(report);
 
-    assertTrue(formatted.contains("[AssertException] " + "case"));
+    assertTrue(formatted.contains("[AssertException] " + "story"));
   }
 
   private static void marks_error() {
-    Test report = mockCase("case", new Throwable());
+    Test report = mockStory("story", new Throwable());
 
     String formatted = format(report);
 
-    assertTrue(formatted.contains("[Throwable] case"));
+    assertTrue(formatted.contains("[Throwable] story"));
   }
 
   private static void marks_misassumption() {
-    Test report = mockCase("case", new AssumeException());
+    Test report = mockStory("story", new AssumeException());
 
     String formatted = format(report);
 
-    assertTrue(formatted.contains("[AssumeException] case"));
+    assertTrue(formatted.contains("[AssumeException] story"));
   }
 
   private static void marks_skips_success() {
-    Test report = mockCase("case");
+    Test report = mockStory("story");
 
     String formatted = format(report);
 
@@ -84,12 +84,12 @@ public class TestReportsFormat {
   private static void indents_to_reflect_hierarchy() {
     Test report = suite("a")
         .add(suite("b")
-            .add(mockCase("c"))
-            .add(mockCase("d")))
+            .add(mockStory("c"))
+            .add(mockStory("d")))
         .add(suite("e")
-            .add(mockCase("f"))
-            .add(mockCase("g"))
-            .add(mockCase("h")));
+            .add(mockStory("f"))
+            .add(mockStory("g"))
+            .add(mockStory("h")));
 
     String formatted = format(report);
 

@@ -10,7 +10,7 @@ import org.quackery.report.Reports;
 import org.quackery.run.Runners;
 
 class Build {
-  Object core = asList(Test.class, Case.class, Suite.class, Contract.class, QuackeryException.class);
+  Object core = asList(Test.class, Story.class, Suite.class, Contract.class, QuackeryException.class);
   Object report = asList(Reports.class, ReportException.class, AssertException.class, AssumeException.class);
   Object contracts = asList(Contracts.class);
   Object integration = asList(Quackery.class, QuackeryRunner.class);

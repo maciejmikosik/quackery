@@ -6,7 +6,7 @@ import static org.quackery.testing.Testing.assertChildren;
 import static org.quackery.testing.Testing.assertEquals;
 import static org.quackery.testing.Testing.assertTrue;
 import static org.quackery.testing.Testing.fail;
-import static org.quackery.testing.Testing.mockCase;
+import static org.quackery.testing.Testing.mockStory;
 import static org.quackery.testing.Testing.nameOf;
 
 import java.util.List;
@@ -36,9 +36,9 @@ public class TestSuite {
   }
 
   private static void adds_test() {
-    Test testA = mockCase("caseA");
-    Test testB = mockCase("caseB");
-    Test testC = mockCase("caseC");
+    Test testA = mockStory("storyA");
+    Test testB = mockStory("storyB");
+    Test testC = mockStory("storyC");
 
     Suite suite = suite("suite")
         .add(testA)
@@ -49,10 +49,10 @@ public class TestSuite {
   }
 
   private static void adds_tests_from_iterable() {
-    Test testA = mockCase("caseA");
-    Test testB = mockCase("caseB");
-    Test testC = mockCase("caseC");
-    Test testD = mockCase("caseD");
+    Test testA = mockStory("storyA");
+    Test testB = mockStory("storyB");
+    Test testC = mockStory("storyC");
+    Test testD = mockStory("storyD");
 
     Suite suite = suite("suite")
         .addAll(asList(testA, testB))
@@ -62,10 +62,10 @@ public class TestSuite {
   }
 
   private static void adds_tests_from_array() {
-    Test testA = mockCase("caseA");
-    Test testB = mockCase("caseB");
-    Test testC = mockCase("caseC");
-    Test testD = mockCase("caseD");
+    Test testA = mockStory("storyA");
+    Test testB = mockStory("storyB");
+    Test testC = mockStory("storyC");
+    Test testD = mockStory("storyD");
 
     Suite suite = suite("suite")
         .addAll(new Test[] { testA, testB })
@@ -75,13 +75,13 @@ public class TestSuite {
   }
 
   private static void allows_wildcards() {
-    List<Case> cases = asList((Case) mockCase("case"));
+    List<Story> stories = asList((Story) mockStory("story"));
     List<Suite> suites = asList(suite("suite"));
-    List<Test> tests = asList(suite("suite"), mockCase("case"));
-    List<? extends Test> covariantTests = asList(suite("suite"), mockCase("case"));
+    List<Test> tests = asList(suite("suite"), mockStory("story"));
+    List<? extends Test> covariantTests = asList(suite("suite"), mockStory("story"));
 
     suite("suite")
-        .addAll(cases)
+        .addAll(stories)
         .addAll(suites)
         .addAll(tests)
         .addAll(covariantTests);
@@ -97,8 +97,8 @@ public class TestSuite {
 
   private static void validates_arguments() {
     Suite suite = suite("suite");
-    Test testA = mockCase("testA");
-    Test testB = mockCase("testB");
+    Test testA = mockStory("storyA");
+    Test testB = mockStory("storyB");
 
     try {
       suite(null);
