@@ -2,7 +2,7 @@ package org.quackery;
 
 import static java.lang.String.format;
 import static net.bytebuddy.TestByteBuddy.test_byte_buddy;
-import static org.quackery.TestCase.test_case;
+import static org.quackery.TestStory.test_story;
 import static org.quackery.TestSuite.test_suite;
 import static org.quackery.contract.collection.TestCollectionContract.test_collection_contract;
 import static org.quackery.junit.TestQuackeryRunner.test_quackery_runner;
@@ -24,7 +24,7 @@ public class TestAll {
 
     test_byte_buddy();
 
-    test_case();
+    test_story();
     test_suite();
 
     test_runners_run();

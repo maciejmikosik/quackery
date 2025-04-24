@@ -2,15 +2,15 @@ package org.quackery.testing;
 
 import static java.lang.String.format;
 import static java.util.Objects.deepEquals;
-import static org.quackery.Case.newCase;
-import static org.quackery.testing.Type.CASE;
+import static org.quackery.Story.story;
+import static org.quackery.testing.Type.STORY;
 import static org.quackery.testing.Type.SUITE;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 
-import org.quackery.Case;
+import org.quackery.Story;
 import org.quackery.Suite;
 import org.quackery.Test;
 
@@ -49,7 +49,7 @@ public class Testing {
 
   public static void assertChildren(Test actualTest, List<Test> expectedChildren) {
     switch (actualTest) {
-      case Case cas -> throw new AssertionError();
+      case Story story -> throw new AssertionError();
       case Suite suite -> {
         assertEquals(suite.children, expectedChildren);
       }
@@ -58,21 +58,21 @@ public class Testing {
 
   public static Type typeOf(Test test) {
     return switch (test) {
-      case Case cas -> CASE;
+      case Story story -> STORY;
       case Suite suite -> SUITE;
     };
   }
 
   public static String nameOf(Test test) {
     return switch (test) {
-      case Case cas -> cas.name;
+      case Story story -> story.name;
       case Suite suite -> suite.name;
     };
   }
 
   public static List<Test> childrenOf(Test test) {
     return switch (test) {
-      case Case cas -> throw new AssertionError();
+      case Story story -> throw new AssertionError();
       case Suite suite -> suite.children;
     };
   }
@@ -86,9 +86,9 @@ public class Testing {
 
   public static Optional<Throwable> runAndCatch(Test test) {
     switch (test) {
-      case Case cas -> {
+      case Story story -> {
         try {
-          cas.script.run();
+          story.script.run();
         } catch (Throwable throwable) {
           return Optional.of(throwable);
         }
@@ -120,12 +120,12 @@ public class Testing {
     };
   }
 
-  public static Test mockCase(String name) {
-    return newCase(name, () -> {});
+  public static Test mockStory(String name) {
+    return story(name, () -> {});
   }
 
-  public static Test mockCase(String name, Throwable throwable) {
-    return newCase(name, () -> {
+  public static Test mockStory(String name, Throwable throwable) {
+    return story(name, () -> {
       throw throwable.fillInStackTrace();
     });
   }

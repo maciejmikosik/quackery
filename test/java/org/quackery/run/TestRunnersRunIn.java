@@ -2,17 +2,17 @@ package org.quackery.run;
 
 import static java.util.concurrent.Executors.newCachedThreadPool;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.quackery.Case.newCase;
+import static org.quackery.Story.story;
 import static org.quackery.Suite.suite;
 import static org.quackery.run.Runners.in;
 import static org.quackery.run.Runners.run;
-import static org.quackery.run.TestingDecorators.decorator_preserves_case_result;
 import static org.quackery.run.TestingDecorators.decorator_preserves_names_and_structure;
-import static org.quackery.run.TestingDecorators.decorator_runs_cases_eagerly;
+import static org.quackery.run.TestingDecorators.decorator_preserves_story_result;
+import static org.quackery.run.TestingDecorators.decorator_runs_story_eagerly;
 import static org.quackery.run.TestingDecorators.decorator_validates_arguments;
 import static org.quackery.testing.Testing.assertTrue;
 import static org.quackery.testing.Testing.fail;
-import static org.quackery.testing.Testing.mockCase;
+import static org.quackery.testing.Testing.mockStory;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
@@ -28,9 +28,9 @@ public class TestRunnersRunIn {
     Function<Test, Test> decorator = test -> run(in(currentThreadExecutor(), test));
 
     decorator_preserves_names_and_structure(decorator);
-    decorator_preserves_case_result(decorator);
+    decorator_preserves_story_result(decorator);
     decorator_validates_arguments(decorator);
-    decorator_runs_cases_eagerly(decorator);
+    decorator_runs_story_eagerly(decorator);
 
     submits_asynchronously_to_executor();
     validates_arguments();
@@ -54,7 +54,7 @@ public class TestRunnersRunIn {
   }
 
   private static Test countDown(CountDownLatch latch, AtomicBoolean failed) {
-    return newCase("countDown", () -> {
+    return story("countDown", () -> {
       latch.countDown();
       if (!latch.await(1, SECONDS)) {
         failed.set(true);
@@ -64,7 +64,7 @@ public class TestRunnersRunIn {
 
   private static void validates_arguments() {
     try {
-      in(null, mockCase("case"));
+      in(null, mockStory("story"));
       fail();
     } catch (QuackeryException e) {}
     try {

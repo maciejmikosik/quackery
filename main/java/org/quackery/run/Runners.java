@@ -2,7 +2,7 @@ package org.quackery.run;
 
 import static org.quackery.QuackeryException.check;
 import static org.quackery.Tests.deep;
-import static org.quackery.Tests.ifCase;
+import static org.quackery.Tests.ifStory;
 import static org.quackery.Tests.onScript;
 import static org.quackery.common.ExecutorBuilder.executorBuilder;
 import static org.quackery.common.Interrupter.interrupter;
@@ -21,7 +21,7 @@ import org.quackery.report.AssertException;
 public class Runners {
   public static Test run(Test root) {
     check(root != null);
-    return deep(ifCase(onScript(Runners::run)))
+    return deep(ifStory(onScript(Runners::run)))
         .apply(root);
   }
 
@@ -39,7 +39,7 @@ public class Runners {
   public static Test in(Executor executor, Test root) {
     check(root != null);
     check(executor != null);
-    return deep(ifCase(onScript(script -> futureScript(executor, script))))
+    return deep(ifStory(onScript(script -> futureScript(executor, script))))
         .apply(root);
   }
 
@@ -60,7 +60,7 @@ public class Runners {
 
   public static Test expect(Class<? extends Throwable> throwable, Test test) {
     check(test != null);
-    return deep(ifCase(onScript(script -> expect(throwable, script))))
+    return deep(ifStory(onScript(script -> expect(throwable, script))))
         .apply(test);
   }
 
@@ -84,7 +84,7 @@ public class Runners {
   public static Test timeout(Duration duration, Test test) {
     check(!duration.isNegative());
     check(test != null);
-    return deep(ifCase(onScript(script -> timeout(duration, script, interrupter()))))
+    return deep(ifStory(onScript(script -> timeout(duration, script, interrupter()))))
         .apply(test);
   }
 
@@ -104,7 +104,7 @@ public class Runners {
 
   public static Test threadScoped(Test root) {
     check(root != null);
-    return deep(ifCase(onScript(Runners::threadScoped)))
+    return deep(ifStory(onScript(Runners::threadScoped)))
         .apply(root);
   }
 
@@ -136,7 +136,7 @@ public class Runners {
 
   public static Test classLoaderScoped(Test root) {
     check(root != null);
-    return deep(ifCase(onScript(Runners::classLoaderScoped)))
+    return deep(ifStory(onScript(Runners::classLoaderScoped)))
         .apply(root);
   }
 

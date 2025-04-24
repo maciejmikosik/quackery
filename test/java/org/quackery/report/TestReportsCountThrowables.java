@@ -4,7 +4,7 @@ import static org.quackery.Suite.suite;
 import static org.quackery.report.Reports.count;
 import static org.quackery.testing.Testing.assertEquals;
 import static org.quackery.testing.Testing.fail;
-import static org.quackery.testing.Testing.mockCase;
+import static org.quackery.testing.Testing.mockStory;
 
 import org.quackery.QuackeryException;
 import org.quackery.Test;
@@ -20,7 +20,7 @@ public class TestReportsCountThrowables {
   }
 
   private static void does_not_count_successes() {
-    Test test = mockCase("name");
+    Test test = mockStory("name");
 
     int count = count(RuntimeException.class, test);
 
@@ -29,7 +29,7 @@ public class TestReportsCountThrowables {
 
   private static void counts_same_type_exception() {
     class SomeException extends RuntimeException {}
-    Test test = mockCase("name", new SomeException());
+    Test test = mockStory("name", new SomeException());
 
     int count = count(SomeException.class, test);
 
@@ -39,7 +39,7 @@ public class TestReportsCountThrowables {
   private static void counts_subtyped_exception() {
     class SomeException extends RuntimeException {}
     class SubException extends SomeException {}
-    Test test = mockCase("name", new SubException());
+    Test test = mockStory("name", new SubException());
 
     int count = count(SomeException.class, test);
 
@@ -49,7 +49,7 @@ public class TestReportsCountThrowables {
   private static void does_not_count_supertyped_exception() {
     class SuperException extends RuntimeException {}
     class SomeException extends SuperException {}
-    Test test = mockCase("name", new SuperException());
+    Test test = mockStory("name", new SuperException());
 
     int count = count(SomeException.class, test);
 
@@ -59,13 +59,13 @@ public class TestReportsCountThrowables {
   private static void sums_all_throwables_in_hierarchy() {
     Test test = suite("name")
         .add(suite("name")
-            .add(mockCase("name"))
-            .add(mockCase("name", new RuntimeException()))
-            .add(mockCase("name", new Exception())))
+            .add(mockStory("name"))
+            .add(mockStory("name", new RuntimeException()))
+            .add(mockStory("name", new Exception())))
         .add(suite("name")
-            .add(mockCase("name"))
-            .add(mockCase("name", new Throwable()))
-            .add(mockCase("name", new Error())));
+            .add(mockStory("name"))
+            .add(mockStory("name", new Throwable()))
+            .add(mockStory("name", new Error())));
 
     int count = count(Throwable.class, test);
 
@@ -73,7 +73,7 @@ public class TestReportsCountThrowables {
   }
 
   private static void validates_arguments() {
-    Test test = mockCase("name");
+    Test test = mockStory("name");
     try {
       count(Throwable.class, null);
       fail();

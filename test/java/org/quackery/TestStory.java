@@ -1,7 +1,7 @@
 package org.quackery;
 
 import static org.junit.Assert.fail;
-import static org.quackery.Case.newCase;
+import static org.quackery.Story.story;
 import static org.quackery.testing.Testing.assertEquals;
 import static org.quackery.testing.Testing.assertTrue;
 import static org.quackery.testing.Testing.nameOf;
@@ -9,8 +9,8 @@ import static org.quackery.testing.Testing.runAndThrow;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class TestCase {
-  public static void test_case() throws Throwable {
+public class TestStory {
+  public static void test_story() throws Throwable {
     implements_test_interface();
     assigns_name();
     script_is_run_once();
@@ -20,20 +20,20 @@ public class TestCase {
   }
 
   private static void implements_test_interface() {
-    assertTrue(Test.class.isAssignableFrom(Case.class));
+    assertTrue(Test.class.isAssignableFrom(Story.class));
   }
 
   private static void assigns_name() {
     String name = "name";
 
-    Test test = newCase(name, () -> {});
+    Test test = story(name, () -> {});
 
     assertEquals(nameOf(test), name);
   }
 
   private static void script_is_run_once() throws Throwable {
     AtomicInteger invoked = new AtomicInteger();
-    Test test = newCase("name", () -> {
+    Test test = story("name", () -> {
       invoked.incrementAndGet();
     });
 
@@ -44,7 +44,7 @@ public class TestCase {
 
   private static void script_is_run_each_time() throws Throwable {
     AtomicInteger invoked = new AtomicInteger();
-    Test test = newCase("name", () -> {
+    Test test = story("name", () -> {
       invoked.incrementAndGet();
     });
 
@@ -57,7 +57,7 @@ public class TestCase {
 
   private static void script_can_throw_exception() {
     Throwable throwable = new Throwable();
-    Test test = newCase("name", () -> {
+    Test test = story("name", () -> {
       throw throwable;
     });
 
@@ -71,11 +71,11 @@ public class TestCase {
 
   private static void validates_arguments() {
     try {
-      newCase(null, () -> {});
+      story(null, () -> {});
       fail();
     } catch (QuackeryException e) {}
     try {
-      newCase("name", null);
+      story("name", null);
       fail();
     } catch (QuackeryException e) {}
   }

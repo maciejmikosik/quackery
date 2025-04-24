@@ -7,10 +7,9 @@ import static org.quackery.testing.Testing.childrenOf;
 import static org.quackery.testing.Testing.nameOf;
 import static org.quackery.testing.Testing.runAndCatch;
 import static org.quackery.testing.Testing.typeOf;
-import static org.quackery.testing.Type.CASE;
+import static org.quackery.testing.Type.STORY;
 import static org.quackery.testing.Type.SUITE;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.junit.runner.Description;
@@ -18,7 +17,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.Failure;
-import org.quackery.Case;
+import org.quackery.Story;
 import org.quackery.Test;
 import org.quackery.testing.Type;
 
@@ -58,12 +57,12 @@ public class TestingJunit {
     }
     if (description.isTest()) {
       Throwable actualThrowable = thrownBy(description, failures);
-      Throwable expectedThrowable = thrownBy((Case) expected);
+      Throwable expectedThrowable = thrownBy((Story) expected);
       if (actualThrowable.getClass() != expectedThrowable.getClass()
           || !deepEquals(actualThrowable.getMessage(), expectedThrowable.getMessage())) {
         throw new AssertionError(format(""
             + "\n"
-            + "  expected Case named\n"
+            + "  expected Story named\n"
             + "    %s\n"
             + "  to throw\n"
             + "    %s\n"
@@ -104,18 +103,16 @@ public class TestingJunit {
   private static Type typeOfJunit(Description description) {
     return description.isSuite()
         ? SUITE
-        : CASE;
+        : STORY;
   }
 
-  private static Throwable thrownBy(Case test) {
+  private static Throwable thrownBy(Story test) {
     return runAndCatch(test)
         .orElse(new NoThrowable());
   }
 
   private static Throwable thrownBy(Description description, List<Failure> failures) {
-    Iterator<Failure> iterator = failures.iterator();
-    while (iterator.hasNext()) {
-      Failure failure = iterator.next();
+    for (Failure failure : failures) {
       if (deepEquals(failure.getDescription(), description)) {
         return failure.getException();
       }

@@ -3,7 +3,7 @@ package org.quackery.junit;
 import static org.quackery.Tests.deep;
 import static org.quackery.Tests.ifSuite;
 import static org.quackery.Tests.onName;
-import static org.quackery.help.Helpers.successfulCase;
+import static org.quackery.help.Helpers.successfulStory;
 
 import org.quackery.Test;
 
@@ -21,7 +21,7 @@ public class FixBugs {
 
   private static Test fixEmptySuiteBug(Test root) {
     return deep(ifSuite(suite -> suite.children.isEmpty()
-        ? successfulCase(suite.name)
+        ? successfulStory(suite.name)
         : suite))
             .apply(root);
   }
