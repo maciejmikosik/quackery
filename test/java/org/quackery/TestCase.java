@@ -13,9 +13,9 @@ public class TestCase {
   public static void test_case() throws Throwable {
     implements_test_interface();
     assigns_name();
-    body_is_run_once();
-    body_is_run_each_time();
-    body_can_throw_exception();
+    script_is_run_once();
+    script_is_run_each_time();
+    script_can_throw_exception();
     validates_arguments();
   }
 
@@ -31,7 +31,7 @@ public class TestCase {
     assertEquals(nameOf(test), name);
   }
 
-  private static void body_is_run_once() throws Throwable {
+  private static void script_is_run_once() throws Throwable {
     AtomicInteger invoked = new AtomicInteger();
     Test test = newCase("name", () -> {
       invoked.incrementAndGet();
@@ -42,7 +42,7 @@ public class TestCase {
     assertEquals(invoked.get(), 1);
   }
 
-  private static void body_is_run_each_time() throws Throwable {
+  private static void script_is_run_each_time() throws Throwable {
     AtomicInteger invoked = new AtomicInteger();
     Test test = newCase("name", () -> {
       invoked.incrementAndGet();
@@ -55,7 +55,7 @@ public class TestCase {
     assertEquals(invoked.get(), 3);
   }
 
-  private static void body_can_throw_exception() {
+  private static void script_can_throw_exception() {
     Throwable throwable = new Throwable();
     Test test = newCase("name", () -> {
       throw throwable;

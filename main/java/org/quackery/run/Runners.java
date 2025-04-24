@@ -3,7 +3,7 @@ package org.quackery.run;
 import static org.quackery.QuackeryException.check;
 import static org.quackery.Tests.deep;
 import static org.quackery.Tests.ifCase;
-import static org.quackery.Tests.onBody;
+import static org.quackery.Tests.onScript;
 import static org.quackery.common.ExecutorBuilder.executorBuilder;
 import static org.quackery.common.Interrupter.interrupter;
 
@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.quackery.Body;
+import org.quackery.Script;
 import org.quackery.Test;
 import org.quackery.common.Interrupter;
 import org.quackery.report.AssertException;
@@ -21,13 +21,13 @@ import org.quackery.report.AssertException;
 public class Runners {
   public static Test run(Test root) {
     check(root != null);
-    return deep(ifCase(onBody(Runners::run)))
+    return deep(ifCase(onScript(Runners::run)))
         .apply(root);
   }
 
-  private static Body run(Body body) {
+  private static Script run(Script script) {
     try {
-      body.run();
+      script.run();
     } catch (Throwable throwable) {
       return () -> {
         throw throwable;
@@ -39,12 +39,12 @@ public class Runners {
   public static Test in(Executor executor, Test root) {
     check(root != null);
     check(executor != null);
-    return deep(ifCase(onBody(body -> futureBody(executor, body))))
+    return deep(ifCase(onScript(script -> futureScript(executor, script))))
         .apply(root);
   }
 
-  private static Body futureBody(Executor executor, Body body) {
-    FutureTask<Body> future = new FutureTask<Body>(() -> run(body));
+  private static Script futureScript(Executor executor, Script script) {
+    FutureTask<Script> future = new FutureTask<Script>(() -> run(script));
     executor.execute(future);
     return () -> future.get().run();
   }
@@ -60,15 +60,15 @@ public class Runners {
 
   public static Test expect(Class<? extends Throwable> throwable, Test test) {
     check(test != null);
-    return deep(ifCase(onBody(body -> expect(throwable, body))))
+    return deep(ifCase(onScript(script -> expect(throwable, script))))
         .apply(test);
   }
 
-  private static Body expect(Class<? extends Throwable> expected, Body body) {
+  private static Script expect(Class<? extends Throwable> expected, Script script) {
     return () -> {
       Throwable thrown = null;
       try {
-        body.run();
+        script.run();
       } catch (Throwable throwable) {
         thrown = throwable;
       }
@@ -84,15 +84,15 @@ public class Runners {
   public static Test timeout(Duration duration, Test test) {
     check(!duration.isNegative());
     check(test != null);
-    return deep(ifCase(onBody(body -> timeout(duration, body, interrupter()))))
+    return deep(ifCase(onScript(script -> timeout(duration, script, interrupter()))))
         .apply(test);
   }
 
-  private static Body timeout(Duration duration, Body body, Interrupter interrupter) {
+  private static Script timeout(Duration duration, Script script, Interrupter interrupter) {
     return () -> {
       Future<?> alarm = interrupter.interruptMe(duration);
       try {
-        body.run();
+        script.run();
       } finally {
         alarm.cancel(true);
         if (Thread.interrupted()) {
@@ -104,17 +104,17 @@ public class Runners {
 
   public static Test threadScoped(Test root) {
     check(root != null);
-    return deep(ifCase(onBody(Runners::threadScoped)))
+    return deep(ifCase(onScript(Runners::threadScoped)))
         .apply(root);
   }
 
-  private static Body threadScoped(Body body) {
+  private static Script threadScoped(Script script) {
     return () -> {
       AtomicReference<Throwable> throwable = new AtomicReference<>(null);
       Thread thread = new Thread(new Runnable() {
         public void run() {
           try {
-            body.run();
+            script.run();
           } catch (Throwable t) {
             throwable.set(t);
           }
@@ -136,17 +136,17 @@ public class Runners {
 
   public static Test classLoaderScoped(Test root) {
     check(root != null);
-    return deep(ifCase(onBody(Runners::classLoaderScoped)))
+    return deep(ifCase(onScript(Runners::classLoaderScoped)))
         .apply(root);
   }
 
-  private static Body classLoaderScoped(Body body) {
+  private static Script classLoaderScoped(Script script) {
     return () -> {
       Thread thread = Thread.currentThread();
       ClassLoader original = thread.getContextClassLoader();
       thread.setContextClassLoader(new ClassLoader(original) {});
       try {
-        body.run();
+        script.run();
       } finally {
         thread.setContextClassLoader(original);
       }

@@ -24,10 +24,10 @@ import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
-import org.quackery.Body;
 import org.quackery.Case;
 import org.quackery.Quackery;
 import org.quackery.QuackeryException;
+import org.quackery.Script;
 import org.quackery.Suite;
 import org.quackery.Test;
 import org.quackery.report.AssertException;
@@ -72,14 +72,14 @@ public class QuackeryRunner extends Runner {
   }
 
   private Case notifying(RunNotifier notifier, Case cas) {
-    return newCase(cas.name, notifying(notifier, describe(cas), cas.body));
+    return newCase(cas.name, notifying(notifier, describe(cas), cas.script));
   }
 
-  private Body notifying(RunNotifier notifier, Description described, Body body) {
+  private Script notifying(RunNotifier notifier, Description described, Script script) {
     return () -> {
       notifier.fireTestStarted(described);
       try {
-        body.run();
+        script.run();
       } catch (AssertException e) {
         Throwable wrapper = new AssertionError(e.getMessage(), e);
         notifier.fireTestFailure(new Failure(described, wrapper));

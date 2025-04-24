@@ -46,12 +46,12 @@ public class Tests {
 
   public static Function<Test, Test> onName(Function<String, String> change) {
     return test -> switch (test) {
-      case Case cas -> newCase(change.apply(cas.name), cas.body);
+      case Case cas -> newCase(change.apply(cas.name), cas.script);
       case Suite suite -> suite(change.apply(suite.name)).addAll(suite.children);
     };
   }
 
-  public static Function<Case, Case> onBody(Function<Body, Body> change) {
-    return cas -> newCase(cas.name, change.apply(cas.body));
+  public static Function<Case, Case> onScript(Function<Script, Script> change) {
+    return cas -> newCase(cas.name, change.apply(cas.script));
   }
 }

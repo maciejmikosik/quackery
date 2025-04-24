@@ -88,7 +88,7 @@ public class Testing {
     switch (test) {
       case Case cas -> {
         try {
-          cas.body.run();
+          cas.script.run();
         } catch (Throwable throwable) {
           return Optional.of(throwable);
         }

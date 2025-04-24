@@ -4,16 +4,16 @@ import static org.quackery.QuackeryException.check;
 
 public final class Case implements Test {
   public final String name;
-  public final Body body;
+  public final Script script;
 
-  private Case(String name, Body body) {
+  private Case(String name, Script script) {
     this.name = name;
-    this.body = body;
+    this.script = script;
   }
 
-  public static Case newCase(String name, Body body) {
+  public static Case newCase(String name, Script script) {
     check(name != null);
-    check(body != null);
-    return new Case(name, body);
+    check(script != null);
+    return new Case(name, script);
   }
 }

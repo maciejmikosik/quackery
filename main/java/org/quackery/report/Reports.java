@@ -3,8 +3,8 @@ package org.quackery.report;
 import static org.quackery.QuackeryException.check;
 import static org.quackery.help.Helpers.thrownBy;
 
-import org.quackery.Body;
 import org.quackery.Case;
+import org.quackery.Script;
 import org.quackery.Suite;
 import org.quackery.Test;
 
@@ -13,7 +13,7 @@ public class Reports {
     check(type != null);
     check(test != null);
     return switch (test) {
-      case Case cas -> thrownBy(cas.body)
+      case Case cas -> thrownBy(cas.script)
           .map(throwable -> type.isInstance(throwable) ? 1 : 0)
           .orElse(0);
       case Suite suite -> suite.children.stream()
@@ -31,7 +31,7 @@ public class Reports {
     return switch (test) {
       case Case cas -> {
         indent(indentation, builder);
-        appendThrowable(cas.body, builder);
+        appendThrowable(cas.script, builder);
         yield builder.append(cas.name).append("\n");
       }
       case Suite suite -> {
@@ -43,8 +43,8 @@ public class Reports {
     };
   }
 
-  private static StringBuilder appendThrowable(Body body, StringBuilder builder) {
-    return thrownBy(body)
+  private static StringBuilder appendThrowable(Script script, StringBuilder builder) {
+    return thrownBy(script)
         .map(throwable -> builder
             .append("[")
             .append(throwable.getClass().getSimpleName())

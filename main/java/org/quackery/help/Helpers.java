@@ -4,7 +4,7 @@ import static org.quackery.Case.newCase;
 
 import java.util.Optional;
 
-import org.quackery.Body;
+import org.quackery.Script;
 import org.quackery.Test;
 
 public class Helpers {
@@ -18,9 +18,9 @@ public class Helpers {
     });
   }
 
-  public static Optional<Throwable> thrownBy(Body body) {
+  public static Optional<Throwable> thrownBy(Script script) {
     try {
-      body.run();
+      script.run();
       return Optional.empty();
     } catch (Throwable throwable) {
       return Optional.of(throwable);
