@@ -1,30 +1,26 @@
 package org.quackery.contract.collection;
 
-import static java.util.stream.Collectors.toList;
-import static org.quackery.Suite.suite;
-import static org.quackery.help.Helpers.traverseSuites;
+import static org.quackery.Tests.deep;
+import static org.quackery.Tests.ifSuite;
+import static org.quackery.Tests.remove;
+import static org.quackery.help.Helpers.failingStory;
 
+import org.quackery.QuackeryException;
 import org.quackery.Test;
 
 public class Includes {
+  private static final Test EXCLUDED = failingStory(
+      "EXCLUDED",
+      new QuackeryException("should be excluded"));
+
   public static Test includeIf(boolean condition, Test test) {
     return condition
         ? test
-        : suite("");
+        : EXCLUDED;
   }
 
   public static Test filterIncluded(Test test) {
-    return traverseSuites(test,
-        (name, children) -> suite(name)
-            .addAll(children.stream()
-                .map(child -> filterIncluded(child))
-                .filter(child -> !isEmptySuite(child))
-                .collect(toList())));
-  }
-
-  private static boolean isEmptySuite(Test test) {
-    return test.visit(
-        (name, body) -> false,
-        (name, children) -> children.isEmpty());
+    return deep(ifSuite(remove(t -> t == EXCLUDED)))
+        .apply(test);
   }
 }

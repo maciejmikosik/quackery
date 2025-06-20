@@ -1,5 +1,5 @@
 package org.quackery;
 
-public interface Body {
+public interface Script {
   void run() throws Throwable;
 }

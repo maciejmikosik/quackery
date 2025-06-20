@@ -4,10 +4,11 @@ import static java.lang.reflect.Modifier.isPublic;
 import static java.lang.reflect.Modifier.isStatic;
 import static org.junit.runner.Description.createSuiteDescription;
 import static org.junit.runner.Description.createTestDescription;
-import static org.quackery.Case.newCase;
+import static org.quackery.Story.story;
 import static org.quackery.Suite.suite;
-import static org.quackery.help.Helpers.failingCase;
-import static org.quackery.help.Helpers.traverse;
+import static org.quackery.Tests.deep;
+import static org.quackery.Tests.ifStory;
+import static org.quackery.help.Helpers.failingStory;
 import static org.quackery.junit.FixBugs.fixBugs;
 
 import java.io.Serializable;
@@ -23,9 +24,10 @@ import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
-import org.quackery.Body;
 import org.quackery.Quackery;
 import org.quackery.QuackeryException;
+import org.quackery.Script;
+import org.quackery.Story;
 import org.quackery.Suite;
 import org.quackery.Test;
 import org.quackery.report.AssertException;
@@ -60,11 +62,8 @@ public class QuackeryRunner extends Runner {
   }
 
   public void run(RunNotifier notifier) {
-    Test notifyingQuackeryTest = traverse(quackeryTest,
-        test -> test.visit(
-            (name, body) -> newCase(name, notifying(notifier, describe(test), body)),
-            (name, children) -> test));
-
+    var notifyingQuackeryTest = deep(ifStory(story -> notifying(notifier, story)))
+        .apply(quackeryTest);
     Runners.run(notifyingQuackeryTest);
 
     if (junitRunner != null) {
@@ -72,11 +71,15 @@ public class QuackeryRunner extends Runner {
     }
   }
 
-  private Body notifying(RunNotifier notifier, Description described, Body body) {
+  private Story notifying(RunNotifier notifier, Story story) {
+    return story(story.name, notifying(notifier, describe(story), story.script));
+  }
+
+  private Script notifying(RunNotifier notifier, Description described, Script script) {
     return () -> {
       notifier.fireTestStarted(described);
       try {
-        body.run();
+        script.run();
       } catch (AssertException e) {
         Throwable wrapper = new AssertionError(e.getMessage(), e);
         notifier.fireTestFailure(new Failure(described, wrapper));
@@ -115,14 +118,14 @@ public class QuackeryRunner extends Runner {
     try {
       return (Test) method.invoke(null);
     } catch (InvocationTargetException e) {
-      return failingCase(method.getName(), e.getCause());
+      return failingStory(method.getName(), e.getCause());
     } catch (IllegalAccessException e) {
       throw new Error(e);
     }
   }
 
   private static Test fail(Method method, String message) {
-    return failingCase(method.getName(), new QuackeryException(message));
+    return failingStory(method.getName(), new QuackeryException(message));
   }
 
   private static List<Test> instantiateFailingTestsExplainingCausesOf(InitializationError error) {
@@ -135,9 +138,9 @@ public class QuackeryRunner extends Runner {
       } else if (noPublicDefaultConstructor(cause) && !hasJunitTestMethods) {
         continue;
       } else if (incorrectJunitTestMethod(cause)) {
-        testsExplainingErrors.add(failingCase(junitTestMethodName(cause), cause));
+        testsExplainingErrors.add(failingStory(junitTestMethodName(cause), cause));
       } else {
-        testsExplainingErrors.add(failingCase(cause.getMessage(), cause));
+        testsExplainingErrors.add(failingStory(cause.getMessage(), cause));
       }
     }
     return testsExplainingErrors;
@@ -178,13 +181,14 @@ public class QuackeryRunner extends Runner {
   }
 
   private Description describe(Test test) {
-    return test.visit(
-        (name, body) -> createTestDescription(annotatedClass.getName(), name, id(test)),
-        (name, children) -> {
-          Description described = createSuiteDescription(name, id(test));
-          children.stream().forEach(child -> described.addChild(describe(child)));
-          return described;
-        });
+    return switch (test) {
+      case Story story -> createTestDescription(annotatedClass.getName(), story.name, id(test));
+      case Suite suite -> {
+        Description described = createSuiteDescription(suite.name, id(test));
+        suite.children.stream().forEach(child -> described.addChild(describe(child)));
+        yield described;
+      }
+    };
   }
 
   private static Serializable id(Test test) {

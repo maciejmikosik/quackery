@@ -7,11 +7,10 @@ import static org.quackery.QuackeryException.check;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiFunction;
 
-public class Suite implements Test {
-  private final String name;
-  private final List<Test> children;
+public final class Suite implements Test {
+  public final String name;
+  public final List<Test> children;
 
   private Suite(String name, List<Test> children) {
     this.name = name;
@@ -53,32 +52,6 @@ public class Suite implements Test {
   public Suite addAll(Test[] newChildren) {
     check(newChildren != null);
     return addAll(asList(newChildren));
-  }
-
-  public <T> Suite add(T item, Contract<T> contract) {
-    check(contract != null);
-    return add(contract.test(item));
-  }
-
-  public <T> Suite addAll(Iterable<? extends T> items, Contract<T> contract) {
-    check(items != null);
-    check(contract != null);
-    List<Test> newChildren = new ArrayList<>();
-    for (T item : items) {
-      newChildren.add(contract.test(item));
-    }
-    return addAll(newChildren);
-  }
-
-  public <T> Suite addAll(T[] items, Contract<T> contract) {
-    check(items != null);
-    return addAll(asList(items), contract);
-  }
-
-  public <R> R visit(
-      BiFunction<String, Body, R> caseHandler,
-      BiFunction<String, List<Test>, R> suiteHandler) {
-    return suiteHandler.apply(name, children);
   }
 
   public String toString() {

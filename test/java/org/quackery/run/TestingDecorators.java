@@ -2,12 +2,12 @@ package org.quackery.run;
 
 import static java.lang.String.format;
 import static java.util.Objects.deepEquals;
-import static org.quackery.Case.newCase;
+import static org.quackery.Story.story;
 import static org.quackery.Suite.suite;
 import static org.quackery.testing.Testing.assertEquals;
 import static org.quackery.testing.Testing.childrenOf;
 import static org.quackery.testing.Testing.fail;
-import static org.quackery.testing.Testing.mockCase;
+import static org.quackery.testing.Testing.mockStory;
 import static org.quackery.testing.Testing.nameOf;
 import static org.quackery.testing.Testing.runAndThrow;
 import static org.quackery.testing.Testing.typeOf;
@@ -22,17 +22,17 @@ import org.quackery.Test;
 
 public class TestingDecorators {
   public static void decorator_preserves_names_and_structure(Function<Test, Test> decorator) {
-    decorator_preserves_names_and_structure(decorator, mockCase("case"));
-    decorator_preserves_names_and_structure(decorator, mockCase("case", new Throwable()));
-    decorator_preserves_names_and_structure(decorator, suite("suite").add(mockCase("case")));
+    decorator_preserves_names_and_structure(decorator, mockStory("story"));
+    decorator_preserves_names_and_structure(decorator, mockStory("story", new Throwable()));
+    decorator_preserves_names_and_structure(decorator, suite("suite").add(mockStory("story")));
     decorator_preserves_names_and_structure(decorator, suite("suite"));
     decorator_preserves_names_and_structure(decorator, suite("suiteA")
         .add(suite("suiteB")
-            .add(mockCase("caseA"))
-            .add(mockCase("caseB")))
+            .add(mockStory("storyA"))
+            .add(mockStory("storyB")))
         .add(suite("suiteC")
-            .add(mockCase("caseC"))
-            .add(mockCase("caseD"))));
+            .add(mockStory("storyC"))
+            .add(mockStory("storyD"))));
   }
 
   private static void decorator_preserves_names_and_structure(Function<Test, Test> decorator, Test test) {
@@ -75,19 +75,19 @@ public class TestingDecorators {
     }
   }
 
-  public static void decorator_preserves_case_result(Function<Test, Test> decorator) throws Throwable {
-    decorator_preserves_case_result_if_successful(decorator);
-    decorator_preserves_case_result_if_failed(decorator);
+  public static void decorator_preserves_story_result(Function<Test, Test> decorator) throws Throwable {
+    decorator_preserves_story_result_if_successful(decorator);
+    decorator_preserves_story_result_if_failed(decorator);
   }
 
-  private static void decorator_preserves_case_result_if_successful(Function<Test, Test> decorator) throws Throwable {
-    Test test = decorator.apply(mockCase("name"));
+  private static void decorator_preserves_story_result_if_successful(Function<Test, Test> decorator) throws Throwable {
+    Test test = decorator.apply(mockStory("name"));
     runAndThrow(test);
   }
 
-  private static void decorator_preserves_case_result_if_failed(Function<Test, Test> decorator) {
+  private static void decorator_preserves_story_result_if_failed(Function<Test, Test> decorator) {
     Throwable throwable = new Throwable();
-    Test test = decorator.apply(mockCase("name", throwable));
+    Test test = decorator.apply(mockStory("name", throwable));
 
     try {
       runAndThrow(test);
@@ -104,21 +104,21 @@ public class TestingDecorators {
     } catch (QuackeryException e) {}
   }
 
-  public static void decorator_runs_cases_eagerly(Function<Test, Test> decorator) {
-    decorator_runs_case(1, decorator);
+  public static void decorator_runs_story_eagerly(Function<Test, Test> decorator) {
+    decorator_runs_story(1, decorator);
     decorator_runs_successful_decorated(0, decorator);
     decorator_runs_failed_decorated(0, decorator);
   }
 
-  public static void decorator_runs_cases_lazily(Function<Test, Test> decorator) {
-    decorator_runs_case(0, decorator);
+  public static void decorator_runs_story_lazily(Function<Test, Test> decorator) {
+    decorator_runs_story(0, decorator);
     decorator_runs_successful_decorated(1, decorator);
     decorator_runs_failed_decorated(1, decorator);
   }
 
-  private static void decorator_runs_case(int count, Function<Test, Test> decorator) {
+  private static void decorator_runs_story(int count, Function<Test, Test> decorator) {
     AtomicInteger invoked = new AtomicInteger();
-    Test test = newCase("name", () -> {
+    Test test = story("name", () -> {
       invoked.incrementAndGet();
     });
 
@@ -129,7 +129,7 @@ public class TestingDecorators {
 
   private static void decorator_runs_successful_decorated(int count, Function<Test, Test> decorator) {
     AtomicInteger invoked = new AtomicInteger();
-    Test test = newCase("name", () -> {
+    Test test = story("name", () -> {
       invoked.incrementAndGet();
     });
     Test decorated = decorator.apply(test);
@@ -144,7 +144,7 @@ public class TestingDecorators {
 
   private static void decorator_runs_failed_decorated(int count, Function<Test, Test> decorator) {
     AtomicInteger invoked = new AtomicInteger();
-    Test test = newCase("name", () -> {
+    Test test = story("name", () -> {
       invoked.incrementAndGet();
       throw new RuntimeException();
     });

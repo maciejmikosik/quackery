@@ -2,18 +2,16 @@ package org.quackery.testing;
 
 import static java.lang.String.format;
 import static java.util.Objects.deepEquals;
-import static java.util.Objects.hash;
-import static org.quackery.Case.newCase;
-import static org.quackery.testing.Type.CASE;
+import static org.quackery.Story.story;
+import static org.quackery.testing.Type.STORY;
 import static org.quackery.testing.Type.SUITE;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
-import org.quackery.Body;
-import org.quackery.Contract;
+import org.quackery.Story;
+import org.quackery.Suite;
 import org.quackery.Test;
 
 public class Testing {
@@ -50,34 +48,33 @@ public class Testing {
   }
 
   public static void assertChildren(Test actualTest, List<Test> expectedChildren) {
-    actualTest.visit(
-        (name, body) -> {
-          throw new AssertionError();
-        },
-        (name, children) -> {
-          assertEquals(children, expectedChildren);
-          return null;
-        });
+    switch (actualTest) {
+      case Story story -> throw new AssertionError();
+      case Suite suite -> {
+        assertEquals(suite.children, expectedChildren);
+      }
+    }
   }
 
   public static Type typeOf(Test test) {
-    return test.visit(
-        (name, body) -> CASE,
-        (name, children) -> SUITE);
+    return switch (test) {
+      case Story story -> STORY;
+      case Suite suite -> SUITE;
+    };
   }
 
   public static String nameOf(Test test) {
-    return test.visit(
-        (name, body) -> name,
-        (name, children) -> name);
+    return switch (test) {
+      case Story story -> story.name;
+      case Suite suite -> suite.name;
+    };
   }
 
   public static List<Test> childrenOf(Test test) {
-    return test.visit(
-        (name, body) -> {
-          throw new AssertionError();
-        },
-        (name, children) -> children);
+    return switch (test) {
+      case Story story -> throw new AssertionError();
+      case Suite suite -> suite.children;
+    };
   }
 
   public static void runAndThrow(Test test) throws Throwable {
@@ -88,18 +85,17 @@ public class Testing {
   }
 
   public static Optional<Throwable> runAndCatch(Test test) {
-    return test.visit(
-        (name, body) -> {
-          try {
-            body.run();
-          } catch (Throwable throwable) {
-            return Optional.of(throwable);
-          }
-          return Optional.empty();
-        },
-        (name, children) -> {
-          throw new IllegalArgumentException();
-        });
+    switch (test) {
+      case Story story -> {
+        try {
+          story.script.run();
+        } catch (Throwable throwable) {
+          return Optional.of(throwable);
+        }
+        return Optional.empty();
+      }
+      case Suite suite -> throw new IllegalArgumentException();
+    }
   }
 
   public static void fail() {
@@ -124,60 +120,14 @@ public class Testing {
     };
   }
 
-  public static Test mockCase(String name) {
-    return newCase(name, () -> {});
+  public static Test mockStory(String name) {
+    return story(name, () -> {});
   }
 
-  public static Test mockCase(String name, Throwable throwable) {
-    return newCase(name, () -> {
+  public static Test mockStory(String name, Throwable throwable) {
+    return story(name, () -> {
       throw throwable.fillInStackTrace();
     });
-  }
-
-  public static <T> Contract<T> mockContract(String name) {
-    return new Contract<T>() {
-      public Test test(T item) {
-        return new MockTest(item, this);
-      }
-
-      public String toString() {
-        return format("mockContract(%s)", name);
-      }
-    };
-  }
-
-  private static class MockTest implements Test {
-    public final Object item;
-    public final Contract<?> contract;
-
-    public MockTest(Object item, Contract<?> contract) {
-      this.item = item;
-      this.contract = contract;
-    }
-
-    public <R> R visit(
-        BiFunction<String, Body, R> caseHandler,
-        BiFunction<String, List<Test>, R> suiteHandler) {
-      throw new UnsupportedOperationException();
-    }
-
-    public boolean equals(Object object) {
-      return object instanceof MockTest
-          && equals((MockTest) object);
-    }
-
-    public boolean equals(MockTest that) {
-      return item.equals(that.item)
-          && contract.equals(that.contract);
-    }
-
-    public int hashCode() {
-      return hash(item, contract);
-    }
-
-    public String toString() {
-      return format("%s.test(%s)", contract, item);
-    }
   }
 
   public static void interruptMeAfter(double time) {

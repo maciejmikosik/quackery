@@ -1,17 +1,17 @@
 package org.quackery.run;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.quackery.Case.newCase;
+import static org.quackery.Story.story;
 import static org.quackery.Suite.suite;
 import static org.quackery.run.Runners.concurrent;
 import static org.quackery.run.Runners.run;
-import static org.quackery.run.TestingDecorators.decorator_preserves_case_result;
 import static org.quackery.run.TestingDecorators.decorator_preserves_names_and_structure;
-import static org.quackery.run.TestingDecorators.decorator_runs_cases_eagerly;
+import static org.quackery.run.TestingDecorators.decorator_preserves_story_result;
+import static org.quackery.run.TestingDecorators.decorator_runs_story_eagerly;
 import static org.quackery.run.TestingDecorators.decorator_validates_arguments;
 import static org.quackery.testing.Testing.assertTrue;
 import static org.quackery.testing.Testing.fail;
-import static org.quackery.testing.Testing.mockCase;
+import static org.quackery.testing.Testing.mockStory;
 import static org.quackery.testing.Testing.runAndThrow;
 import static org.quackery.testing.Testing.sleep;
 
@@ -27,9 +27,9 @@ public class TestRunnersRunConcurrent {
     Function<Test, Test> decorator = test -> run(concurrent(test));
 
     decorator_preserves_names_and_structure(decorator);
-    decorator_preserves_case_result(decorator);
+    decorator_preserves_story_result(decorator);
     decorator_validates_arguments(decorator);
-    decorator_runs_cases_eagerly(decorator);
+    decorator_runs_story_eagerly(decorator);
 
     shuts_down_executor();
     runs_concurrently();
@@ -37,7 +37,7 @@ public class TestRunnersRunConcurrent {
   }
 
   private static void shuts_down_executor() throws Throwable {
-    runAndThrow(concurrent(mockCase("case")));
+    runAndThrow(concurrent(mockStory("story")));
     sleep(0.01);
     assertTrue(Thread.currentThread().getThreadGroup().activeCount() == 1);
   }
@@ -58,7 +58,7 @@ public class TestRunnersRunConcurrent {
   }
 
   private static Test countDown(CountDownLatch latch, AtomicBoolean failed) {
-    return newCase("countDown", () -> {
+    return story("countDown", () -> {
       latch.countDown();
       if (!latch.await(1, SECONDS)) {
         failed.set(true);

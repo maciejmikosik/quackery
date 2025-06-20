@@ -1,9 +1,9 @@
 package org.quackery.junit;
 
-import static org.quackery.Suite.suite;
-import static org.quackery.help.Helpers.successfulCase;
-import static org.quackery.help.Helpers.traverseNames;
-import static org.quackery.help.Helpers.traverseSuites;
+import static org.quackery.Tests.deep;
+import static org.quackery.Tests.ifSuite;
+import static org.quackery.Tests.onName;
+import static org.quackery.help.Helpers.successfulStory;
 
 import org.quackery.Test;
 
@@ -13,23 +13,23 @@ public class FixBugs {
   }
 
   private static Test fixNewlineBug(Test root) {
-    return traverseNames(root,
-        name -> name
-            .replace('\n', ' ')
-            .replace('\r', ' '));
+    return deep(onName(name -> name
+        .replace('\n', ' ')
+        .replace('\r', ' ')))
+            .apply(root);
   }
 
   private static Test fixEmptySuiteBug(Test root) {
-    return traverseSuites(root,
-        (name, children) -> children.isEmpty()
-            ? successfulCase(name)
-            : suite(name).addAll(children));
+    return deep(ifSuite(suite -> suite.children.isEmpty()
+        ? successfulStory(suite.name)
+        : suite))
+            .apply(root);
   }
 
   private static Test fixEmptyNameBug(Test root) {
-    return traverseNames(root,
-        name -> name.isEmpty()
-            ? "[empty_name]"
-            : name);
+    return deep(onName(name -> name.isEmpty()
+        ? "[empty_name]"
+        : name))
+            .apply(root);
   }
 }

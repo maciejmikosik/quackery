@@ -1,7 +1,7 @@
 package org.quackery.contract.collection;
 
 import static java.lang.String.format;
-import static org.quackery.Case.newCase;
+import static org.quackery.Story.story;
 import static org.quackery.Suite.suite;
 import static org.quackery.contract.collection.Collections.copy;
 import static org.quackery.contract.collection.Collections.newArrayList;
@@ -9,8 +9,8 @@ import static org.quackery.contract.collection.Element.a;
 import static org.quackery.contract.collection.Element.b;
 import static org.quackery.contract.collection.Element.c;
 import static org.quackery.contract.collection.Element.d;
-import static org.quackery.contract.collection.Includes.includeIf;
 import static org.quackery.contract.collection.Includes.filterIncluded;
+import static org.quackery.contract.collection.Includes.includeIf;
 import static org.quackery.report.AssertException.assertEquals;
 import static org.quackery.report.AssertException.assertTrue;
 import static org.quackery.report.AssertException.fail;
@@ -165,13 +165,13 @@ public class CollectionTests {
   }
 
   private static Test implementsCollectionInterface(Class<?> type) {
-    return newCase("implements Collection interface", () -> {
+    return story("implements Collection interface", () -> {
       assertTrue(Collection.class.isAssignableFrom(type));
     });
   }
 
   private static Test defaultConstructorIsDeclared(Class<?> type) {
-    return newCase("is declared", () -> {
+    return story("is declared", () -> {
       try {
         type.getDeclaredConstructor();
       } catch (NoSuchMethodException e) {
@@ -181,7 +181,7 @@ public class CollectionTests {
   }
 
   private static Test defaultConstructorIsPublic(Class<?> type) {
-    return newCase("is public", () -> {
+    return story("is public", () -> {
       try {
         Constructor<?> constructor = type.getDeclaredConstructor();
         assertTrue(Modifier.isPublic(constructor.getModifiers()));
@@ -192,7 +192,7 @@ public class CollectionTests {
   }
 
   private static Test defaultConstructorCreatesEmptyCollection(Class<?> type) {
-    return newCase("creates empty collection", () -> {
+    return story("creates empty collection", () -> {
       try {
         assume(Collection.class.isAssignableFrom(type));
         Collection<?> collection = (Collection<?>) type.getConstructor().newInstance();
@@ -204,7 +204,7 @@ public class CollectionTests {
   }
 
   private static Test copyConstructorIsDeclared(Class<?> type) {
-    return newCase("is declared", () -> {
+    return story("is declared", () -> {
       try {
         type.getDeclaredConstructor(Collection.class);
       } catch (NoSuchMethodException e) {
@@ -214,7 +214,7 @@ public class CollectionTests {
   }
 
   private static Test copyConstructorIsPublic(Class<?> type) {
-    return newCase("is public", () -> {
+    return story("is public", () -> {
       try {
         Constructor<?> constructor = type.getDeclaredConstructor(Collection.class);
         assertTrue(Modifier.isPublic(constructor.getModifiers()));
@@ -225,7 +225,7 @@ public class CollectionTests {
   }
 
   private static Test factoryIsDeclared(Class<?> type, String methodName) {
-    return newCase("is declared", () -> {
+    return story("is declared", () -> {
       try {
         type.getDeclaredMethod(methodName, Collection.class);
       } catch (NoSuchMethodException e) {
@@ -235,7 +235,7 @@ public class CollectionTests {
   }
 
   private static Test factoryIsPublic(Class<?> type, String methodName) {
-    return newCase("is public", () -> {
+    return story("is public", () -> {
       try {
         Method method = type.getDeclaredMethod(methodName, Collection.class);
         assertTrue(Modifier.isPublic(method.getModifiers()));
@@ -246,7 +246,7 @@ public class CollectionTests {
   }
 
   private static Test factoryIsStatic(Class<?> type, String methodName) {
-    return newCase("is static", () -> {
+    return story("is static", () -> {
       try {
         Method method = type.getDeclaredMethod(methodName, Collection.class);
         assertTrue(Modifier.isStatic(method.getModifiers()));
@@ -257,7 +257,7 @@ public class CollectionTests {
   }
 
   private static Test factoryReturnsCollection(Class<?> type, String methodName) {
-    return newCase("returns collection", () -> {
+    return story("returns collection", () -> {
       try {
         Method method = type.getDeclaredMethod(methodName, Collection.class);
         assertTrue(Collection.class.isAssignableFrom(method.getReturnType()));
@@ -268,7 +268,7 @@ public class CollectionTests {
   }
 
   private static Test factoryReturnsList(Class<?> type, String factory) {
-    return newCase("returns List", () -> {
+    return story("returns List", () -> {
       try {
         Method method = type.getMethod(factory, Collection.class);
         assertTrue(List.class.isAssignableFrom(method.getReturnType()));
@@ -279,7 +279,7 @@ public class CollectionTests {
   }
 
   private static Test creatorCanCreateCollectionWithOneElement(Creator creator) {
-    return newCase("can create collection with 1 element", () -> {
+    return story("can create collection with 1 element", () -> {
       ArrayList<Object> original = newArrayList(a);
       Collection<?> collection = creator.create(Collection.class, copy(original));
       assertEquals(collection.toArray(), original.toArray());
@@ -287,7 +287,7 @@ public class CollectionTests {
   }
 
   private static Test creatorFailsForNullArgument(Creator creator) {
-    return newCase("fails for null argument", () -> {
+    return story("fails for null argument", () -> {
       try {
         creator.create(Object.class, null);
         fail();
@@ -296,7 +296,7 @@ public class CollectionTests {
   }
 
   private static Test creatorMakesDefensiveCopy(Creator creator) {
-    return newCase("makes defensive copy", () -> {
+    return story("makes defensive copy", () -> {
       ArrayList<Object> original = newArrayList(a);
       ArrayList<Object> trojan = copy(original);
       Collection<?> collection = creator.create(Collection.class, trojan);
@@ -307,7 +307,7 @@ public class CollectionTests {
   }
 
   private static Test creatorDoesNotModifyArgument(Creator creator) {
-    return newCase("does not modify argument", () -> {
+    return story("does not modify argument", () -> {
       ArrayList<Object> original = newArrayList(a);
       ArrayList<Object> argument = copy(original);
       creator.create(Object.class, argument);
@@ -326,14 +326,14 @@ public class CollectionTests {
   }
 
   private static Test creatorStoresAllElementsInOrder(Creator creator, ArrayList<Element> elements) {
-    return newCase(format("order %s", elements), () -> {
+    return story(format("order %s", elements), () -> {
       List<?> list = creator.create(List.class, copy(elements));
       assertEquals(copy(list.toArray()), elements.toArray());
     });
   }
 
   private static Test creatorAllowsDuplicates(Creator creator) {
-    return newCase("allows duplicates", () -> {
+    return story("allows duplicates", () -> {
       ArrayList<?> original = newArrayList(a, a);
       List<?> list = creator.create(List.class, copy(original));
       assertEquals(copy(list.toArray()), original.toArray());
@@ -341,7 +341,7 @@ public class CollectionTests {
   }
 
   private static Test creatorForbidsNullElements(Creator creator) {
-    return newCase("forbids null elements", () -> {
+    return story("forbids null elements", () -> {
       ArrayList<?> original = newArrayList((Object) null);
       try {
         creator.create(Collection.class, copy(original));
@@ -351,7 +351,7 @@ public class CollectionTests {
   }
 
   private static Test creatorAllowsNullElements(Creator creator) {
-    return newCase("allows null elements", () -> {
+    return story("allows null elements", () -> {
       ArrayList<?> original = newArrayList((Object) null);
       try {
         creator.create(Collection.class, copy(original));
@@ -362,49 +362,49 @@ public class CollectionTests {
   }
 
   private static Test sizeReturnsZeroIfCollectionIsEmpty(Creator creator) {
-    return newCase("returns 0 if collection is empty", () -> {
+    return story("returns 0 if collection is empty", () -> {
       Collection<?> collection = creator.create(Collection.class, newArrayList());
       assertTrue(collection.size() == 0);
     });
   }
 
   private static Test sizeReturnsOneIfCollectionHasOneElement(Creator creator) {
-    return newCase("returns 1 if collection has 1 element", () -> {
+    return story("returns 1 if collection has 1 element", () -> {
       Collection<?> collection = creator.create(Collection.class, newArrayList(a));
       assertTrue(collection.size() == 1);
     });
   }
 
   private static Test isEmptyReturnsFalseIfCollectionHasOneElement(Creator creator) {
-    return newCase("returns false if collection has 1 element", () -> {
+    return story("returns false if collection has 1 element", () -> {
       Collection<?> collection = creator.create(Collection.class, newArrayList(a));
       assertTrue(!collection.isEmpty());
     });
   }
 
   private static Test isEmptyReturnsTrueIfCollectionIsEmpty(Creator creator) {
-    return newCase("returns true if collection is empty", () -> {
+    return story("returns true if collection is empty", () -> {
       Collection<?> collection = creator.create(Collection.class, newArrayList());
       assertTrue(collection.isEmpty());
     });
   }
 
   private static Test containsReturnsFalseIfCollectionDoesNotContainElement(Creator creator) {
-    return newCase("returns false if collection does not contain element", () -> {
+    return story("returns false if collection does not contain element", () -> {
       Collection<?> collection = creator.create(Collection.class, newArrayList(a));
       assertTrue(!collection.contains(b));
     });
   }
 
   private static Test containsReturnsTrueIfCollectionContainsElement(Creator creator) {
-    return newCase("returns true if collection contains element", () -> {
+    return story("returns true if collection contains element", () -> {
       Collection<?> collection = creator.create(Collection.class, newArrayList(a));
       assertTrue(collection.contains(a));
     });
   }
 
   private static Test iteratorTraversesEmptyCollection(Creator creator) {
-    return newCase("traverses empty collection", () -> {
+    return story("traverses empty collection", () -> {
       Collection<?> collection = creator.create(Collection.class, newArrayList());
       Iterator<?> iterator = collection.iterator();
       assertTrue(iterator != null);
@@ -417,7 +417,7 @@ public class CollectionTests {
   }
 
   private static Test iteratorTraversesSingletonCollection(Creator creator) {
-    return newCase("traverses singleton collection", () -> {
+    return story("traverses singleton collection", () -> {
       Collection<?> collection = creator.create(Collection.class, newArrayList(a));
       Iterator<?> iterator = collection.iterator();
       assertTrue(iterator != null);
@@ -432,7 +432,7 @@ public class CollectionTests {
   }
 
   private static Test iteratorRemovesNoElementsFromEmptyCollection(Creator creator) {
-    return newCase("removes no elements from empty collection", () -> {
+    return story("removes no elements from empty collection", () -> {
       Collection<?> collection = creator.create(Collection.class, newArrayList());
       Iterator<?> iterator = collection.iterator();
       assume(iterator != null);
@@ -444,7 +444,7 @@ public class CollectionTests {
   }
 
   private static Test iteratorRemovesElementFromSingletonCollection(Creator creator) {
-    return newCase("removes element from singleton collection", () -> {
+    return story("removes element from singleton collection", () -> {
       Collection<?> collection = creator.create(Collection.class, newArrayList(a));
       Iterator<?> iterator = collection.iterator();
       assume(iterator != null);
@@ -465,7 +465,7 @@ public class CollectionTests {
   }
 
   private static Test iteratorRemovesForbidsConsecutiveCalls(Creator creator) {
-    return newCase("removes forbids consecutive calls", () -> {
+    return story("removes forbids consecutive calls", () -> {
       Collection<?> collection = creator.create(Collection.class, newArrayList(a));
       Iterator<?> iterator = collection.iterator();
       assume(iterator != null);
@@ -487,7 +487,7 @@ public class CollectionTests {
   }
 
   private static Test iteratorRemoveThrowsUnsupportedOperationException(Creator creator) {
-    return newCase("throws UnsupportedOperationException", () -> {
+    return story("throws UnsupportedOperationException", () -> {
       Collection<?> collection = creator.create(Collection.class, newArrayList(a));
       Iterator<?> iterator = collection.iterator();
       assume(iterator != null);
@@ -506,7 +506,7 @@ public class CollectionTests {
   }
 
   private static Test iteratorRemoveHasNoSideEffect(Creator creator) {
-    return newCase("has no side effect", () -> {
+    return story("has no side effect", () -> {
       Collection<?> collection = creator.create(Collection.class, newArrayList(a));
       Iterator<?> iterator = collection.iterator();
       assume(iterator != null);
@@ -525,7 +525,7 @@ public class CollectionTests {
   }
 
   private static Test addAddsToEmptyCollection(Creator creator) {
-    return newCase("adds to empty collection", () -> {
+    return story("adds to empty collection", () -> {
       Collection<Object> collection = creator.create(Collection.class, newArrayList());
       boolean added = collection.add(a);
       assertTrue(added);
@@ -534,7 +534,7 @@ public class CollectionTests {
   }
 
   private static Test addAddsElementAtTheEnd(Creator creator) {
-    return newCase("adds element at the end", () -> {
+    return story("adds element at the end", () -> {
       ArrayList<Object> original = newArrayList(a, b, c);
       List<Object> list = creator.create(List.class, copy(original));
       original.add(d);
@@ -544,14 +544,14 @@ public class CollectionTests {
   }
 
   private static Test addReturnsTrue(Creator creator) {
-    return newCase("returns true", () -> {
+    return story("returns true", () -> {
       List<Object> list = creator.create(List.class, newArrayList(a, b, c));
       assertTrue(list.add(d));
     });
   }
 
   private static Test addAddsDuplicatedElement(Creator creator) {
-    return newCase("adds duplicated element", () -> {
+    return story("adds duplicated element", () -> {
       List<Object> list = creator.create(List.class, newArrayList(a));
       list.add(a);
       assertEquals(copy(list.toArray()), new Object[] { a, a });
@@ -559,7 +559,7 @@ public class CollectionTests {
   }
 
   private static Test addForbidsNullElements(Creator creator) {
-    return newCase("forbids null elements", () -> {
+    return story("forbids null elements", () -> {
       Collection<Object> collection = creator.create(Collection.class, newArrayList());
       try {
         collection.add(null);
@@ -569,7 +569,7 @@ public class CollectionTests {
   }
 
   private static Test addAllowsNullElements(Creator creator) {
-    return newCase("allows null elements", () -> {
+    return story("allows null elements", () -> {
       Collection<Object> collection = creator.create(Collection.class, newArrayList());
       try {
         collection.add(null);
@@ -580,7 +580,7 @@ public class CollectionTests {
   }
 
   private static Test addThrowsUnsupportedOperationException(Creator creator) {
-    return newCase("throws UnsupportedOperationException", () -> {
+    return story("throws UnsupportedOperationException", () -> {
       Collection<Object> collection = creator.create(Collection.class, newArrayList());
       try {
         collection.add(a);
@@ -590,7 +590,7 @@ public class CollectionTests {
   }
 
   private static Test addHasNoSideEffect(Creator creator) {
-    return newCase("has no side effect", () -> {
+    return story("has no side effect", () -> {
       Collection<Object> collection = creator.create(Collection.class, newArrayList());
       try {
         collection.add(a);
@@ -600,7 +600,7 @@ public class CollectionTests {
   }
 
   private static Test removeRemovesSingleElement(Creator creator) {
-    return newCase("removes single element", () -> {
+    return story("removes single element", () -> {
       Collection<Object> collection = creator.create(Collection.class, newArrayList(a));
       collection.remove(a);
       assertEquals(copy(collection.toArray()), new Object[] {});
@@ -608,7 +608,7 @@ public class CollectionTests {
   }
 
   private static Test removeThrowsUnsupportedOperationException(Creator creator) {
-    return newCase("throws UnsupportedOperationException", () -> {
+    return story("throws UnsupportedOperationException", () -> {
       Collection<Object> collection = creator.create(Collection.class, newArrayList(a));
       try {
         collection.remove(a);
@@ -618,7 +618,7 @@ public class CollectionTests {
   }
 
   private static Test removeHasNoSideEffect(Creator creator) {
-    return newCase("has no side effect", () -> {
+    return story("has no side effect", () -> {
       Collection<Object> collection = creator.create(Collection.class, newArrayList(a));
       try {
         collection.remove(a);
@@ -628,7 +628,7 @@ public class CollectionTests {
   }
 
   private static Test addAllCanAddOneElement(Creator creator) {
-    return newCase("can add one element", () -> {
+    return story("can add one element", () -> {
       Collection<Object> collection = creator.create(Collection.class, newArrayList());
       collection.addAll(newArrayList(a));
       assertEquals(collection.toArray(), new Object[] { a });
@@ -636,7 +636,7 @@ public class CollectionTests {
   }
 
   private static Test addAllThrowsUnsupportedOperationException(Creator creator) {
-    return newCase("throws UnsupportedOperationException", () -> {
+    return story("throws UnsupportedOperationException", () -> {
       Collection<Object> collection = creator.create(Collection.class, newArrayList());
       try {
         collection.addAll(newArrayList(a));
@@ -646,7 +646,7 @@ public class CollectionTests {
   }
 
   private static Test addAllHasNoSideEffect(Creator creator) {
-    return newCase("has no side effect", () -> {
+    return story("has no side effect", () -> {
       Collection<Object> collection = creator.create(Collection.class, newArrayList());
       try {
         collection.addAll(newArrayList(a));
@@ -656,7 +656,7 @@ public class CollectionTests {
   }
 
   private static Test addAllIntThrowsUnsupportedOperationException(Creator creator) {
-    return newCase("throws UnsupportedOperationException", () -> {
+    return story("throws UnsupportedOperationException", () -> {
       List<Object> list = creator.create(List.class, newArrayList());
       try {
         list.addAll(0, newArrayList(a));
@@ -666,7 +666,7 @@ public class CollectionTests {
   }
 
   private static Test addAllIntHasNoSideEffect(Creator creator) {
-    return newCase("has no side effect", () -> {
+    return story("has no side effect", () -> {
       List<Object> list = creator.create(List.class, newArrayList());
       try {
         list.addAll(0, newArrayList(a));
@@ -676,7 +676,7 @@ public class CollectionTests {
   }
 
   private static Test removeAllThrowsUnsupportedOperationException(Creator creator) {
-    return newCase("throws UnsupportedOperationException", () -> {
+    return story("throws UnsupportedOperationException", () -> {
       Collection<Object> collection = creator.create(Collection.class, newArrayList(a));
       try {
         collection.removeAll(newArrayList(a));
@@ -686,7 +686,7 @@ public class CollectionTests {
   }
 
   private static Test removeAllHasNoSideEffect(Creator creator) {
-    return newCase("has no side effect", () -> {
+    return story("has no side effect", () -> {
       Collection<Object> collection = creator.create(Collection.class, newArrayList(a));
       try {
         collection.removeAll(newArrayList(a));
@@ -696,7 +696,7 @@ public class CollectionTests {
   }
 
   private static Test retainAllThrowsUnsupportedOperationException(Creator creator) {
-    return newCase("throws UnsupportedOperationException", () -> {
+    return story("throws UnsupportedOperationException", () -> {
       Collection<Object> collection = creator.create(Collection.class, newArrayList(a));
       try {
         collection.retainAll(newArrayList());
@@ -706,7 +706,7 @@ public class CollectionTests {
   }
 
   private static Test retainAllHasNoSideEffect(Creator creator) {
-    return newCase("has no side effect", () -> {
+    return story("has no side effect", () -> {
       Collection<Object> collection = creator.create(Collection.class, newArrayList(a));
       try {
         collection.retainAll(newArrayList());
@@ -716,7 +716,7 @@ public class CollectionTests {
   }
 
   private static Test clearRemovesElement(Creator creator) {
-    return newCase("empties collection if it has 1 element", () -> {
+    return story("empties collection if it has 1 element", () -> {
       Collection<?> collection = creator.create(Collection.class, newArrayList(a));
       collection.clear();
       assertEquals(collection.toArray(), new Object[] {});
@@ -724,7 +724,7 @@ public class CollectionTests {
   }
 
   private static Test clearThrowsUnsupportedOperationException(Creator creator) {
-    return newCase("throws UnsupportedOperationException", () -> {
+    return story("throws UnsupportedOperationException", () -> {
       Collection<?> collection = creator.create(Collection.class, newArrayList(a));
       try {
         collection.clear();
@@ -734,7 +734,7 @@ public class CollectionTests {
   }
 
   private static Test clearHasNoSideEffect(Creator creator) {
-    return newCase("has no side effect", () -> {
+    return story("has no side effect", () -> {
       Collection<?> collection = creator.create(Collection.class, newArrayList(a));
       try {
         collection.clear();
@@ -744,7 +744,7 @@ public class CollectionTests {
   }
 
   private static Test getReturnsEachElement(Creator creator) {
-    return newCase("returns each element", () -> {
+    return story("returns each element", () -> {
       ArrayList<Object> original = newArrayList(a, b, c);
       List<?> list = creator.create(List.class, copy(original));
       for (int i = 0; i < original.size(); i++) {
@@ -758,7 +758,7 @@ public class CollectionTests {
   }
 
   private static Test getFailsForIndexAboveBound(Creator creator) {
-    return newCase("fails for index above bound", () -> {
+    return story("fails for index above bound", () -> {
       ArrayList<Object> original = newArrayList(a, b, c);
       List<?> list = creator.create(List.class, copy(original));
       try {
@@ -769,7 +769,7 @@ public class CollectionTests {
   }
 
   private static Test getFailsForIndexBelowBound(Creator creator) {
-    return newCase("fails for index below bound", () -> {
+    return story("fails for index below bound", () -> {
       ArrayList<Object> original = newArrayList(a, b, c);
       List<?> list = creator.create(List.class, copy(original));
       try {
@@ -780,7 +780,7 @@ public class CollectionTests {
   }
 
   private static Test setReplacesSingleElement(Creator creator) {
-    return newCase("replaces single element", () -> {
+    return story("replaces single element", () -> {
       ArrayList<Object> original = newArrayList(a);
       List<Object> list = creator.create(List.class, copy(original));
       try {
@@ -793,7 +793,7 @@ public class CollectionTests {
   }
 
   private static Test setReturnsReplacedElement(Creator creator) {
-    return newCase("returns replaced element", () -> {
+    return story("returns replaced element", () -> {
       ArrayList<Object> original = newArrayList(a);
       List<Object> list = creator.create(List.class, copy(original));
       Object returned;
@@ -807,7 +807,7 @@ public class CollectionTests {
   }
 
   private static Test setReplacesElementAtIndex(Creator creator) {
-    return newCase("replaces element at index", () -> {
+    return story("replaces element at index", () -> {
       ArrayList<Object> original = newArrayList(a, b, c);
       List<Object> list = creator.create(List.class, copy(original));
       try {
@@ -820,7 +820,7 @@ public class CollectionTests {
   }
 
   private static Test setThrowsUnsupportedOperationException(Creator creator) {
-    return newCase("throws UnsupportedOperationException", () -> {
+    return story("throws UnsupportedOperationException", () -> {
       ArrayList<Object> original = newArrayList(a, b, c);
       List<Object> list = creator.create(List.class, copy(original));
       try {
@@ -835,7 +835,7 @@ public class CollectionTests {
   }
 
   private static Test setHasNoSideEffect(Creator creator) {
-    return newCase("has no side effect", () -> {
+    return story("has no side effect", () -> {
       ArrayList<Object> original = newArrayList(a, b, c);
       List<Object> list = creator.create(List.class, copy(original));
       try {
@@ -850,7 +850,7 @@ public class CollectionTests {
   }
 
   private static Test addIntAddsAtIndex(Creator creator) {
-    return newCase("adds element at index", () -> {
+    return story("adds element at index", () -> {
       ArrayList<Object> original = newArrayList(a, b, c);
       List<Object> list = creator.create(List.class, copy(original));
       try {
@@ -863,7 +863,7 @@ public class CollectionTests {
   }
 
   private static Test addIntThrowsUnsupportedOperationException(Creator creator) {
-    return newCase("throws UnsupportedOperationException", () -> {
+    return story("throws UnsupportedOperationException", () -> {
       List<Object> list = creator.create(List.class, newArrayList());
       try {
         list.add(0, a);
@@ -873,7 +873,7 @@ public class CollectionTests {
   }
 
   private static Test addIntHasNoSideEffect(Creator creator) {
-    return newCase("has no side effect", () -> {
+    return story("has no side effect", () -> {
       List<Object> list = creator.create(List.class, newArrayList());
       try {
         list.add(0, a);
@@ -883,7 +883,7 @@ public class CollectionTests {
   }
 
   private static Test removeIntThrowsUnsupportedOperationException(Creator creator) {
-    return newCase("throws UnsupportedOperationException", () -> {
+    return story("throws UnsupportedOperationException", () -> {
       List<Object> list = creator.create(List.class, newArrayList(a));
       try {
         list.remove(0);
@@ -897,7 +897,7 @@ public class CollectionTests {
   }
 
   private static Test removeIntHasNoSideEffect(Creator creator) {
-    return newCase("has no side effect", () -> {
+    return story("has no side effect", () -> {
       List<Object> list = creator.create(List.class, newArrayList(a));
       try {
         list.remove(0);
@@ -911,7 +911,7 @@ public class CollectionTests {
   }
 
   private static Test listIteratorRemoveThrowsUnsupportedOperationException(Creator creator) {
-    return newCase("throws UnsupportedOperationException", () -> {
+    return story("throws UnsupportedOperationException", () -> {
       List<?> list = creator.create(List.class, newArrayList(a));
       Iterator<?> iterator = list.listIterator();
       assume(iterator != null);
@@ -930,7 +930,7 @@ public class CollectionTests {
   }
 
   private static Test listIteratorRemoveHasNoSideEffect(Creator creator) {
-    return newCase("has no side effect", () -> {
+    return story("has no side effect", () -> {
       List<?> list = creator.create(List.class, newArrayList(a));
       Iterator<?> iterator = list.listIterator();
       assume(iterator != null);
@@ -949,7 +949,7 @@ public class CollectionTests {
   }
 
   private static Test listIteratorSetThrowsUnsupportedOperationException(Creator creator) {
-    return newCase("throws UnsupportedOperationException", () -> {
+    return story("throws UnsupportedOperationException", () -> {
       List<Object> list = creator.create(List.class, newArrayList(a));
       ListIterator<Object> iterator = list.listIterator();
       assume(iterator != null);
@@ -968,7 +968,7 @@ public class CollectionTests {
   }
 
   private static Test listIteratorSetHasNoSideEffect(Creator creator) {
-    return newCase("has no side effect", () -> {
+    return story("has no side effect", () -> {
       List<Object> list = creator.create(List.class, newArrayList(a));
       ListIterator<Object> iterator = list.listIterator();
       assume(iterator != null);
@@ -987,7 +987,7 @@ public class CollectionTests {
   }
 
   private static Test listIteratorAddThrowsUnsupportedOperationException(Creator creator) {
-    return newCase("throws UnsupportedOperationException", () -> {
+    return story("throws UnsupportedOperationException", () -> {
       List<Object> list = creator.create(List.class, newArrayList());
       ListIterator<Object> iterator = list.listIterator();
       assume(iterator != null);
@@ -999,7 +999,7 @@ public class CollectionTests {
   }
 
   private static Test listIteratorAddHasNoSideEffect(Creator creator) {
-    return newCase("has no side effect", () -> {
+    return story("has no side effect", () -> {
       List<Object> list = creator.create(List.class, newArrayList());
       ListIterator<Object> iterator = list.listIterator();
       assume(iterator != null);

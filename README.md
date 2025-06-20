@@ -12,7 +12,7 @@ Reusable test can be something simple, like trivial assertion.
 ```
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
-import static org.quackery.Case.newCase;
+import static org.quackery.Story.story;
 import static org.quackery.Suite.suite;
 import static org.quackery.report.AssertException.assertTrue;
 
@@ -33,7 +33,7 @@ public class StringTest {
   }
 
   private static Test isEqualToItself(Object value) {
-    return newCase(
+    return story(
         format("%s is equal to itself", value),
         () -> assertTrue(value.equals(value)));
   }
