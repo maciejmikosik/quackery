@@ -231,7 +231,9 @@ Contracts are useful when building a suite of similar stories.
 
 ```
     suite("string is equal to itself")
-        .addAll(asList("first", "second", "third"), Contracts::isEqualToItself);
+        .addAll(Stream.of("first", "second", "third")
+            .map(Contracts::isEqualToItself)
+            .toList());
 ```
 
 will generate a suite of tests
