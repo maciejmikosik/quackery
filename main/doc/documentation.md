@@ -140,19 +140,19 @@ Tests list is definitely not complete, but it grows with each release.
 
 # defining your own contracts
 
-[Case](#case) | [Suite](#suite) | [Contract](#contract)
+[Story](#story) | [Suite](#suite) | [Contract](#contract)
 
-### Case
+### Story
 
-The most basic concept of quackery library is `Case`. It is used to test smallest possible piece of functionality. You can create case by using `Case.newCase()` factory method.
+The most basic concept of quackery library is `Story`. It is used to test smallest possible piece of functionality. You can create story by using `Story.story()` factory method.
 
-    import static org.quackery.Case.newCase;
+    import static org.quackery.Story.story;
     ...
-    Case test = newCase(
+    Story story = story(
         "empty string has length of zero",
         () -> assertTrue("".length() == 0));
 
-It requires name and `Body`. Name is human-readable description of test displayed in reports. Body is functional interface representing testing logic and can be defined using lambda. `Case` is considered successful if `Body.run()` method ends without throwing `Throwable`. Any throwable indicates failed tests. However there are different ways `Case` can fail.
+It requires name and script. Name is human-readable description of test displayed in reports. Script is functional interface representing testing logic and can be defined using lambda. `Script` is considered successful if `Script.run()` method ends without throwing `Throwable`. Any throwable indicates failed tests. However there are different ways `Story` can fail.
 
  - `org.quackery.report.AssertException` - feature does not work
  - `org.quackery.report.AssumeException` - feature depends on some other feature that does not work
@@ -165,11 +165,11 @@ If you use other assertions library then read [junit section](#junit).
 
 `Test` interface mimics composite design pattern.
 It has 2 subclasses.
-`Case` represents single test that can either succeed or fail.
-`Suite` represents list of tests (cases and suites).
-This way you can organize your cases into hierarchical tree.
+`Story` represents single test that can either succeed or fail.
+`Suite` represents list of tests (stories and suites).
+This way you can organize your stories into hierarchical tree.
 
-You can aggregate cases into suites using `Suite` fluent grammar.
+You can aggregate stories into suites using `Suite` fluent grammar.
 
     Suite suite = suite("all tests")
         .add(test(1))
@@ -190,13 +190,13 @@ You can aggregate cases into suites using `Suite` fluent grammar.
 
 It contains logic that tests functionality of an item, but it doesn't know what this item is.
 Item is provided by client programmer.
-Contract can be small, returning a single `Case`, or it can be bigger, returning `Suite` of tests.
+Contract can be small, returning a single `Story`, or it can be bigger, returning `Suite` of tests.
 
-Let's start with a simple contract that takes item of type `Object` and produces single `Case` that tests if this item is equal to itself.
+Let's start with a simple contract that takes item of type `Object` and produces single `Story` that tests if this item is equal to itself.
 
 ```
 import static java.lang.String.format;
-import static org.quackery.Case.newCase;
+import static org.quackery.Story.story;
 import static org.quackery.report.AssertException.assertTrue;
 
 import org.quackery.Contract;
@@ -204,7 +204,7 @@ import org.quackery.Test;
 
 public class IsEqualToItself implements Contract<Object> {
   public Test test(Object item) {
-    return newCase(
+    return story(
         format("%s is equal to itself", item),
         () -> assertTrue(item.equals(item)));
   }
@@ -216,7 +216,7 @@ Since `Contract` is a functional interface we can implement it as a method.
 ```
 public class Contracts {
   public static Test isEqualToItself(Object value) {
-    return newCase(
+    return story(
         format("%s is equal to itself", value),
         () -> assertTrue(value.equals(value)));
   }
@@ -227,7 +227,7 @@ Now we can obtain contract instance using method reference.
 
     Contract<Object> contract = Contracts::isEqualToItself;
 
-Contracts are useful when building a suite of similar cases.
+Contracts are useful when building a suite of similar stories.
 
 ```
     suite("string is equal to itself")
@@ -247,25 +247,25 @@ string is equal to itself
 
 # running
 
-To run all tests in test tree, you would need to traverse the tree, visit each `Case` and run its body by invoking `Body.run()`, then catch `Throwable` if test failed and prepare some kind of report. Luckily `org.quackery.run.Runners` provides methods for automating it. Additionally, it contains helper methods that allow you to control things like concurrency or test isolation.
+To run all tests in test tree, you would need to traverse the tree, visit each `Story` and run its script by invoking `Script.run()`, then catch `Throwable` if test failed and prepare some kind of report. Luckily `org.quackery.run.Runners` provides methods for automating it. Additionally, it contains helper methods that allow you to control things like concurrency or test isolation.
 
-The simplest way to run tests is calling `run(test)`. It runs each `Case` eagerly (which may take some time) and caches results. It returns a test identical to argument, with the same tree structure and names. The only difference is that invoking `Body.run()` of any `Case` from the returned tree returns/throws cached result immediately.
+The simplest way to run tests is calling `run(test)`. It runs each `Story` eagerly (which may take some time) and caches results. It returns a test identical to argument, with the same tree structure and names. The only difference is that invoking `Script.run()` of any `Story` from the returned tree returns/throws cached result immediately.
 
 ### concurrency
 
-To run tests concurrently call `concurrent(test)` method. It starts `Executor` that uses all available processors and schedules tasks for running each `Case`. While executor keeps working, method returns immediately (does not block). To block until executor finishes running tests, use `run(concurrent(test))`. If you don't like configuration of default executor you can provide you own calling `run(in(executor, test))` instead.
+To run tests concurrently call `concurrent(test)` method. It starts `Executor` that uses all available processors and schedules tasks for running each `Story`. While executor keeps working, method returns immediately (does not block). To block until executor finishes running tests, use `run(concurrent(test))`. If you don't like configuration of default executor you can provide you own calling `run(in(executor, test))` instead.
 
 ### isolation
 
 All tests run in the same jvm and it's possible for them to share state and affect each other. Most of the time it's undesirable, so you want to isolate them.
 
-Sometimes your project's production code (the code you test) loads bytecode dynamically. Running many tests that loads bytecode as a side-effect can cause problems. Bytecode loaded by one test can be visible to another test resulting in namespace collisions. This can be prevented by decorating tests using `classLoaderScoped(test)`. It makes each `Case` to have different context `ClassLoader` (original one being parent). We made an assumption here, that you load bytecode using `Thread.currentThread().getContextClassLoader()`. If you use custom loading policy (which you shouldn't!), isolating test from each other might be impossible.
+Sometimes your project's production code (the code you test) loads bytecode dynamically. Running many tests that loads bytecode as a side-effect can cause problems. Bytecode loaded by one test can be visible to another test resulting in namespace collisions. This can be prevented by decorating tests using `classLoaderScoped(test)`. It makes each `Story` to have different context `ClassLoader` (original one being parent). We made an assumption here, that you load bytecode using `Thread.currentThread().getContextClassLoader()`. If you use custom loading policy (which you shouldn't!), isolating test from each other might be impossible.
 
-Using `ThreadLocal` is popular way to avoid synchronization issues for static resources that don't need to be global (cache, network connections pool, etc.). If `ThreadLocal` reference is static, then running 2 tests using the same thread makes one test affecting the other. To isolate them use `threadScoped(test)` which makes each `Case` to be run in different thread. This does not make them run concurrently, because original thread joins new thread (blocks until new thread finishes).
+Using `ThreadLocal` is popular way to avoid synchronization issues for static resources that don't need to be global (cache, network connections pool, etc.). If `ThreadLocal` reference is static, then running 2 tests using the same thread makes one test affecting the other. To isolate them use `threadScoped(test)` which makes each `Story` to be run in different thread. This does not make them run concurrently, because original thread joins new thread (blocks until new thread finishes).
 
 ### timeout
 
-Tests can take a long time to finish. Sometimes they can take forever because of buggy code. You can limit maximum time they have using `timeout(duration, test)`. If `Case` takes longer than specified `duration`, then `Case` is interrupted. Tested code is responsive to interruption if it blocks on method throwing `InterruptedException` or if it checks interruption flag `Thread.interrupted()` manually. If code is responsive to interruption, then `Body.run()` is aborted and `InterruptedException` is propagated as test result. If code is not responsive to interruption then `Body.run()` call has to block until test finishes. However result of this finished test is ignored and `InterruptedException` is being thrown instead.
+Tests can take a long time to finish. Sometimes they can take forever because of buggy code. You can limit maximum time they have using `timeout(duration, test)`. If `Story` takes longer than specified `duration`, then `Story` is interrupted. Tested code is responsive to interruption if it blocks on method throwing `InterruptedException` or if it checks interruption flag `Thread.interrupted()` manually. If code is responsive to interruption, then `Script.run()` is aborted and `InterruptedException` is propagated as test result. If code is not responsive to interruption then `Script.run()` call has to block until test finishes. However result of this finished test is ignored and `InterruptedException` is being thrown instead.
 
 ### expecting exception
 
@@ -282,9 +282,9 @@ You can pack those tests in same suite and use decorator to add boilerplate code
 
 ```
 expect(NullPointerException.class, suite("validates arguments")
-    .add(newCase("first", () -> method(null, "b", "c")))
-    .add(newCase("second", () -> method("a", null, "c")))
-    .add(newCase("third", () -> method("a", "b", null))));
+    .add(story("first", () -> method(null, "b", "c")))
+    .add(story("second", () -> method("a", null, "c")))
+    .add(story("third", () -> method("a", "b", null))));
 ```
 
 # reporting
@@ -293,7 +293,7 @@ Once you run the test and cache results, you are ready to present report.
 
     Test report = run(test);
 
-`org.quackery.report.Reports` contains methods related to analyzing results of test. Trying to use `Reports` on `Test` that was not run, will invoke `Body.run()` every time.
+`org.quackery.report.Reports` contains methods related to analyzing results of test. Trying to use `Reports` on `Test` that was not run, will invoke `Script.run()` every time.
 
 All tests passed if `count(Throwable.class, report)` returns `0`. You can also count number of failures of specific type, for example `count(AssertException.class, report)` or `count(AssumeException.class, report)`.
 
